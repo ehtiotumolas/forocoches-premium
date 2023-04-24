@@ -300,24 +300,6 @@ button:disabled {
   padding: .6rem;
 }
 
-.grid {
-  display: grid;
-}
-
-.content-opciones {
-  grid-template-columns: 1fr 1fr;
-}
-
-.opciones-left {
-  grid-column: 1 / span 1;
-  grid-auto-rows: min-content;
-}
-
-.opciones-right {
-  grid-column: span 1 / -1;
-  grid-auto-rows: min-content;
-}
-
 .opciones-generales {
 }
 
@@ -326,6 +308,7 @@ button:disabled {
 }
 
 .opciones-viejo {
+  padding-top: 1rem;
 }
 
 .opciones-nuevo {
@@ -339,13 +322,15 @@ button:disabled {
 
 .opciones-header {
   padding-bottom: .3rem;
+  font-size: var(--fs-600);
   font-weight: var(--fw-semi-bold);
 }
 
 /* CHECKBOX */
 .checkbox-wrapper {
-  font-size: var(--fs-200);
+  font-size: var(--fs-300);
   padding-left: .6rem;
+  padding-bottom: .4rem;
 }
 
 
