@@ -4,7 +4,7 @@ let usuarios_ignorados;
 let opciones;
 let toListen = [];
 let savedNotas;
-
+let darkMode = "";
 async function retrieveStorage(key) {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.get(key, resolve);
@@ -59,9 +59,13 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
+                if (darkMode === "" && $('span:contains("Modo noche")').length > 0) 
+                {
+                    darkMode = true;
+                }
                 if (toListen.includes("temas-ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
-                        var papa = $(n).parent().parent().parent()
+                        var papa = $(n).parent().parent().parent();
                         if (($('span:contains("Modo noche")').length != 0)) papa = $(papa).parent();
                         $(papa).next("separator").remove();
                         $(papa).remove();
@@ -122,10 +126,19 @@ function onMutation(mutations) {
                         var id = "#edit" + $(n).parent()[0].id.split("_")[1];
                         $(id).remove();
                     }
-                    if (n.tagName == 'SPAN' && usuarios_ignorados.some(substring => n.innerText.includes(`${substring}`))) {
-                        var papa = $(n).parent().parent().parent().parent().parent();
-                        papa.next("separator").remove();
-                        papa.remove();
+                    if (n.tagName == 'SPAN') {
+                        if (darkMode && usuarios_ignorados.some(substring => n.innerText.includes(`@${substring}`))) {
+                            var papa = $(n).parent().parent().parent().parent().parent();
+                            papa.next("separator").remove();
+                            papa.remove();
+                        }
+                        else {
+                            if (usuarios_ignorados.some(substring => n.innerText.includes(`${substring}`)) && $(n).parent().hasClass("smallfont")) {
+                                var papa = $(n).parent().parent().parent();
+                                papa.next("separator").remove();
+                                papa.remove();
+                            }
+                        }
                     }
                 }
                 if (toListen.includes("notas-usuario")) {
@@ -297,7 +310,7 @@ function onMutation(mutations) {
                     if (n.tagName == 'A' && n.href.includes("misc.php?do=whoposted")) {
                         if (n.innerText == "0") {
                             var papa = $(n).parent().parent().parent();
-                            if ($('span:contains("Modo noche")').length > 0) {
+                            if (darkMode) {
                                 $(papa).css("background-color", opciones["hilos-color"].value);
                             }
                             else {
@@ -310,7 +323,7 @@ function onMutation(mutations) {
                 }
                 if (toListen.includes("ocultar-publicidad")) {
                     if (n.tagName == 'DIV') {
-                        if ($('span:contains("Modo noche")').length > 0) {
+                        if (darkMode) {
                             if ($(n).hasClass("fixed_adslot")) {
                                 if ($(n).parent().parent()[0].id !== "sidebar") {
                                     $(n).parent().parent().remove();
@@ -350,7 +363,7 @@ function onMutation(mutations) {
                 }
                 if (toListen.includes("ocultar-trending")) {
                     if (n.tagName == 'H2' && n.innerText === "Trending") {
-                        if ($('span:contains("Modo noche")').length > 0) {
+                        if (darkMode) {
                             if ($(n).parent().parent().parent()[0].id === "sidebar") {
                                 $(n).parent().parent().remove();
                             }
@@ -359,7 +372,7 @@ function onMutation(mutations) {
                 }
                 if (toListen.includes("ocultar-foros-relacionados")) {
                     if (n.tagName == 'H2' && (n.innerText === "Foros Relacionados" || n.innerText === "Foros relacionados")) {
-                        if ($('span:contains("Modo noche")').length > 0) {
+                        if (darkMode) {
                             if ($(n).parent().parent()[0].id === "sidebar") {
                                 $(n).parent().remove();
                             }
@@ -369,7 +382,7 @@ function onMutation(mutations) {
                 if (toListen.includes("ocultar-avisos")) {
                     if ($(n).hasClass("navbar_notice")) {
                         var papa = $(n).parent().parent();
-                        if ($('span:contains("Modo noche")').length > 0) {
+                        if (darkMode) {
                             papa.remove();
                         }
                         else {
@@ -378,7 +391,7 @@ function onMutation(mutations) {
                     }
                 }
                 if (toListen.includes("espacio-lateral")) {
-                    if ($('span:contains("Modo noche")').length > 0) {
+                    if (darkMode) {
                         if (!toListen.includes("ocultar-foros-relacionados") ||
                             !toListen.includes("ocultar-trending") ||
                             !toListen.includes("ocultar-publicidad")) {
@@ -424,7 +437,7 @@ const hiloInfo = (id) => {
         return { "status": 400, "message": { "hilo_id": id } }
     };
 
-    if ($('span:contains("Modo noche")').length > 0) {
+    if (darkMode) {
         var postFound = $(".date-and-time-gray").filter(function () {
             return this.innerText === "#2";
         }).parent().parent().parent().parent()[0].id.split('post')[1]
@@ -445,7 +458,7 @@ const userInfo = (id) => {
     var usuario, mensajes, hilos, registro;
     usuario = $(document).attr('title').replace("Forocoches - Ver Perfil: ", "");
     try {
-        if ($('span:contains("Modo noche")').length > 0) {
+        if (darkMode) {
             var usuario, mensajes, hilos, registro;
             mensajes = $($('span:contains("Mensajes"):not(:contains("privados"))')[0]).prev("span")[0].innerText.replace(".", "");
             hilos = $($('span:contains("Hilos")')[2]).prev("span")[0].innerText.replace(".", "")
@@ -481,7 +494,7 @@ const usersInfo = (id) => {
     var usuarios = []
     var elements = $('*[id*=postmenu_]:visible')
     for (var element of elements) {
-        if ($('span:contains("Modo noche")').length > 0) {
+        if (darkMode) {
             var id = element.id;
             try {
                 var usuario = $(`*[id*=${id}_menu] > div > div > h2`)[0].innerText.replaceAll('\n', '').trim();
