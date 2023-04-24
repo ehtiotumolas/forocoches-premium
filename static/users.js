@@ -1,3 +1,5 @@
+import { setPagina, rowsPerPage } from "./table.js";
+
 export var usuarios;
 
 export async function fetchUsers() {
@@ -13,8 +15,8 @@ export async function fetchUsers() {
                 }
                 else
                     console.log(response.status)
-                    return response;
-                })
+                return response;
+            })
             .catch(function (err) {
                 console.log("fetchUsers: " + err)
                 return err.status;
@@ -26,21 +28,24 @@ export async function fetchUsers() {
     }
 }
 
-export function buscarUsuario(usuario, auto) {
+export function buscarUsuario(usuario) {
     try {
-            var offset = (parseInt(getComputedStyle(document.body).getPropertyValue('--fs-header')) * 16 + 50);
-            var element = document.getElementById(usuario.trim())
-            var pos = element.getBoundingClientRect();
-            var total = (pos.top - offset);
-            if (element.classList != "selRow") element.click();
-            if (!auto)
-            {
-                    window.scrollTo({ top: total, behavior: 'smooth' });
-                    document.getElementById("add-user-message").innerText = "Usuario encontrado!";
+        var offset = (parseInt(getComputedStyle(document.body).getPropertyValue('--fs-header')) * 16 + 50);
+        var element = document.getElementById(usuario.trim())
+        if (element == null) {
+            var usuarioEncontrado = Object.keys(usuarios).find(key => usuarios[key].usuario === usuario);
+            if (usuarioEncontrado != null) {
+                setPagina(Math.floor(usuarioEncontrado/rowsPerPage));
+                var element = document.getElementById(usuario.trim())
             }
-
+        }
+        var pos = element.getBoundingClientRect();
+        var total = (pos.top - offset);
+        if (element.classList != "selRow") element.click();
+        window.scrollTo({ top: total, behavior: 'smooth' });
+        document.getElementById("add-user-message").innerText = "Usuario encontrado!";
     }
     catch {
-            document.getElementById("add-user-message").innerText = "Usuario no encontrado en la lista.";
+        document.getElementById("add-user-message").innerText = "Usuario no encontrado en la lista.";
     }
 }

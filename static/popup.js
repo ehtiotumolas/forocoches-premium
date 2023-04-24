@@ -1,5 +1,5 @@
 import { fetchUsers, buscarUsuario, usuarios } from "./users.js";
-import { createTable, currentPage, setPagina } from "./table.js";
+import { createTable, currentPage, setPagina, rowsPerPage } from "./table.js";
 
 async function start() {
     await fetchUsers()
@@ -14,7 +14,7 @@ async function start() {
         .addEventListener(evt, function (event) {
             event.preventDefault();
             this.tabIndex = 1;
-            buscarUsuario(document.getElementById("user-buscar").value, false);
+            buscarUsuario(document.getElementById("user-buscar").value);
         });
 });
 
@@ -40,20 +40,16 @@ $(".nav-element-container").click(function (e) {
 
 $("#pagina-left").click(function () {
     setPagina(currentPage - 1);
-    if (currentPage == 0) {
-        document.getElementById("pagina-left").classList.add("visually-hidden")}
-    if (Math.floor(usuarios.length/50) > currentPage) {
-        document.getElementById("pagina-right").classList.remove("visually-hidden")
-    }
-    console.log(currentPage)
 });
 
 $("#pagina-right").click(function () {
     setPagina(currentPage + 1);
-    if (currentPage != 0) {
-        document.getElementById("pagina-left").classList.remove("visually-hidden")}
-    if (Math.floor(usuarios.length/50) == currentPage) {
-        document.getElementById("pagina-right").classList.add("visually-hidden")
-    }
-    console.log(currentPage)
+});
+
+$("#pagina-first").click(function () {
+    setPagina(0);
+});
+
+$("#pagina-last").click(function () {
+    setPagina(Math.floor(usuarios.length/rowsPerPage));
 });

@@ -93,7 +93,7 @@ html:focus-within {
 html,
 body {
   width: 30rem;
-  height: 15rem;
+  height: 100%;
 }
 
 /* Set core body defaults */

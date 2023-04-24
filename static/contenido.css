@@ -13,10 +13,25 @@
   width: 100%;
   gap: 1rem;
   padding-top: .3rem;
+  padding-bottom: 2rem;
+  user-select: none;
+  position: relative;
 }
 
 .arrow-pagina {
   cursor: pointer;
   position: relative;
-  width: 5rem;
+  width: auto;
+}
+
+#pagina-first {
+  margin-right:auto;
+  padding-left: 1rem;
+  width: auto;
+}
+
+#pagina-last {
+  margin-left:auto;
+  padding-right: 1rem;
+  width: auto;
 }

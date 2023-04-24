@@ -2,6 +2,7 @@ import { usuarios } from "./users.js";
 import { getCurrentTab } from "./popup.js";
 
 export let currentPage = 0;
+export const rowsPerPage = 20;
 
 export async function createTable() {
     try {
@@ -27,15 +28,15 @@ export async function createTable() {
     }
     catch (e) {
         console.log(e)
-        return {"status": 400, "message": "Not OK"};
+        return { "status": 400, "message": "Not OK" };
     }
 }
 export async function updateTable() {
     try {
-        var desde = currentPage * 50;
-        var hasta = Math.min(((currentPage + 1) * 50), usuarios.length);
+        var desde = currentPage * rowsPerPage;
+        var hasta = Math.min(((currentPage + 1) * rowsPerPage), usuarios.length);
         if (desde > hasta) {
-            currentPage =  Math.floor(hasta/50);
+            currentPage = Math.floor(hasta / rowsPerPage);
             return;
         }
         var userTable = $(".content-table")[0];
@@ -47,7 +48,8 @@ export async function updateTable() {
                 var selected = false;
                 if (row.classList.contains("selRow")) {
                     selected = true;
-                }                
+                }
+                userTable.querySelectorAll('.table_row').forEach(tr => tr.classList.remove("selRow"));
                 if (!selected) row.classList.add("selRow");
                 chrome.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + user.id })
             });
@@ -55,7 +57,7 @@ export async function updateTable() {
             row.id = usuarios[i].usuario;
             var position = document.createElement("div");
             position.classList.add("table_cell", "table_cell_first");
-            position.innerText = document.getElementsByClassName("table_row").length + (currentPage * 50);
+            position.innerText = document.getElementsByClassName("table_row").length + (currentPage * rowsPerPage);
             row.appendChild(position);
             var usuario = document.createElement("div");
             usuario.classList.add("table_cell_usuario");
@@ -75,15 +77,27 @@ export async function updateTable() {
             }
             userTable.appendChild(row);
         };
-        return {"status": 200, "message": "OK"};
+        return { "status": 200, "message": "OK" };
     }
     catch (e) {
         console.log(e)
-        return {"status": 400, "message": "Not OK"};
+        return { "status": 400, "message": "Not OK" };
     }
 }
 
 export function setPagina(numero) {
     currentPage = numero;
+    if (currentPage == 0) {
+        document.getElementById("pagina-left").classList.add("visually-hidden");
+    }
+    else if (currentPage != 0) {
+        document.getElementById("pagina-left").classList.remove("visually-hidden");
+    }
+    if (Math.floor(usuarios.length / rowsPerPage) == currentPage) {
+        document.getElementById("pagina-right").classList.add("visually-hidden");
+    }
+    else if (Math.floor(usuarios.length / rowsPerPage) > currentPage) {
+        document.getElementById("pagina-right").classList.remove("visually-hidden");
+    }
     updateTable();
 }
