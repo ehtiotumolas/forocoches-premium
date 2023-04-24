@@ -40,7 +40,7 @@ function addToChromeStorage(loc, id, action) {
           items.temas_ignorados.push(id);
         }
         if (action == "remove"){
-          items.temas_ignorados.pop(id);
+          items.temas_ignorados = items.temas_ignorados.filter(x => x !== id);
         }
       }
       else { items.temas_ignorados = [id]; }
@@ -51,7 +51,7 @@ function addToChromeStorage(loc, id, action) {
           items.usuarios_ignorados.push(id);
         }
         if (action == "remove"){
-          items.usuarios_ignorados.pop(id);
+          items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== id);
         }
       }
       else { items.usuarios_ignorados = [id]; }
