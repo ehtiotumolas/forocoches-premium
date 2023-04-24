@@ -75,9 +75,7 @@ function loadIgnoradosLists() {
 chrome.runtime.onMessage.addListener((obj) => {
   if (obj.sender == "contentScript" && obj.type == "ignore_usuario") {
     submitUsariosIgnorados(obj.content);
-    return true;
   }
-  return true;
 });
 
 

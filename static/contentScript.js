@@ -512,14 +512,13 @@ function onMutation(mutations) {
                             })
                             .text("❤")
                             .click(function (e) {
-                                var post, postId, likes
+                                var postId, likes
                                 if (darkMode) {
-                                    post = $($(this)).parent()[0].closest('section');
+                                    postId = $($($(this)).parent()[0].closest('section')).parent()[0].id.split('edit')[1];
                                 }
                                 else {
-                                    post = $($(this)).parent()[0].closest('div')
+                                    postId = $($(this)).parent()[0].closest('div').id.split('edit')[1];
                                 }
-                                var postId = $(post).parent()[0].id.split('edit')[1];
                                 var likes = $(this).prev('span')[0];
 
                                 if (!$(this).hasClass("liked")) {

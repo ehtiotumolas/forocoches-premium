@@ -133,7 +133,7 @@ def getAllUsers():
         print(f"GetALlUsers: + {e}")
         return f"{e}", 400
 
-    return {'status': 200, 'content': res}
+    return json.dumps(res, default=str), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/getAllPoles", methods=["GET"])
@@ -161,15 +161,12 @@ def getAllPoles():
                 if key == "usuario":
                     res[index][key] = (bytes.fromhex(
                         res[index][key])).decode("utf-8")
-
+        return json.dumps(res, default=str), 200, {'ContentType': 'application/json'}
     except Exception as e:
         connection.commit()
         cursor.close()
         print(f"GetAllPoles: + {e}")
         return f"{e}", 400
-
-    return {'status': 200, 'content': res}, {'ContentType': 'application/json'}
-
 
 @app.route("/addPole", methods=["POST"])
 def addPole():
