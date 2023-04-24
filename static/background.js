@@ -52,6 +52,12 @@ chrome.commands.onCommand.addListener((shortcut) => {
     }
 })
 
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    if (message.type == "ignore_usuario") {
+        alert("hellooooo");
+    }
+});
+
 const addUser = (json) => {
     sendRequest('POST', server + 'addUser', json, 'addUser')
 }

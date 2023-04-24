@@ -1,3 +1,5 @@
+
+
 const mo = new MutationObserver(onMutation);
 let whatsIgnored;
 let temas_ignorados;
@@ -35,7 +37,7 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (whatsIgnored == "temas_ignorados"  && temas_ignorados) {
+                if (whatsIgnored == "temas_ignorados" && temas_ignorados) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent()
                         if (($('span:contains("Modo noche")').length != 0)) papa = $(papa).parent();
@@ -48,11 +50,22 @@ function onMutation(mutations) {
                         var id = "#edit" + $(n).parent()[0].id.split("_")[1];
                         $(id).remove();
                     }
-                    if (n.tagName == 'DIV' && $(n).children('b').length > 0 && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
-                        var usuario = $(n);
-                        $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
-                        if (($('span:contains("Modo noche")').length != 0)) usuario = $(usuario).parent('div')[0];
-                        $(usuario).next('div')[0].innerText = "(Texto ignorado)";
+                    if (n.tagName == 'DIV') {
+                        if ($(n).children('b').length > 0 && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
+                            var usuario = $(n);
+                            $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
+                            if (($('span:contains("Modo noche")').length != 0)) usuario = $(usuario).parent('div')[0];
+                            $(usuario).next('div')[0].innerText = "(Texto ignorado)";
+                        }
+                        if (n.id.includes('edit')) {
+                            var postId = "postmenu_" + n.id.split('edit')[1];     
+                            var postDiv = $(`div[id=${postId}]`)[0];
+                            var usuario = postDiv.children[0].innerText;
+                            $("<a/>").attr('id', 'ignorar-usuario-div').text("💀").click(function (e) { 
+                                e.preventDefault();
+                                chrome.runtime.sendMessage({type: "ignore_usuario",message: usuario});
+                            }).appendTo(postDiv);
+                        }
                     }
                 }
             }
@@ -76,8 +89,8 @@ const hiloInfo = (id) => {
     };
 
     if ($('span:contains("Modo noche")').length > 0) {
-        usuario = $("div > div > div > div > a", ".postbit_wrapper")[1].innerText;
-        usuario_id = $("div > div > div > div > a", ".postbit_wrapper")[1].href.split("php?u=")[1];
+        usuario = $("div > div > div > div > a[href^='member.php?']", ".postbit_wrapper")[0].innerText
+        usuario_id = $("div > div > div > div > a[href^='member.php?']", ".postbit_wrapper")[1].href.split("php?u=")[1];;
     }
     else {
         usuario = ($('a[class="bigusername"]')[1]).innerText;

@@ -41,7 +41,7 @@ $("#submit-temas-ignorados").click(function () {
   submitTemasIgnorados();
 });
 
-function createIgnorado(id, loc) {
+export function createIgnorado(id, loc) {
   var divWrapper = $("<div>")
     .addClass(`${loc}-ignorado-wrapper`);
   var divUsuario = $(`<div>${id}</div>`)
