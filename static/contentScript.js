@@ -506,13 +506,10 @@ const shadeColor = (color, percent) => {
     return "#" + RR + GG + BB;
 }
 
-document.onclick = function (e) {
-    if ((e.target.id !== 'notas-popup-div' &&
-        e.target.id !== 'notas-usuarios-div' &&
-        e.target.id !== 'notas-popup-title' &&
-        e.target.id !== 'notas-popup-edit' &&
-        e.target.id !== 'notas-popup-text-container' &&
-        e.target.id !== 'notas-popup-text-editable') ||
+document.onmousedown = function (e) {
+    if ((e.target.id !== 'notas-popup-div' && e.target.id !== 'notas-usuarios-div' &&
+        e.target.id !== 'notas-popup-title' && e.target.id !== 'notas-popup-edit' &&
+        e.target.id !== 'notas-popup-text-container' && e.target.id !== 'notas-popup-text-editable') ||
         e.target.id == '') {
         $("#notas-popup-div").remove();
     }
