@@ -59,24 +59,6 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (toListen.includes("ocultar-trending")) {
-                    if ($('span:contains("Modo noche")').length > 0) {
-                        if (n.tagName == 'H2' && n.innerText === "Trending") {
-                            if ($(n).parent().parent().parent()[0].id === "sidebar") {
-                                $(n).parent().parent().remove();
-                            }
-                        }
-                    }
-                }
-                if (toListen.includes("ocultar-foros-relacionados")) {
-                    if ($('span:contains("Modo noche")').length > 0) {
-                        if (n.tagName == 'H2' && (n.innerText === "Foros Relacionados" || n.innerText === "Foros relacionados")) {
-                            if ($(n).parent().parent()[0].id === "sidebar") {
-                                $(n).parent().remove();
-                            }
-                        }
-                    }
-                }
                 if (toListen.includes("temas-ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent()
@@ -236,7 +218,6 @@ function onMutation(mutations) {
                                             .appendTo(textContainer);
                                         $("<button/>")
                                             .attr('id', 'notas-popup-button')
-                                            .attr('contenteditable', true)
                                             .css({
                                                 position: "absolute",
                                                 height: "22px",
@@ -326,26 +307,49 @@ function onMutation(mutations) {
                     if (n.tagName == 'DIV') {
                         if ($('span:contains("Modo noche")').length > 0) {
                             if ($(n).hasClass("fixed_adslot")) {
+                                if ($(n).parent().parent()[0].id !== "sidebar") {
+                                    $(n).parent().parent().remove();
+                                }
+                                else {
+                                    $(n).parent().remove();
+                                }
+                            }
+                            if (n.id.indexOf("optidigital-adslot-Content_") > -1) {
+                                $(n).next().remove();
+                                $(n).remove();
+                            }
+                            if ($(n).hasClass("optidigital-wrapper-div")) {
+                                $(n).next().remove();
+                                $(n).remove();
+                            }
+                        }
+                        else {
+                            if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 || n.id.indexOf("optidigital-adslot-Rectangle_") > -1) {
+                                var papa = $(n).parent().parent().parent().parent();
+                                papa.prev().remove();
+                                papa.next().remove();
+                                papa.remove();
+                            }
+
+                        }
+                    }
+                }
+                if (toListen.includes("ocultar-trending")) {
+                    if (n.tagName == 'H2' && n.innerText === "Trending") {
+                        if ($('span:contains("Modo noche")').length > 0) {
+                            if ($(n).parent().parent().parent()[0].id === "sidebar") {
+                                $(n).parent().parent().remove();
+                            }
+                        }
+                    }
+                }
+                if (toListen.includes("ocultar-foros-relacionados")) {
+                    if (n.tagName == 'H2' && (n.innerText === "Foros Relacionados" || n.innerText === "Foros relacionados")) {
+                        if ($('span:contains("Modo noche")').length > 0) {
+                            if ($(n).parent().parent()[0].id === "sidebar") {
                                 $(n).parent().remove();
                             }
                         }
-                        if (n.id.indexOf("optidigital-adslot-Content_") > -1) {
-                            $(n).next().remove();
-                            $(n).remove();
-                        }
-                        if ($(n).hasClass("optidigital-wrapper-div")) {
-                            $(n).next().remove();
-                            $(n).remove();
-                        }
-                    }
-                    else {
-                        if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 || n.id.indexOf("optidigital-adslot-Rectangle_") > -1) {
-                            var papa = $(n).parent().parent().parent().parent();
-                            papa.prev().remove();
-                            papa.next().remove();
-                            papa.remove();
-                        }
-
                     }
                 }
                 if (toListen.includes("ocultar-avisos")) {
@@ -359,31 +363,34 @@ function onMutation(mutations) {
                         }
                     }
                 }
-                if (toListen.includes("espacio-lateral") && $('span:contains("Modo noche")').length > 0) {
-                    var maxSizeSidebar = "100%";
-                    var gridSizeMain = "24fr 5fr";
-
-                    $($("main")[0]).css({
-                        "grid-template-columns": gridSizeMain,
-                        "padding-left": "0",
-                        "padding-right": "0",
-                        "margin": "0",
-                        "max-width": "100%"                    });
-                    $($("#sidebar")[0]).css({
-                        "max-width": maxSizeSidebar
-                    });
-                }
-                if (toListen.includes("ocultar-trending") && toListen.includes("ocultar-foros-relacionados") &&
-                    toListen.includes("ocultar-publicidad") && $('span:contains("Modo noche")').length > 0) {
-                    $($("main")[0]).css({
-                        "grid-template-columns": "24fr"
-                    });
-                    $($("#sidebar")[0]).css({
-                        "max-width": "0"
-                    });
+                if (toListen.includes("espacio-lateral")) {
+                    if ($('span:contains("Modo noche")').length > 0) {
+                        if (!toListen.includes("ocultar-foros-relacionados") ||
+                            !toListen.includes("ocultar-trending") ||
+                            !toListen.includes("ocultar-publicidad")) {
+                            $($("main")[0]).css({
+                                "grid-template-columns": "24fr 5fr",
+                                "max-width": "90%"
+                            });
+                        }
+                        else if (toListen.includes("ocultar-foros-relacionados") &&
+                            toListen.includes("ocultar-trending") &&
+                            toListen.includes("ocultar-publicidad")) {
+                            $($("main")[0]).css({
+                                "grid-template-columns": "24fr",
+                                "max-width": "90%"
+                            });
+                        }
+                        else {
+                            $($("main")[0]).css({
+                                "grid-template-columns": "24fr",
+                                "padding-left": "0",
+                                "padding-right": "0",
+                            });
+                        }
+                    }
                 }
             }
-
         }
         if (stopped) observe();
     }
@@ -509,7 +516,7 @@ const shadeColor = (color, percent) => {
 document.onmousedown = function (e) {
     if ((e.target.id !== 'notas-popup-div' && e.target.id !== 'notas-usuarios-div' &&
         e.target.id !== 'notas-popup-title' && e.target.id !== 'notas-popup-edit' &&
-        e.target.id !== 'notas-popup-text-container' && e.target.id !== 'notas-popup-text-editable') ||
+        e.target.id !== 'notas-popup-text-container' && e.target.id !== 'notas-popup-text-editable' && e.target.id !== 'notas-popup-button') ||
         e.target.id == '') {
         $("#notas-popup-div").remove();
     }
