@@ -17,6 +17,7 @@ body {
 
 .section-body {
   width: 100%;
+  height: 100%;
 }
 
 .section-nav {
@@ -210,7 +211,11 @@ button:disabled {
 
 /* CONTAINER ERROR */
 .container-error {
+  height: 100%;
   padding-left: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
 }
 
 /* POLES */

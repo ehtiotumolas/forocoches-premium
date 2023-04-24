@@ -2,16 +2,34 @@ import { fetchUsers, fetchPoles, buscarUsuario, usuarios } from "./users.js";
 import { createTableRanking, createTablePoles, currentPage, setPagina, rowsPerPage } from "./table.js";
 
 async function start() {
-    await fetchUsers()
-        .then(() => createTableRanking())
-        .catch((e) => {
-            console.log(e);
-        });
-    await fetchPoles()
-        .then(() => createTablePoles())
-        .catch((e) => {
-            console.log(e);
-        });
+    try {
+        await fetchUsers()
+            .then(() => createTableRanking())
+            .then((res) => {
+                if (res.status != 200) {
+                    $(".container-error, .container-default, .section-nav, .main-content").each(function () {
+                        if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
+                        $(".container-error").toggleClass("visually-hidden");
+                    });
+                    throw `Cannot connect with the server: ${res.status}`;
+                }
+            });
+
+        await fetchPoles()
+            .then(() => createTablePoles())
+            .then((res) => {
+                if (res.status != 200) {
+                    $(".container-error, .container-default, .section-nav, .main-content").each(function () {
+                        if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
+                        $(".container-error").toggleClass("visually-hidden");
+                    });
+                    throw `Cannot connect with the server: ${res.status}`;
+                }
+            });
+    }
+    catch (error) {
+        console.error(error);
+    }
 }
 
 ['click'].forEach(evt => {

@@ -20,10 +20,10 @@
   "commands": {
     "Ctrl+M": {
       "suggested_key": {
-        "default": "Ctrl+M",
-        "mac": "Command+M"
+        "default": "Ctrl+Z",
+        "mac": "Command+Z"
       },
-      "description": "Ctrl+M."
+      "description": "Ctrl+Z."
     }
   },
   "action": {
