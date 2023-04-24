@@ -404,13 +404,13 @@ button:disabled {
 }
 
 /* OPCIONES */
-#op-color {
+.color-selector {
   position: relative;
-  height: 1.5rem;
+  height: 1.2rem;
   width: 3rem;
   border: none;
   border-color: transparent;
-  top: 5px;
+  top: 3px;
   left: 5px;
   margin-top: -1rem;
 }

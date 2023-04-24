@@ -38,6 +38,9 @@ const listenThread = () => {
         retrieveStorage()
             .then(() => {
                 toListen = ["temas_ignorados"];
+                if (opciones["hilos-color"].checked) {
+                    toListen.push("hilos-color");
+                }
                 onMutation([{ addedNodes: [document.documentElement] }]);
                 observe();
             });
@@ -113,7 +116,6 @@ function onMutation(mutations) {
                         $(id).remove();
                     }
                 }
-
                 if (toListen.includes("op-color")) {
                     if ($('span:contains("Modo noche")').length != 0) {
                         if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px var(--coral)') {
@@ -131,6 +133,23 @@ function onMutation(mutations) {
                             $(papa).find('.alt2').css('background-color', shadeColor(opciones["op-color"].value, -5));
                             //Leave citas normal background
                             $($(papa).find('.alt2:contains("Cita de")')[0]).css('background-color', '');
+                        }
+                    }
+                }
+                if (toListen.includes("hilos-color")) {
+                    if (n.tagName == 'A' && n.href.includes("misc.php?do=whoposted"))
+                    {
+                        if (n.innerText == "0") {
+                            var papa = $(n).parent().parent().parent();
+                            if ($('span:contains("Modo noche")').length > 0)
+                            {
+                                $(papa).css("background-color", opciones["hilos-color"].value);
+                            }
+                            else {
+                                $(papa).find('.alt1').css('background-color', opciones["hilos-color"].value)
+                                $(papa).find('.alt2').css('background-color', shadeColor(opciones["hilos-color"].value, -10));
+
+                            }
                         }
                     }
                 }
@@ -169,7 +188,6 @@ const hiloInfo = (id) => {
         usuario_id = aFound.href.split("php?u=")[1];
     }
     return { "status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id } }
-
 }
 
 const userInfo = (id) => {
