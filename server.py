@@ -36,9 +36,9 @@ def addUser():
             hexUsuario = binascii.b2a_hex(encUsuario)
             usuario = str(str(hexUsuario)[1:]).replace('\'', '')
             cursor = connection.cursor()            
-            query = f"""UPDATE users SET mensajes = {req["mensajes"]}, registro = '{ConvertDate(req["registro"])}', hilos = {req["hilos"]}, updated = '{dt.today().strftime('%Y-%m-%d %H:%M:%S')}' where id= {req["id"]}
+            query = f"""UPDATE usuarios SET mensajes = {req["mensajes"]}, registro = '{ConvertDate(req["registro"])}', hilos = {req["hilos"]}, updated = '{dt.today().strftime('%Y-%m-%d %H:%M:%S')}' where id= {req["id"]}
                     IF @@ROWCOUNT=0
-                    INSERT INTO users (id, usuario, mensajes, hilos, registro, updated) 
+                    INSERT INTO usuarios (id, usuario, mensajes, hilos, registro, updated) 
                         VALUES ({req["id"]}, '{usuario}', {req["mensajes"]}, {req["hilos"]}, '{ConvertDate(req["registro"])}', '{dt.today().strftime('%Y-%m-%d %H:%M:%S')}')"""
             try:
                 cursor.execute(query)
@@ -69,9 +69,9 @@ def addUsers():
                 cursor = connection.cursor()            
 
                 try:
-                    query = f"""UPDATE users SET mensajes = {usuario["mensajes"]}, updated = '{dt.today().strftime('%Y-%m-%d %H:%M:%S')}' where id= {usuario["id"]}
+                    query = f"""UPDATE usuarios SET mensajes = {usuario["mensajes"]}, updated = '{dt.today().strftime('%Y-%m-%d %H:%M:%S')}' where id= {usuario["id"]}
                         IF @@ROWCOUNT=0
-                        INSERT INTO users (id, usuario, mensajes, registro, updated) 
+                        INSERT INTO usuarios (id, usuario, mensajes, registro, updated) 
                             VALUES ({usuario["id"]}, '{hexUsuarioStr}', {usuario["mensajes"]}, '{ConvertDateNoDay(usuario["registro"])}', '{dt.today().strftime('%Y-%m-%d %H:%M:%S')}')"""
                     cursor.execute(query)
                     cursor.commit()
@@ -96,7 +96,7 @@ def getAllUsers():
         query = f"""SELECT 
                         CAST(CAST(mensajes + COALESCE(hilos, 1) * 10 AS FLOAT) / 44896537 * 1000000 AS DECIMAL (10,2)) as puntos, usuario, mensajes, hilos, id, registro,
                         DATEDIFF(day, registro, GETDATE()) dias_antiguedad, mensajes * 1.0/DATEDIFF(day, registro, GETDATE()) mensajes_dia, hilos * 1.0/DATEDIFF(day, registro, GETDATE()) hilos_dia
-                    FROM users   
+                    FROM usuarios   
                 """
         cursor.execute(query)
         res = cursor.fetchall()
