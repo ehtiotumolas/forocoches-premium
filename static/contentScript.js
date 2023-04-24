@@ -1,5 +1,3 @@
-
-
 const mo = new MutationObserver(onMutation);
 let whatsIgnored;
 let temas_ignorados;
@@ -37,34 +35,57 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (whatsIgnored == "temas_ignorados" && temas_ignorados) {
-                    if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados.some(substring => n.innerText.includes(substring))) {
+                if (whatsIgnored == "temas_ignorados") {
+                    if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent()
                         if (($('span:contains("Modo noche")').length != 0)) papa = $(papa).parent();
                         $(papa).next("separator").remove();
                         $(papa).remove();
                     }
                 }
-                if (whatsIgnored == "usuarios_ignorados" && usuarios_ignorados) {
-                    if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
+                if (whatsIgnored == "usuarios_ignorados") {
+                    if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
                         var id = "#edit" + $(n).parent()[0].id.split("_")[1];
                         $(id).remove();
                     }
                     if (n.tagName == 'DIV') {
-                        if ($(n).children('b').length > 0 && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
+                        if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
                             var usuario = $(n);
                             $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
                             if (($('span:contains("Modo noche")').length != 0)) usuario = $(usuario).parent('div')[0];
                             $(usuario).next('div')[0].innerText = "(Texto ignorado)";
                         }
                         if (n.id.includes('edit')) {
-                            var postId = "postmenu_" + n.id.split('edit')[1];     
+                            var postId = "postmenu_" + n.id.split('edit')[1];
                             var postDiv = $(`div[id=${postId}]`)[0];
                             var usuario = postDiv.children[0].innerText;
-                            $("<a/>").attr('id', 'ignorar-usuario-div').text("💀").click(function (e) { 
-                                e.preventDefault();
-                                chrome.runtime.sendMessage({type: "ignore_usuario",message: usuario});
-                            }).appendTo(postDiv);
+                            var calavera = $("<a/>")
+                                .attr('id', 'ignorar-usuario-div')
+                                .css({
+                                    position: "relative",
+                                    zIndex: 5,
+                                    marginLeft: "-20px",
+                                    cursor: "pointer"
+
+                                })
+                                .height("48px")
+                                .width("14px")
+                                .text("💀")
+                                .click(function (e) {
+                                    e.preventDefault();
+                                    if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
+                                        addToChromeStorage("usuario", usuario, "add")
+                                        chrome.runtime.sendMessage({ from: "contentScript", type: "ignore_usuario", content: usuario });
+                                        chrome.runtime.sendMessage({ from: "contentScript", type: "reload", content: "" });
+                                    };
+                                });
+                            if ($('span:contains("Modo noche")').length != 0) {
+                                calavera.prependTo($(postDiv).parent().parent()[0]);
+                            }
+                            else {
+                                calavera
+                                .css({marginLeft: "-5px"}).height("auto").appendTo(postDiv);
+                            }
                         }
                     }
                 }
@@ -184,6 +205,35 @@ const removeIgnoredHilos = () => {
                 observe();
             });
     }
+}
+
+const addToChromeStorage = (loc, id, action) => {
+    chrome.storage.sync.get(function (items) {
+        if (loc == "tema") {
+            if (Object.keys(items).length > 0 && items.temas_ignorados) {
+                if (action == "add") {
+                    items.temas_ignorados.push(id);
+                }
+                if (action == "remove") {
+                    items.temas_ignorados = items.temas_ignorados.filter(x => x !== id);
+                }
+            }
+            else { items.temas_ignorados = [id]; }
+        }
+        if (loc == "usuario") {
+            if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
+                if (action == "add") {
+                    items.usuarios_ignorados.push(id);
+                }
+                if (action == "remove") {
+                    items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== id);
+                }
+            }
+            else { items.usuarios_ignorados = [id]; }
+        }
+        chrome.storage.sync.set(items);
+
+    });
 }
 
 removeIgnoredHilos();

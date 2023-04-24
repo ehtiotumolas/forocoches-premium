@@ -1,6 +1,6 @@
 const server = 'http://192.168.0.172:5001/';
 
-chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {   
+chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
     if (info.status === 'complete') {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const pageInfo = tab.url.split("=")[1];
@@ -52,9 +52,10 @@ chrome.commands.onCommand.addListener((shortcut) => {
     }
 })
 
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    if (message.type == "ignore_usuario") {
-        alert("hellooooo");
+chrome.runtime.onMessage.addListener((obj) => {
+    const { type} = obj;
+    if (type === "reload") {
+        chrome.tabs.reload();
     }
 });
 

@@ -1,18 +1,17 @@
-
-function submitTemasIgnorados() {
-  var tema = $("#temas-ignorados-input").val().trim();
+function submitTemasIgnorados(thread) {
+  var tema = thread;
   if (tema != "") {
     createIgnorado(tema, "tema");
-    addToChromeStorage("tema", tema, "add")
+    addToChromeStorage("tema", tema, "add" );
     $("#temas-ignorados-input").val('');
   }
 }
 
-function submitUsariosIgnorados() {
-  var usuario = $("#usuarios-ignorados-input").val().trim();
+function submitUsariosIgnorados(user) {
+  var usuario = user;
   if (usuario != "") {
     createIgnorado(usuario, "usuario");
-    addToChromeStorage("usuario", usuario, "add")
+    addToChromeStorage("usuario", usuario, "add" );
     $("#usuarios-ignorados-input").val('');
   }
 }
@@ -21,7 +20,7 @@ document.getElementById("usuarios-ignorados-input")
   .addEventListener("keyup", function (event) {
     event.preventDefault();
     if (event.keyCode === 13) {
-      submitUsariosIgnorados();
+      submitUsariosIgnorados($("#usuarios-ignorados-input").val().trim());
     }
   });
 
@@ -29,19 +28,19 @@ document.getElementById("temas-ignorados-input")
   .addEventListener("keyup", function (event) {
     event.preventDefault();
     if (event.keyCode === 13) {
-      submitTemasIgnorados();
+      submitTemasIgnorados($("#temas-ignorados-input").val().trim());
     }
   });
 
 $("#submit-usuarios-ignorados").click(function () {
-  submitUsariosIgnorados();
+  submitUsariosIgnorados($("#usuarios-ignorados-input").val().trim());
 });
 
 $("#submit-temas-ignorados").click(function () {
-  submitTemasIgnorados();
+  submitTemasIgnorados($("#temas-ignorados-input").val().trim());
 });
 
-export function createIgnorado(id, loc) {
+function createIgnorado(id, loc) {
   var divWrapper = $("<div>")
     .addClass(`${loc}-ignorado-wrapper`);
   var divUsuario = $(`<div>${id}</div>`)
@@ -57,49 +56,53 @@ export function createIgnorado(id, loc) {
   $(`.list-wrapper.${loc}s-ignorados`).append(divWrapper);
 }
 
-function addToChromeStorage(loc, id, action) {
-  chrome.storage.sync.get(function (items) {
-    if (loc == "tema") {
-      if (Object.keys(items).length > 0 && items.temas_ignorados) {
-        if (action == "add") {
-          items.temas_ignorados.push(id);
-        }
-        if (action == "remove") {
-          items.temas_ignorados = items.temas_ignorados.filter(x => x !== id);
-        }
-      }
-      else { items.temas_ignorados = [id]; }
-    }
-    if (loc == "usuario") {
-      if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
-        if (action == "add") {
-          items.usuarios_ignorados.push(id);
-        }
-        if (action == "remove") {
-          items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== id);
-        }
-      }
-      else { items.usuarios_ignorados = [id]; }
-    }
-    chrome.storage.sync.set(items, function () {
-      console.log(`Added ${id}`);
-    });
-
-  });
-}
-
 function loadLists() {
   chrome.storage.sync.get(function (items) {
     if (Object.keys(items).length > 0 && items.temas_ignorados) {
       items.temas_ignorados.forEach((x) => {
-        createIgnorado(x, "tema")
+        createIgnorado(x, "tema");
       });
     }
     if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
       items.usuarios_ignorados.forEach((x) => {
-        createIgnorado(x, "usuario")
+        createIgnorado(x, "usuario");
       });
     }
+  });
+}
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if (message.from == "contentScript" && message.type == "ignore_usuario") {
+    submitUsariosIgnorados(message.content);
+  }
+});
+
+function addToChromeStorage (loc, id, action) {
+  chrome.storage.sync.get(function (items) {
+      if (loc == "tema") {
+          if (Object.keys(items).length > 0 && items.temas_ignorados) {
+              if (action == "add") {
+                  items.temas_ignorados.push(id);
+              }
+              if (action == "remove") {
+                  items.temas_ignorados = items.temas_ignorados.filter(x => x !== id);
+              }
+          }
+          else { items.temas_ignorados = [id]; }
+      }
+      if (loc == "usuario") {
+          if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
+              if (action == "add") {
+                  items.usuarios_ignorados.push(id);
+              }
+              if (action == "remove") {
+                  items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== id);
+              }
+          }
+          else { items.usuarios_ignorados = [id]; }
+      }
+      chrome.storage.sync.set(items);
+
   });
 }
 
