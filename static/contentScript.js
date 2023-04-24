@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
 const listenThread = () => {
     retrieveStorage()
         .then(() => {
-            $.each(opciones, function(opcion) {
+            $.each(opciones, function (opcion) {
                 if (opciones[opcion].checked) {
                     if ((opcion == "temas_ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
                         return;
@@ -160,13 +160,30 @@ function onMutation(mutations) {
                                 $(n).next().remove();
                                 $(n).remove();
                             }
-                            if ($(n).hasClass("notice-container")) {
-                                $(n).parent().remove();
+                        }
+                        else {
+                            if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 || n.id.indexOf("optidigital-adslot-Rectangle_") > -1) {
+                                var papa = $(n).parent().parent().parent().parent();
+                                papa.prev().remove();
+                                papa.next().remove();
+                                papa.remove();
                             }
                         }
                     }
                 }
-                if (toListen.includes("espacio-lateral")) {
+                if (toListen.includes("ocultar-avisos")) {
+                    if ($(n).hasClass("navbar_notice")) {
+                        var papa = $(n).parent().parent();
+                        if ($('span:contains("Modo noche")').length > 0) {
+                            papa.remove();
+                        }
+                        else {
+                            papa.parent().parent().remove();
+                        }
+                    }
+                }
+
+                if (toListen.includes("espacio-lateral") && $('span:contains("Modo noche")').length > 0) {
                     $($("main")[0]).css("grid-template-columns", "24fr 5fr");
                     $($("main")[0]).css("padding-left", "0");
                     $($("main")[0]).css("padding-right", "0");
