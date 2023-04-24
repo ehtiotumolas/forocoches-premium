@@ -45,8 +45,8 @@ function onMutation(mutations) {
                 }
                 if (whatsIgnored == "usuarios_ignorados" && usuarios_ignorados) {
                     if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
-                        var papa = $(n).parent().parent().parent().parent()[0];
-                        $(papa).remove();
+                        var id = "#edit" + $(n).parent()[0].id.split("_")[1];
+                        $(id).remove();
                     }
                     if (n.tagName == 'DIV' && $(n).children('b').length > 0 && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
                         var usuario = $(n);

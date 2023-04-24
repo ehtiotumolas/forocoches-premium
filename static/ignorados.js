@@ -2,7 +2,7 @@ $("#submit-temas-ignorados").click(function () {
   var tema = $("#temas-ignorados-input").val().trim();
   if (tema != "") {
     createIgnorado(tema, "tema");
-    addToChromeStorage("temas-ignorados", tema, "push")
+    addToChromeStorage("tema", tema, "add")
     $("#temas-ignorados-input").val('');
   }
 });
@@ -11,7 +11,7 @@ $("#submit-usuarios-ignorados").click(function () {
   var usuario = $("#usuarios-ignorados-input").val().trim();
   if (usuario != "") {
     createIgnorado(usuario, "usuario");
-    addToChromeStorage("usuarios-ignorados", usuario, "push")
+    addToChromeStorage("usuario", usuario, "add")
     $("#usuarios-ignorados-input").val('');
   }
 });
@@ -26,7 +26,7 @@ function createIgnorado(id, loc) {
   $(divEliminar).click(function (e) {
     e.preventDefault();
     $(this).parent().remove();
-    addToChromeStorage(loc, id, "pop");
+    addToChromeStorage(loc, id, "remove");
   });
   divWrapper.append(divUsuario, divEliminar);
   $(`.list-wrapper.${loc}s-ignorados`).append(divWrapper);
@@ -34,7 +34,7 @@ function createIgnorado(id, loc) {
 
 function addToChromeStorage(loc, id, action) {
   chrome.storage.sync.get(function (items) {
-    if (loc == "temas-ignorados") {
+    if (loc == "tema") {
       if (Object.keys(items).length > 0 && items.temas_ignorados) {
         if (action == "add") {
           items.temas_ignorados.push(id);
@@ -45,7 +45,7 @@ function addToChromeStorage(loc, id, action) {
       }
       else { items.temas_ignorados = [id]; }
     }
-    if (loc == "usuarios-ignorados") {
+    if (loc == "usuario") {
       if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
         if (action == "add") {
           items.usuarios_ignorados.push(id);
