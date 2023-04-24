@@ -34,29 +34,24 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
 });
 
 const listenThread = () => {
-    if (location.href.includes("forumdisplay.php")) {
-        retrieveStorage()
-            .then(() => {
-                toListen = ["temas_ignorados"];
-                if (opciones["hilos-color"].checked) {
-                    toListen.push("hilos-color");
+    retrieveStorage()
+        .then(() => {
+            $.each(opciones, function(opcion) {
+                if (opciones[opcion].checked) {
+                    if ((opcion == "temas_ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
+                        return;
+                    }
+                    if ((opcion == "usuarios_ignorados" || opcion == "op-color") && !location.href.includes("showthread.php?")) {
+                        return;
+                    }
+                    toListen.push(opcion);
                 }
-                onMutation([{ addedNodes: [document.documentElement] }]);
-                observe();
             });
-    }
-    if (location.href.includes("showthread.php?")) {
-        retrieveStorage()
-            .then(() => {
-                toListen = ["usuarios_ignorados"];
-                if (opciones["op-color"].checked) {
-                    toListen.push("op-color");
-                }
-                onMutation([{ addedNodes: [document.documentElement] }]);
-                observe();
-            });
-    }
-}
+
+            onMutation([{ addedNodes: [document.documentElement] }]);
+            observe();
+        })
+};
 
 function onMutation(mutations) {
     let stopped;
@@ -137,12 +132,10 @@ function onMutation(mutations) {
                     }
                 }
                 if (toListen.includes("hilos-color")) {
-                    if (n.tagName == 'A' && n.href.includes("misc.php?do=whoposted"))
-                    {
+                    if (n.tagName == 'A' && n.href.includes("misc.php?do=whoposted")) {
                         if (n.innerText == "0") {
                             var papa = $(n).parent().parent().parent();
-                            if ($('span:contains("Modo noche")').length > 0)
-                            {
+                            if ($('span:contains("Modo noche")').length > 0) {
                                 $(papa).css("background-color", opciones["hilos-color"].value);
                             }
                             else {
@@ -152,6 +145,34 @@ function onMutation(mutations) {
                             }
                         }
                     }
+                }
+                if (toListen.includes("ocultar-publicidad")) {
+                    if (n.tagName == 'DIV') {
+                        if ($('span:contains("Modo noche")').length > 0) {
+                            if ($(n).hasClass("fixed_adslot")) {
+                                $(n).parent().remove();
+                            }
+                            if (n.id.indexOf("optidigital-adslot-Content_") > -1) {
+                                $(n).next().remove();
+                                $(n).remove();
+                            }
+                            if ($(n).hasClass("optidigital-wrapper-div")) {
+                                $(n).next().remove();
+                                $(n).remove();
+                            }
+                            if ($(n).hasClass("notice-container")) {
+                                $(n).parent().remove();
+                            }
+                        }
+                    }
+                }
+                if (toListen.includes("espacio-lateral")) {
+                    $($("main")[0]).css("grid-template-columns", "24fr 5fr");
+                    $($("main")[0]).css("padding-left", "0");
+                    $($("main")[0]).css("padding-right", "0");
+                    $($("main")[0]).css("margin", "0");
+                    $($("main")[0]).css("max-width", "100%");
+                    $($("#sidebar")[0]).css("max-width", "100%");
                 }
             }
         }

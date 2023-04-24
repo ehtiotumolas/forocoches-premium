@@ -59,7 +59,6 @@ chrome.runtime.onMessage.addListener((obj) => {
     if (obj.type === "chrome-storage") {
         addToChromeStorage(obj.content.loc, obj.content.message, obj.content.action);
     }
-
 });
 
 const addUser = (json) => {
