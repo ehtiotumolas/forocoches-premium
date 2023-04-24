@@ -402,3 +402,31 @@ button:disabled {
   margin-right: auto;
   width: 70%;
 }
+
+/* OPCIONES */
+#op-color {
+  position: relative;
+  height: 1.5rem;
+  width: 3rem;
+  border: none;
+  border-color: transparent;
+  top: 5px;
+  left: 5px;
+  margin-top: -1rem;
+}
+input[type="color"] {
+  padding: 1px;
+}
+
+input[type="color"]::-moz-color-swatch {
+  border: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+}

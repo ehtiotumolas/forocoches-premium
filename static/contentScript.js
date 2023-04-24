@@ -1,15 +1,17 @@
 const mo = new MutationObserver(onMutation);
-let whatsIgnored;
 let temas_ignorados;
 let usuarios_ignorados;
+let opciones;
+let toListen = [];
 
-async function startListening(key) {
+async function retrieveStorage(key) {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.get(key, resolve);
     })
         .then(result => {
             temas_ignorados = result.temas_ignorados;
             usuarios_ignorados = result.usuarios_ignorados;
+            opciones = result.opciones;
         })
 }
 
@@ -30,12 +32,30 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     return true;
 });
 
+const listenThread = () => {
+    if (location.href.includes("forumdisplay.php")) {
+        retrieveStorage()
+            .then(() => {
+                toListen.push("temas_ignorados")
+                onMutation([{ addedNodes: [document.documentElement] }]);
+                observe();
+            });
+    }
+    if (location.href.includes("showthread.php?")) {
+        retrieveStorage()
+            .then(() => {
+                toListen.push("usuarios_ignorados")
+                onMutation([{ addedNodes: [document.documentElement] }]);
+                observe();
+            });
+    }
+}
 function onMutation(mutations) {
     let stopped;
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (whatsIgnored == "temas_ignorados") {
+                if (toListen == "temas_ignorados") {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent()
                         if (($('span:contains("Modo noche")').length != 0)) papa = $(papa).parent();
@@ -43,7 +63,7 @@ function onMutation(mutations) {
                         $(papa).remove();
                     }
                 }
-                if (whatsIgnored == "usuarios_ignorados") {
+                if (toListen == "usuarios_ignorados") {
                     if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
                         var id = "#edit" + $(n).parent()[0].id.split("_")[1];
                         $(id).remove();
@@ -84,7 +104,7 @@ function onMutation(mutations) {
                             }
                             else {
                                 calavera
-                                .css({marginLeft: "-5px"}).height("auto").appendTo(postDiv);
+                                    .css({ marginLeft: "-5px" }).height("auto").appendTo(postDiv);
                             }
                         }
                     }
@@ -188,25 +208,6 @@ const usersInfo = (id) => {
     return { "status": 200, "message": usuarios }
 }
 
-const removeIgnoredHilos = () => {
-    if (location.href.includes("forumdisplay.php")) {
-        startListening()
-            .then(() => {
-                whatsIgnored = "temas_ignorados";
-                onMutation([{ addedNodes: [document.documentElement] }]);
-                observe();
-            });
-    }
-    if (location.href.includes("showthread.php?")) {
-        startListening()
-            .then(() => {
-                whatsIgnored = "usuarios_ignorados";
-                onMutation([{ addedNodes: [document.documentElement] }]);
-                observe();
-            });
-    }
-}
-
 const addToChromeStorage = (loc, id, action) => {
     chrome.storage.sync.get(function (items) {
         if (loc == "tema") {
@@ -236,4 +237,4 @@ const addToChromeStorage = (loc, id, action) => {
     });
 }
 
-removeIgnoredHilos();
+listenThread();
