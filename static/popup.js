@@ -101,4 +101,18 @@ $(".topDiv").each(function () {
     });
 });
 
+document.getElementsByClassName("donateIcon")[0]
+    .addEventListener("click", function () {
+        openInNewTab("https://www.paypal.com/donate/?hosted_button_id=G8DCS8GX6METS");
+    });
+
+document.getElementsByClassName("rateIcon")[0]
+    .addEventListener("click", function () {
+        openInNewTab("https://chrome.google.com/webstore/detail/forocoches-premium/hdiegimcikljdcgohlcnilgephloaiaa/reviews");
+    });
+
+const openInNewTab = (url) => {
+    window.open(url, "_blank");
+}
+
 start();
