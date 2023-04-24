@@ -231,11 +231,21 @@ button:disabled {
 
 
 /* IGNORADOS */
+.list-wrapper.temas-ignorados,
+.list-wrapper.usuarios-ignorados {
+  height: auto;
+}
+
+.tema-ignorado-wrapper, 
+.usuario-ignorado-wrapper {
+  display: flex;
+  padding-left: 1.5rem;
+}
 
 .content-ignorados {
   display: flex;
   margin: 2%;
-  height: fit-content;
+  height: auto;
 }
 
 .container-usuarios-ignorados {
@@ -246,9 +256,8 @@ button:disabled {
 }
 
 .container-temas-ignorados {
-  /* height: auto; */
-  /* height: 100%; */
-  o: 50%;
+  height: auto;
+  width: 50%;
   border-width: 2px 2px 2px 0px;
   border-style: dashed;
   border-color: var(--clr-accent-400);
@@ -274,4 +283,9 @@ button:disabled {
 
 .list-wrapper {
   height: 5rem;
+}
+
+.tema-ignorado-eliminar {
+   margin-left: auto;
+   padding-right: 2rem;;
 }

@@ -40,6 +40,7 @@ async function start() {
             event.preventDefault();
             this.tabIndex = 1;
             buscarUsuario($("#user-buscar").val());
+            $("#user-buscar").val('');
         });
 });
 
@@ -88,31 +89,6 @@ $("#pagina-first").click(function () {
 $("#pagina-last").click(function () {
     setPagina(Math.floor(usuarios.length / rowsPerPage));
 });
-
-
-// IGNORADOS BUTTONS
-$("#submit-temas-ignorados").click(function () {
-    createIgnorado($("#temas-ignorados-input").val(), "tema");
-});
-
-$("#submit-usuarios-ignorados").click(function () {
-    createIgnorado($("#usuarios-ignorados-input").val(), "usuario");
-});
-
-function createIgnorado(id, what) {
-    var divWrapper = $("<div>", {
-        class: `${what}-ignorado-wrapper`
-    });
-    var divUsuario = $(`<div>${id}</div>`, {
-        class: `${what}-ignorado-usuario`
-    });
-    var divEliminar = $(`<div>-</div>`, {
-        class: `${what}-ignorado-eliminar`
-    });
-    divWrapper.append(divUsuario, divEliminar);
-    $(`.list-wrapper.${what}s-ignorados`).append(divWrapper);
-}
-
 
 
 start();

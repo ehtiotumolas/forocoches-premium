@@ -66,6 +66,10 @@ const addHilos = (json) => {
     sendRequest('POST', server + 'addHilos', json, 'addHilos')
 }
 
+const removePole = (json) => {
+    sendRequest('POST', server + 'removePole', json, 'removePole')
+}
+
 const sendRequest = (method, url, data, sender) => {
     var data = data;
     var headers = {
@@ -87,8 +91,4 @@ const sendRequest = (method, url, data, sender) => {
         .catch(function (err) {
             console.log(sender + ": " + err)
         });
-}
-
-const removePole = (json) => {
-    sendRequest('POST', server + 'removePole', json, 'removePole')
 }
