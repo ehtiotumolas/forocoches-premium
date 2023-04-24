@@ -43,7 +43,7 @@ const listenThread = () => {
                     if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
                         return;
                     }
-                    if ((opcion == "usuarios-ignorados" || opcion == "op-color") && !location.href.includes("showthread.php?")) {
+                    if ((opcion == "op-color") && !location.href.includes("showthread.php?")) {
                         return;
                     }
                     toListen.push(opcion);
@@ -121,6 +121,11 @@ function onMutation(mutations) {
                     if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
                         var id = "#edit" + $(n).parent()[0].id.split("_")[1];
                         $(id).remove();
+                    }
+                    if (n.tagName == 'SPAN' && usuarios_ignorados.some(substring => n.innerText.includes(`${substring}`))) {
+                        var papa = $(n).parent().parent().parent().parent().parent();
+                        papa.next("separator").remove();
+                        papa.remove();
                     }
                 }
                 if (toListen.includes("notas-usuario")) {
@@ -327,11 +332,17 @@ function onMutation(mutations) {
                             }
                         }
                         else {
-                            if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 || n.id.indexOf("optidigital-adslot-Rectangle_") > -1) {
-                                var papa = $(n).parent().parent().parent().parent();
+                            if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 ||
+                                n.id.indexOf("optidigital-adslot-Rectangle_") > -1 ||
+                                n.id.indexOf("optidigital-adslot-Skyscraper_") > -1) {
+                                var papa = $(n).parents("table:first");
+                                if (n.id.indexOf("optidigital-adslot-Skyscraper_") > -1) {
+                                    papa = papa.parents("table:first");
+                                }
                                 papa.prev().remove();
                                 papa.next().remove();
                                 papa.remove();
+
                             }
 
                         }
