@@ -322,6 +322,9 @@ function onMutation(mutations) {
                                 $(n).next().remove();
                                 $(n).remove();
                             }
+                            if ($(n)[0].id === "h1") {
+                                $(n).parent().remove();
+                            }
                         }
                         else {
                             if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 || n.id.indexOf("optidigital-adslot-Rectangle_") > -1) {
