@@ -90,10 +90,14 @@ html:focus-within {
   scroll-behavior: smooth;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 html,
 body {
   width: 30rem;
-  height: 100%;
+  height: 20rem;
 }
 
 /* Set core body defaults */
@@ -163,6 +167,10 @@ svg {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.page-visually-hidden {
+  visibility: hidden;
 }
 
 .text-primary-400 {

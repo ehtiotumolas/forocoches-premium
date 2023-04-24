@@ -33,9 +33,20 @@ export async function getCurrentTab() {
 start();
 
 $(".nav-element-container").click(function (e) {
-    $(".nav-element-container").removeClass("clicked");
-    $(this).toggleClass("clicked");
-    $('.container-' + $(this).attr('id')).toggleClass("visually-hidden");
+    $('.main-content:not("visually-hidden")').addClass("visually-hidden")
+    if ($(this).hasClass("clicked"))
+    {
+        $(this).removeClass("clicked")
+        $(".container-default").removeClass("visually-hidden");
+        $('.container-' + $(this).attr('id')).addClass("visually-hidden");
+    }
+    else
+    {
+        $(".nav-element-container").removeClass("clicked");
+        $(".container-")
+        $(this).addClass("clicked");
+        $('.container-' + $(this).attr('id')).removeClass("visually-hidden");
+    }
 });
 
 $("#pagina-left").click(function () {

@@ -1,41 +1,50 @@
+
 body {
   font-size: var(--size-300);
   font-family: var(--ff-body);
   color: var(--clr-primary-100);
   background-color: var(--clr-primary-400);
+  margin: 0;
 }
 
-p {
-  line-height: 1.5em;
-  margin-bottom: 1.5em;
-}
-
-.popup-body {
-  width: 100%;
+/* SECCIONES */
+.body-wrapper {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  margin: 0 auto 4rem;
+  font-size: var(--fs-500);
 }
 
-.primary-header {
-  height: 3rem;
+.section-body {
+  width: 100%;
+}
+
+.section-nav {
+  padding-top: 1rem;
+}
+
+/* HEADER */
+.section-header {
   width: 100%;
   border-bottom: 2px solid var(--clr-neutral-900);
 }
 
 .container-header {
+  height: 3rem;
   display: flex;
   vertical-align: middle;
   align-items: center;
   width: 100%;
-  height: 100%;
 }
 
-.primary-footer {
-  width: 100%;
+/* FOOTER */
+.section-footer {
   margin-top: auto;
+  width: 100%;
   align-items: center;
   border-top: 2px solid var(--clr-neutral-900);
   height: 3rem;
+  font-size: var(--fs-300);
 }
 
 .container-footer {
@@ -46,6 +55,7 @@ p {
   padding-right: 1rem;
 }
 
+/* NAVEGACION */
 .nav-wrapper a {
   vertical-align: middle;
 }
@@ -59,21 +69,11 @@ p {
   height: 1.5rem;
 }
 
-.container {
-  --padding: .1rem;
-  width: min(var(--max-width), 100% - (var(--padding) * 2));
-
-  margin-inline: auto;
-}
-
-.container-nav {
-  margin: var(--size-400);
-}
-
 a {
   color: var(--clr-neutral-900);
 }
 
+/* BUSCAR */
 .message-wrapper {
   display: flex;
   flex-direction: column;
@@ -93,7 +93,7 @@ a {
 }
 
 .input-message {
-  font-size: var(--fs-600);
+  font-size: var(--fs-400);
 }
 
 .input-button[disabled],
@@ -124,8 +124,7 @@ button:disabled {
   background-color: var(--clr-primary-400);
   color: var(--clr-neutral-100);
   font-weight: var(--fw-regular);
-  font-size: var(--fs-500);
-
+  font-size: var(--fs-400);
 }
 
 .input-box:focus {
@@ -146,7 +145,7 @@ button:disabled {
 .input-label {
   color: white;
   font-weight: var(--fw-regular);
-  font-size: var(--fs-500);
+  font-size: var(--fs-400);
   position: relative;
   pointer-events: none;
   margin-left: auto;
@@ -198,4 +197,16 @@ button:disabled {
 
 .bar:after {
   right: 50%;
+}
+
+/* CONTAINER DEFAULT */
+.container-default {
+  padding: 1rem;
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-400);
+}
+
+/* CONTAINER ERROR */
+.container-error {
+  padding-left: 1rem;
 }

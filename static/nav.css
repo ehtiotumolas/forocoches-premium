@@ -1,6 +1,9 @@
 .container-nav {
   height: 3rem;
-  border:1px solid var(--clr-accent-600);
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  border:.3rem solid var(--clr-accent-600);
   background-color: var(--clr-accent-600);
   opacity: 100%;
 }

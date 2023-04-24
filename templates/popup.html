@@ -14,41 +14,43 @@
     <link rel=stylesheet type="text/css" href="../static/table.css">
     <link rel=stylesheet type="text/css" href="../static/style.css">
     <link rel=stylesheet type="text/css" href="../static/nav.css">
-    <link rel=stylesheet type="text/css" href="../static/contenido.css">
     <title>Document</title>
 </head>
 
 <body>
-    <header class="primary-header bg-neutral-100">
-        <div class="container-header">
-            <a href="#"><img src="/static/images/android-chrome-192x192.png" alt="forocoches-premium-logo"
-                    class="header-img"></a>
-            <div class="fs-primary-heading text-primary-400 fw-semi-bold">Forocoches Premium</div>
+    <div class="body-wrapper">
+        <div class="section-header bg-neutral-100">
+            <div class="container-header">
+                <a href="#"><img src="/static/images/android-chrome-192x192.png" alt="forocoches-premium-logo"
+                        class="header-img"></a>
+                <div class="fs-primary-heading text-primary-400 fw-semi-bold">Forocoches Premium</div>
+            </div>
         </div>
-    </header>
-    <section class="section-nav">
-        <div class="container-nav">
-            <nav class="primary-nav" id="primary-nav">
-                <div class="nav-wrapper noselect">
-                    <div class="nav-element-container" id="nav-ranking">
-                        <div class="nav-element">Ranking</div>
+        <div class="section-nav">
+            <div class="container-nav">
+                <nav class="primary-nav" id="primary-nav">
+                    <div class="nav-wrapper noselect">
+                        <div class="nav-element-container" id="ranking">
+                            <div class="nav-element">Ranking</div>
+                        </div>
+                        <div class="nav-element-container">
+                            <div class="nav-element">Poles</div>
+                        </div>
+                        <div class="nav-element-container">
+                            <div class="nav-element">Ignorados</div>
+                        </div>
+                        <div class="nav-element-container">
+                            <div class="nav-element">Opciones</div>
+                        </div>
                     </div>
-                    <div class="nav-element-container">
-                        <div class="nav-element">Poles</div>
-                    </div>
-                    <div class="nav-element-container">
-                        <div class="nav-element">Ignorados</div>
-                    </div>
-                    <div class="nav-element-container">
-                        <div class="nav-element">Opciones</div>
-                    </div>
-                </div>
-            </nav>
+                </nav>
+            </div>
         </div>
-    </section>
-    <section class="popup-body">
-        <section>
-            <div class="container-ranking">
+        <div class="section-body">
+            <div class="container-default main-content">
+                Aqui irá el texto general y todas esas cosas que se suelen poner para que la gente entienda de que va esto.
+            </div>
+            <div class="container-ranking main-content visually-hidden">
                 <div class="grupo-input">
                     <input type="input" placeholder=" " class="input-box" id="user-buscar">
                     <span class="bar"></span>
@@ -65,23 +67,23 @@
                     </div>
                     <div class="container-pagina">
                         <div class="arrow-pagina" id="pagina-first">🡨🡨 primera</div>
-                        <div class="arrow-pagina visually-hidden" id="pagina-left">🡨 anterior</div>
+                        <div class="arrow-pagina page-visually-hidden" id="pagina-left">🡨 anterior</div>
                         <div class="arrow-pagina" id="pagina-right">siguiente 🡪</div>
                         <div class="arrow-pagina" id="pagina-last">última 🡪🡪</div>
                     </div>
                 </div>
             </div>
-        </section>
-        <div class="container-error visually-hidden">
-            <h1 class="error-message">Algo pasa con el servidor. Contacta <a
-                    href="mailto:ehtiotumolas@gmail.com">ehtiotumolas@gmail.com</a></h1>
+            <div class="container-error main-content visually-hidden">
+                <h1 class="error-message">Algo pasa con el servidor. Contacta <a
+                        href="mailto:ehtiotumolas@gmail.com">ehtiotumolas@gmail.com</a></h1>
+            </div>
         </div>
-    </section>
-    <footer class="primary-footer text-primary-400">
-        <div class="container-footer clr-neutral-100 bg-neutral-100">
-            <h2 class="fs-200 fw-semi-bold push-to-right">Copyright 2023. All Rights Reserved</h2>
+        <div class="section-footer text-primary-400">
+            <div class="container-footer clr-neutral-100 bg-neutral-100">
+                <h2 class="fs-200 fw-semi-bold push-to-right">Copyright 2023. All Rights Reserved</h2>
+            </div>
         </div>
-    </footer>
+    </div>
 </body>
 
 </html>

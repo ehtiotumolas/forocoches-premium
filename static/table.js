@@ -21,7 +21,6 @@ export async function createTable() {
             theader.appendChild(header);
         }
         document.getElementById("content-table").append(theader);
-        document.getElementById("content-table").classList.add("visually-hiden");
 
         var response = await updateTable();
         return response
@@ -88,16 +87,16 @@ export async function updateTable() {
 export function setPagina(numero) {
     currentPage = numero;
     if (currentPage == 0) {
-        document.getElementById("pagina-left").classList.add("visually-hidden");
+        document.getElementById("pagina-left").classList.add("page-visually-hidden");
     }
     else if (currentPage != 0) {
-        document.getElementById("pagina-left").classList.remove("visually-hidden");
+        document.getElementById("pagina-left").classList.remove("page-visually-hidden");
     }
     if (Math.floor(usuarios.length / rowsPerPage) == currentPage) {
-        document.getElementById("pagina-right").classList.add("visually-hidden");
+        document.getElementById("pagina-right").classList.add("page-visually-hidden");
     }
     else if (Math.floor(usuarios.length / rowsPerPage) > currentPage) {
-        document.getElementById("pagina-right").classList.remove("visually-hidden");
+        document.getElementById("pagina-right").classList.remove("page-visually-hidden");
     }
     updateTable();
 }
