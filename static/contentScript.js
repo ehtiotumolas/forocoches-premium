@@ -690,12 +690,15 @@ const usersInfo = (id) => {
 
 const findEstadisticas = () => {
     try {
-        if (darkMode) {
-            var mensajes_totales, hilos_totales;
+        var mensajes_totales, hilos_totales;
+        if (darkMode) {            
             mensajes_totales = $('span:contains("Mensajes totales:")')[0].innerText.split('Mensajes totales: ')[1].replaceAll('.', '');
             hilos_totales = $('span:contains("Temas:")')[0].innerText.split('Temas: ')[1].replaceAll('.', '');
         }
         else {
+            var info = $('#collapseobj_forumhome_stats div')[0].innerText.split('Temas: ')[1].split(',');
+            mensajes_totales = info[1].split("Mensajes: ")[1].replaceAll(".", "");
+            hilos_totales = info[0].replaceAll(".", "");
         }
         return { "status": 200, "message": { "mensajes_totales": mensajes_totales, "hilos_totales": hilos_totales } }
     }
