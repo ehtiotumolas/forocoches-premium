@@ -84,7 +84,7 @@ function onMutation(mutations) {
                                     e.preventDefault();
                                     var usuario = postDiv.children[0].innerText;
                                     if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
-                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: {loc: "usuario", id: usuario, action: "add"}});
+                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: {loc: "usuario", message: usuario, action: "add"}});
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "reload"});
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
                                     };

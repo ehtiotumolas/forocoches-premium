@@ -6,7 +6,7 @@ chrome.tabs.onUpdated.addListener(function async(info, tab) {
             const pageInfo = tab.url.split("=")[1];
             const [id, queryParameters] = pageInfo.split(/[.\&#/_]/)
             if (!queryParameters || queryParameters.includes("highlight")) {
-                chrome.tabs.sendMessage( {
+                chrome.tabs.sendMessage({
                     type: "hilo_info",
                     id: id
                 }, async (response) => {
@@ -33,7 +33,7 @@ chrome.tabs.onUpdated.addListener(function async(info, tab) {
         }
         if (tab.url && tab.url.includes("foro/member.php")) {
             const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
-            chrome.tabs.sendMessage( {
+            chrome.tabs.sendMessage({
                 type: "usuario_info",
                 id: queryParameters
             }, async (response) => {
@@ -57,9 +57,9 @@ chrome.runtime.onMessage.addListener((obj) => {
         chrome.tabs.reload();
     }
     if (obj.type === "chrome-storage") {
-        addToChromeStorage(obj.content.loc, obj.content.id, obj.content.action);
+        addToChromeStorage(obj.content.loc, obj.content.message, obj.content.action);
     }
-    
+
 });
 
 const addUser = (json) => {
@@ -82,32 +82,37 @@ const removePole = (json) => {
     sendRequest('POST', server + 'removePole', json, 'removePole')
 }
 
-const addToChromeStorage = (loc, id, action) => {
+const addToChromeStorage = (loc, message, action) => {
     chrome.storage.sync.get(function (items) {
         if (loc == "tema") {
             if (Object.keys(items).length > 0 && items.temas_ignorados) {
                 if (action == "add") {
-                    items.temas_ignorados.push(id);
+                    items.temas_ignorados.push(message);
                 }
                 if (action == "remove") {
-                    items.temas_ignorados = items.temas_ignorados.filter(x => x !== id);
+                    items.temas_ignorados = items.temas_ignorados.filter(x => x !== message);
                 }
             }
-            else { items.temas_ignorados = [id]; }
+            else { items.temas_ignorados = [message]; }
         }
         if (loc == "usuario") {
             if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
                 if (action == "add") {
-                    items.usuarios_ignorados.push(id);
+                    items.usuarios_ignorados.push(message);
                 }
                 if (action == "remove") {
-                    items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== id);
+                    items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== message);
                 }
             }
-            else { items.usuarios_ignorados = [id]; }
+            else { items.usuarios_ignorados = [message]; }
+        }
+        if (loc.includes("opciones")) {
+            if (message.value) {
+                items.opciones[message.id].value = message.value;
+            }
+            items.opciones[message.id].checked = message.checked;
         }
         chrome.storage.sync.set(items);
-
     });
 }
 
