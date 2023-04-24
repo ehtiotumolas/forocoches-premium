@@ -38,10 +38,10 @@ const listenThread = () => {
         .then(() => {
             $.each(opciones, function (opcion) {
                 if (opciones[opcion].checked) {
-                    if ((opcion == "temas_ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
+                    if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
                         return;
                     }
-                    if ((opcion == "usuarios_ignorados" || opcion == "op-color") && !location.href.includes("showthread.php?")) {
+                    if ((opcion == "usuarios-ignorados" || opcion == "op-color") && !location.href.includes("showthread.php?")) {
                         return;
                     }
                     toListen.push(opcion);
@@ -58,7 +58,7 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (toListen.includes("temas_ignorados")) {
+                if (toListen.includes("temas-ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent()
                         if (($('span:contains("Modo noche")').length != 0)) papa = $(papa).parent();
@@ -66,7 +66,7 @@ function onMutation(mutations) {
                         $(papa).remove();
                     }
                 }
-                if (toListen.includes("usuarios_ignorados")) {
+                if (toListen.includes("usuarios-ignorados")) {
                     if (n.tagName == 'DIV') {
                         if (n.id.includes('edit')) {
                             var postId = "postmenu_" + n.id.split('edit')[1];
