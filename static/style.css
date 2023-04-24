@@ -44,13 +44,14 @@
   --fs-body: var(--fs-400);
   --fs-primary-heading: var(--fs-800);
   --fs-secondary-heading: var(--fs-700);
-  --fs-button: var(--fs-300);
+  --fs-button: var(--fs-400);
 
   --size-50: .15rem;
   --size-100: .25rem;
   --size-200: .5rem;
   --size-300: .75rem;
   --size-400: 1rem;
+  --size-450: 1.25rem;  
   --size-500: 1.5rem;
   --size-600: 2rem;
   --size-630: 2.3rem;
@@ -59,6 +60,7 @@
   --size-900: 5rem;
   --size-950: 5.5rem;  
   --size-1000: 6rem;
+  --size-1400: 10rem;
 }
 
 /* // https://piccalil.li/blog/a-modern-css-reset*/
@@ -272,6 +274,10 @@ svg {
 
 .padding-block-400 {
   padding-block: var(--size-400);
+}
+
+.padding-block-450 {
+  padding-block: var(--size-450);
 }
 
 .padding-block-500 {

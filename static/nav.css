@@ -1,0 +1,131 @@
+.primary-nav {
+  top: 0;
+  bottom: 0;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding-right: 1rem;
+  padding-top: 1rem;    
+  display: flex;
+  right: auto;
+  align-items: center;
+}
+
+.nav-list {
+  display: flex;
+  gap: clamp(var(--size-400), 5vw, var(--size-1000));
+  font-size: var(--fs-500);
+  font-weight: var(--fw-regular);
+  justify-content: center;
+  width: auto;
+  height: fit-content;
+}
+
+.primary-nav img {
+  padding-left: .2rem;
+  padding-right: .2rem;
+  width: fit-content;
+  height: var(--fs-600);
+  object-fit: contain;
+}
+
+.nav-element-container {
+  color: var(--clr-primary-400);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.nav-element {
+  display: flex;
+  height: 100%;
+  width: fit-content;
+  align-items: center;
+}
+
+.nav-element:hover {
+  text-decoration: underline;
+}
+
+.mobile-nav-toggle {
+  width: 2.4rem;
+  height: 2rem;
+  display: none;
+  background-color: transparent;
+}
+
+.nav-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 55em) {
+  .mobile-nav-toggle {
+      display: block;
+      cursor: pointer;
+      border: 0;
+      padding: .5em;
+      padding-top: .7rem;
+  }
+
+  .primary-nav {
+      display: none;
+      position: absolute;
+      inset: var(--fs-nav) 0rem auto auto;
+      border-bottom-left-radius: var(--size-300);
+      margin-top: 0.25rem;
+      padding: var(--size-400);
+      width: fit-content;
+  }
+
+  .nav-list {
+      gap: var(--size-300);
+      display: grid;
+      text-align: center;
+  }
+
+  .primary-nav[data-visible] {
+      display: block;
+      position: fixed;
+  }
+
+  .mobile-nav-toggle .icon-close {
+      display: none;
+  }
+}
+
+#upIcon img {
+  content: url(../static/images/up.svg);
+}
+
+#upIcon img::after {
+  content: url(../static/images/up_over.png);
+}
+
+#upIcon:hover img {
+  content: url(../static/images/up_over.png);
+}
+
+#infoIcon img {
+  content: url(../static/images/info.svg);
+}
+
+#infoIcon img::after {
+  content: url(../static/images/info_over.svg);
+}
+
+#infoIcon:hover img {
+  content: url(../static/images/info_over.svg);
+}
+
+#donateIcon img {
+  content: url(../static/images/donate.png);
+}
+
+#donateIcon img::after {
+  content: url(../static/images/donate_over.png);
+}
+
+#donateIcon:hover img {
+  content: url(../static/images/donate_over.png);
+}

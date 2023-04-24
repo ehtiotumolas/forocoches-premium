@@ -45,7 +45,7 @@ export async function updateTable() {
                 chrome.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + user.id })
             });
 
-            row.id = user.id;
+            row.id = user.usuario;
             var position = document.createElement("div");
             position.classList.add("table_cell", "table_cell_first");
             position.innerText = document.getElementsByClassName("table_row").length;

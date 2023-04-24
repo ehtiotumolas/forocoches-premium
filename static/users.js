@@ -25,3 +25,22 @@ export async function fetchUsers() {
         return response;
     }
 }
+
+export function buscarUsuario(usuario, auto) {
+    try {
+            var offset = (parseInt(getComputedStyle(document.body).getPropertyValue('--fs-header')) * 16 + 50);
+            var element = document.getElementById(usuario.trim())
+            var pos = element.getBoundingClientRect();
+            var total = (pos.top - offset);
+            if (element.classList != "selRow") element.click();
+            if (!auto)
+            {
+                    window.scrollTo({ top: total, behavior: 'smooth' });
+                    document.getElementById("add-user-message").innerText = "Usuario encontrado!";
+            }
+
+    }
+    catch {
+            document.getElementById("add-user-message").innerText = "Usuario no encontrado en la lista.";
+    }
+}
