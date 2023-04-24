@@ -53,7 +53,8 @@ const loadOptions = () => {
         opciones["temas-ignorados"] = { "checked": false }
         opciones["notas-usuario"] = { "checked": false }
         opciones["ocultar-usuarios-ignorados"] = { "checked": false }
-        opciones["ocultar-foros-relacionados"] = { "checked": false }
+        opciones["ocultar-foros-relacionados-nuevo"] = { "checked": false }
+        opciones["ocultar-foros-relacionados-viejo"] = { "checked": false }
         opciones["ocultar-trending"] = { "checked": false }
         opciones["avatar-cuadrado"] = { "checked": false }
         opciones["avatar-grande"] = { "checked": false }

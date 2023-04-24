@@ -90,5 +90,15 @@ $("#pagina-last").click(function () {
     setPagina(Math.floor(usuarios.length / rowsPerPage));
 });
 
+$(".topDiv").each(function () {
+    $(this).on("click", function (e) {
+        e.preventDefault();
+        if ($(this).next('.botDiv').css('display') == 'none') {
+            $(this).next('.botDiv').slideDown(300);
+        } else {
+            $(this).next('.botDiv').slideUp(400);
+        }
+    });
+});
 
 start();

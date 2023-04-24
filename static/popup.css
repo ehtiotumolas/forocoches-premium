@@ -208,7 +208,6 @@ button:disabled {
 .container-default {
   padding: 1rem;
   font-weight: var(--fw-regular);
-  font-size: var(--fs-400);
 }
 
 /* CONTAINER ERROR */
@@ -432,6 +431,7 @@ input[type="color"]::-webkit-color-swatch {
 
 .main-content {
   padding: 1.6rem;
+  padding-top: .5rem;
 }
 
 /* MAIN PAGE */
@@ -440,4 +440,32 @@ input[type="color"]::-webkit-color-swatch {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  padding-bottom: 1.5rem;
+}
+
+.topDiv {
+  cursor: pointer;
+  background-color: var(--clr-primary-200);
+  font-size: var(--fs-500);
+  padding-left: .5rem;
+}
+
+.botDiv {
+  display: none;
+  padding-top: .5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  background-color: var(--clr-primary-200);
+  font-size: var(--fs-350);
+  line-height: 1.4rem;
+}
+
+hr {
+  border: 1px solid;
+  border-color: var(--clr-neutral-900);
+  margin-bottom: 1rem;
+}
+
+li {
+  margin-left: .5rem;
 }

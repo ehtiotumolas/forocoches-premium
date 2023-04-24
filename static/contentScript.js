@@ -373,9 +373,7 @@ function onMutation(mutations) {
                                 papa.prev().remove();
                                 papa.next().remove();
                                 papa.remove();
-
                             }
-
                         }
                     }
                     if (n.tagName == 'TABLE' && $(n).hasClass("cajasprin")) {
@@ -393,12 +391,19 @@ function onMutation(mutations) {
                         }
                     }
                 }
-                if (toListen.includes("ocultar-foros-relacionados")) {
+                if (toListen.includes("ocultar-foros-relacionados-nuevo")) {
                     if (n.tagName == 'H2' && (n.innerText === "Foros Relacionados" || n.innerText === "Foros relacionados")) {
                         if (darkMode) {
                             if ($(n).parent().parent()[0].id === "sidebar") {
                                 $(n).parent().remove();
                             }
+                        }
+                    }
+                }
+                if (toListen.includes("ocultar-foros-relacionados-viejo")) {
+                    if (n.tagName == 'SPAN' && $(n).hasClass("smallfont") && n.innerText == "Foros Relacionados") {
+                        if (!darkMode) {
+                            $($($(".smallfont")[0]).closest(".tborder")[0]).parent()[0].remove()
                         }
                     }
                 }
@@ -415,7 +420,7 @@ function onMutation(mutations) {
                 }
                 if (toListen.includes("espacio-lateral")) {
                     if (darkMode) {
-                        if (!toListen.includes("ocultar-foros-relacionados") ||
+                        if (!toListen.includes("ocultar-foros-relacionados-nuevo") ||
                             !toListen.includes("ocultar-trending") ||
                             !toListen.includes("ocultar-publicidad")) {
                             $($("main")[0]).css({
@@ -423,7 +428,7 @@ function onMutation(mutations) {
                                 "max-width": "90%"
                             });
                         }
-                        else if (toListen.includes("ocultar-foros-relacionados") &&
+                        else if (toListen.includes("ocultar-foros-relacionados-nuevo") &&
                             toListen.includes("ocultar-trending") &&
                             toListen.includes("ocultar-publicidad")) {
                             if ($(window).width() > 1024) {
