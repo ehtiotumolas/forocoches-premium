@@ -1,3 +1,15 @@
+######################################################
+####################### TODO #########################
+#                                                    #
+# delete poles from invalid threads                  #
+# logic for ignorados                                #
+# logic for options                                  #
+#                                                    #
+#                                                    #
+#                                                    #
+######################################################
+
+
 from flask import Flask, render_template, request, session
 import json
 import pyodbc
@@ -197,10 +209,8 @@ def addUserHilosOld():
     session = {}
     if request.method == 'POST':
         req = request.get_json()
-        # print(req)
         session['data'] = req
         if 'data' in session:
-            # print("usuarios...")
             encUsuario = str.encode(req["usuario"])
             hexUsuario = binascii.b2a_hex(encUsuario)
             usuario = str(str(hexUsuario)[1:]).replace('\'', '')
@@ -217,6 +227,27 @@ def addUserHilosOld():
         else:
             return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
 
+
+@app.route("/removePole", methods=["POST"])
+def removePole():
+    session = {}
+    if request.method == 'POST':
+        req = request.get_json()
+        session['data'] = req
+        if 'data' in session:
+            cursor = connection.cursor()
+            query = f"""DELETE FROM poles WHERE hilo_id = {req["hilo_id"]}"""
+            try:
+                cursor.execute(query)
+                cursor.close()
+                return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+            except Exception as e:
+                cursor.close()
+                print(e)
+                return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
+        else:
+            return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
+   
 
 def CalculatePoints(hilos, mensajes, totalMensajes):
     multiplicador = 1

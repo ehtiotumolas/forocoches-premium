@@ -8,15 +8,16 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                     type: "hilo_info",
                     id: queryParameters
                 }, async (response) => {
-                    console.log("Response: ", response.status);
+                    console.log("Response hilo_info: ", await response.status);
                     if (response.status == 200) addHilos(response.message);
+                    if (response.status == 400 ) removePole(response.message);
                 });
             }
             chrome.tabs.sendMessage(tabId, {
                 type: "hilo_usuarios_info",
                 id: queryParameters
             }, async (response) => {
-                console.log("Response: ", response.status);
+                console.log("Response hilo_usuarios_info: ", await response.status);
                 if (response.status == 200) addUsers(response.message);
             });
         }
@@ -25,16 +26,16 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info",
                 id: queryParameters
-            }, (response) => {
-                console.log("Response: ", response.status);
+            }, async (response) => {
+                console.log("Response usuario_info: ", await response.status);
                 if (response.status == 200) addUser(response.message);
             });
         }
         if (tab.url && tab.url.includes("search.php?searchid=")) {
             chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info_old_hilos"
-            }, (response) => {
-                console.log("Response: ", response.status);
+            }, async (response) => {
+                console.log("Response usuario_info_old_hilos: ", await response.status);
                 if (response.status == 200) addUserHilosOld(response.message);
             });
         }
@@ -86,4 +87,8 @@ const sendRequest = (method, url, data, sender) => {
         .catch(function (err) {
             console.log(sender + ": " + err)
         });
+}
+
+const removePole = (json) => {
+    sendRequest('POST', server + 'removePole', json, 'removePole')
 }
