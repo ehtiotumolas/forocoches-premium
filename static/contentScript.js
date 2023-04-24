@@ -22,7 +22,7 @@ const newUserInfoLoaded = (id) => {
     const mensajes = $($('span:contains("Mensajes")')[1]).prev("span")[0].innerText.replace(".", "");
     const hilos = $($('span:contains("Hilos")')[0]).prev("span")[0].innerText.replace(".", "");
     const registro = $($('span:contains("Desde")')[0]).next("span")[0].innerText;
-    return { "usuario": usuario, "id": id, "mensajes": mensajes, "hilos": hilos, "registro": registro };
+    return { "usuario": usuario, "id": id, "mensajes": mensajes ? mensajes : 0, "hilos": hilos ? hilos : 0, "registro": registro };
 }
 
 const newUsersInfoLoaded = (id) => {
@@ -34,7 +34,7 @@ const newUsersInfoLoaded = (id) => {
         var usuario_id = $(`*[id*=${id}_menu] > div > div > h2 >a`)[0].href.split('php?u=')[1].trim();
         var registro = $(`*[id*=${id}_menu] > div > div > div > div:contains("Registro")`)[0].innerText.split('Registro: ')[1].replaceAll('\n', '').trim();
         var mensajes = $(`*[id*=${id}_menu] > div > div > div > div:contains("Mensajes")`)[0].innerText.split('Mensajes: ')[1].replaceAll('.', '').trim();
-        usuarios.push({"usuario": usuario, "id": usuario_id, "registro": registro, "mensajes": mensajes})
+        usuarios.push({"usuario": usuario, "id": usuario_id, "registro": registro, "mensajes": mensajes ? mensajes : 0})
     }
     return usuarios
 }

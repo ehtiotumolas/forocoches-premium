@@ -14,10 +14,13 @@ connection = pyodbc.connect(
 connection.timeout = 3
 
 # Utils
+
+
 def ConvertDate(date):
     fechaCon = {
         "ene": "enero", "feb": "febrero", "mar": "marzo", "abr": "abril", "may": "mayo", "jun": "junio", "jul": "julio", "ago": "agosto", "sep": "septiembre", "oct": "octubre", "nov": "noviembre", "dic": "diciembre"}
     return dt.strptime(date.replace(date.split('-')[1], fechaCon[date.split('-')[1]]), "%d-%B-%Y")
+
 
 def ConvertDateNoDay(date):
     fechaCon = {
@@ -97,9 +100,10 @@ def getAllUsers():
         cursor.execute(query)
         max_mensajes = cursor.fetchone()[0]
         query = f"""SELECT 
-                        CAST(CAST(mensajes + COALESCE(hilos, 1) * 10 AS FLOAT) / 44896537 * 1000000 AS DECIMAL (10,2)) as puntos, usuario, mensajes, hilos, id, registro,
-                        DATEDIFF(day, registro, GETDATE()) dias_antiguedad, mensajes * 1.0/DATEDIFF(day, registro, GETDATE()) mensajes_dia, hilos * 1.0/DATEDIFF(day, registro, GETDATE()) hilos_dia
-                    FROM usuarios   
+                    COALESCE(CAST(CAST(mensajes + COALESCE(hilos, 1) * 10 AS FLOAT) / 44896537 * 1000000 AS DECIMAL (10,2)), 0) as puntos, usuario, mensajes, hilos, id, registro,
+                    DATEDIFF(day, registro, GETDATE()) dias_antiguedad, mensajes * 1.0/NULLIF(DATEDIFF(day, registro, GETDATE()), 0) mensajes_dia, 
+                    hilos * 1.0/NULLIF(DATEDIFF(day, registro, GETDATE()), 0) hilos_dia
+                    FROM usuarios
                 """
         cursor.execute(query)
         res = cursor.fetchall()
@@ -117,7 +121,7 @@ def getAllUsers():
     except Exception as e:
         connection.commit()
         cursor.close()
-        # print("GetAllUsers: " + e)
+        print("GetAllUsers: " + e)
         return f"{e}", 400
 
     return json.dumps(res, default=str), 200, {'ContentType': 'application/json'}
