@@ -11,7 +11,6 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  font-size: var(--fs-400);
 }
 
 .section-nav {
@@ -433,4 +432,12 @@ input[type="color"]::-webkit-color-swatch {
 
 .main-content {
   padding: 1.6rem;
+}
+
+/* MAIN PAGE */
+.container-default-title {
+  font-size: var(--fs-670);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
