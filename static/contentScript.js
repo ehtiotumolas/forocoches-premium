@@ -35,7 +35,7 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (whatsIgnored == "temas_ignorados") {
+                if (whatsIgnored == "temas_ignorados"  && temas_ignorados) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent()
                         if (($('span:contains("Modo noche")').length != 0)) papa = $(papa).parent();
@@ -43,10 +43,16 @@ function onMutation(mutations) {
                         $(papa).remove();
                     }
                 }
-                if (whatsIgnored == "usuarios_ignorados") {
+                if (whatsIgnored == "usuarios_ignorados" && usuarios_ignorados) {
                     if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
-                        var papa = $(n).parent()[0].id.replace("postmenu_", "#edit")
+                        var id = $(n).parent()[0].id.split("postmenu_")[1];
+                        var papa = $(`#edit${id}`)
                         $(papa).remove();
+                    }
+                    // WE NEED TO CHECK FOR ELEMENT B AND SEE IF THE ELEMENT BEFORE (PARENT?) CONTAINS THE ID
+                    if (n.tagName == 'DIV' && usuarios_ignorados.some(substring => n.innerText == (`Cita de ${substring}`))) {
+                        $($(n).children('div')[0]).children('b')[0].innerText = "(Usuario Ignorado)";
+                        $(n).next('div')[0].innerText = "(Texto ignorado)";
                     }
                 }
             }
