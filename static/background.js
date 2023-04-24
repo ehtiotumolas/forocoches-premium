@@ -112,6 +112,17 @@ const addToChromeStorage = (loc, message, action) => {
             }
             items.opciones[message.id].checked = message.checked;
         }
+        if (loc == "notas") {
+            if (!items.notas) {
+                items.notas = {};
+            }
+            if (message.text == "") {
+                delete items.notas[message.usuario];
+            }
+            else {
+                items.notas[message.usuario]= {"text": message.text};
+            }
+        }
         chrome.storage.sync.set(items);
     });
 }

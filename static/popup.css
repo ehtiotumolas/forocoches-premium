@@ -300,8 +300,7 @@ button:disabled {
   padding: .6rem;
 }
 
-.opciones-generales {
-}
+.opciones-generales {}
 
 .opciones-ignorar {
   padding-top: 1rem;
@@ -414,6 +413,7 @@ button:disabled {
   left: 5px;
   margin-top: -1rem;
 }
+
 input[type="color"] {
   padding: 1px;
 }
@@ -429,4 +429,8 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 
 input[type="color"]::-webkit-color-swatch {
   border: none;
+}
+
+.main-content {
+  padding: 1.6rem;
 }

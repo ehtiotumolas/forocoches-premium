@@ -3,6 +3,7 @@ let temas_ignorados;
 let usuarios_ignorados;
 let opciones;
 let toListen = [];
+let savedNotas;
 
 async function retrieveStorage(key) {
     return new Promise((resolve, reject) => {
@@ -12,6 +13,7 @@ async function retrieveStorage(key) {
             temas_ignorados = result.temas_ignorados;
             usuarios_ignorados = result.usuarios_ignorados;
             opciones = result.opciones;
+            savedNotas = result.notas;
         })
 }
 
@@ -47,7 +49,6 @@ const listenThread = () => {
                     toListen.push(opcion);
                 }
             });
-
             onMutation([{ addedNodes: [document.documentElement] }]);
             observe();
         })
@@ -58,6 +59,24 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
+                if (toListen.includes("ocultar-trending")) {
+                    if ($('span:contains("Modo noche")').length > 0) {
+                        if (n.tagName == 'H2' && n.innerText === "Trending") {
+                            if ($(n).parent().parent().parent()[0].id === "sidebar") {
+                                $(n).parent().parent().remove();
+                            }
+                        }
+                    }
+                }
+                if (toListen.includes("ocultar-foros-relacionados")) {
+                    if ($('span:contains("Modo noche")').length > 0) {
+                        if (n.tagName == 'H2' && (n.innerText === "Foros Relacionados" || n.innerText === "Foros relacionados")) {
+                            if ($(n).parent().parent()[0].id === "sidebar") {
+                                $(n).parent().remove();
+                            }
+                        }
+                    }
+                }
                 if (toListen.includes("temas-ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent()
@@ -79,7 +98,6 @@ function onMutation(mutations) {
                                     marginTop: "-22px",
                                     cursor: "pointer",
                                 })
-                                .height("48px")
                                 .text("💀")
                                 .click(function (e) {
                                     e.preventDefault();
@@ -128,6 +146,13 @@ function onMutation(mutations) {
                         if (n.id.includes('edit')) {
                             var postId = "postmenu_" + n.id.split('edit')[1];
                             var postDiv = $(`div[id=${postId}]`)[0];
+                            var usuario = "";
+                            if ($('span:contains("Modo noche")').length != 0) {
+                                usuario = $(postDiv)[0].innerText;
+                            }
+                            else {
+                                usuario = $(postDiv)[0].innerText;
+                            }
                             var notasBtn = $("<a/>")
                                 .attr('id', 'notas-usuarios-div')
                                 .css({
@@ -135,20 +160,11 @@ function onMutation(mutations) {
                                     textDecoration: "none",
                                     cursor: "pointer"
                                 })
-                                .height("48px")
-                                .width("14px")
-                                .text("🖊️")
+                                .text("✏️")
                                 .click(function (e) {
                                     e.preventDefault();
                                     $("#notas-popup-div").remove();
                                     if ($(this).children("#notas-popup-div").length == 0) {
-                                        var usuario = "";
-                                        if ($('span:contains("Modo noche")').length != 0) {
-                                            usuario = $(this).parent().next('div').children('div').children('a')[0].innerText;
-                                        }
-                                        else {
-                                            usuario = $(this).parent().children('div').children('a')[0].innerText;
-                                        }
                                         var notas = $("<div/>")
                                             .attr('id', 'notas-popup-div')
                                             .css({
@@ -186,7 +202,7 @@ function onMutation(mutations) {
                                             })
                                             .text(`NOTAS de ${usuario}`)
                                             .appendTo(notas);
-                                            
+
                                         var textContainer = $("<div/>")
                                             .attr('id', 'notas-popup-text-container')
                                             .css({
@@ -204,7 +220,7 @@ function onMutation(mutations) {
                                                 outline: "0px solid transparent"
                                             }).appendTo(notas);
 
-                                        $("<p/>")
+                                        var textEditable = $("<p/>")
                                             .attr('id', 'notas-popup-text-editable')
                                             .attr('contenteditable', true)
                                             .css({
@@ -216,8 +232,8 @@ function onMutation(mutations) {
                                                 marginBottom: 10,
                                                 borderRadius: "1rem",
                                                 outline: "0px solid transparent"
-
-                                            }).appendTo(textContainer);
+                                            })
+                                            .appendTo(textContainer);
                                         $("<button/>")
                                             .attr('id', 'notas-popup-button')
                                             .attr('contenteditable', true)
@@ -231,10 +247,30 @@ function onMutation(mutations) {
                                                 marginTop: "10px"
                                             })
                                             .text("Guardar")
+                                            .click(function (e) {
+                                                e.preventDefault();
+                                                var textToSave = `${$("#notas-popup-text-editable")[0].innerText}`;
+                                                chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: { loc: "notas", message: { "usuario": usuario, "text": textToSave }, action: "add" } });
+                                                savedNotas[usuario] = { "text": textToSave };
+                                                if (textToSave == "") {
+                                                    notasBtn.css({ border: 0, borderRadius: "6px" });
+                                                }
+                                                else {
+                                                    notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
+                                                }
+                                            })
                                             .appendTo(notas);
+
                                         notas.insertAfter($(this).parent().children("#notas-usuarios-div"));
+                                        if (savedNotas.hasOwnProperty(usuario)) {
+                                            $('#notas-popup-text-editable')[0].innerText = savedNotas[usuario].text;
+                                        }
                                     }
                                 });
+                            if (savedNotas.hasOwnProperty(usuario)) {
+                                notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
+                            }
+
                             if ($('span:contains("Modo noche")').length != 0) {
                                 if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
                                     $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
@@ -292,23 +328,24 @@ function onMutation(mutations) {
                             if ($(n).hasClass("fixed_adslot")) {
                                 $(n).parent().remove();
                             }
-                            if (n.id.indexOf("optidigital-adslot-Content_") > -1) {
-                                $(n).next().remove();
-                                $(n).remove();
-                            }
-                            if ($(n).hasClass("optidigital-wrapper-div")) {
-                                $(n).next().remove();
-                                $(n).remove();
-                            }
                         }
-                        else {
-                            if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 || n.id.indexOf("optidigital-adslot-Rectangle_") > -1) {
-                                var papa = $(n).parent().parent().parent().parent();
-                                papa.prev().remove();
-                                papa.next().remove();
-                                papa.remove();
-                            }
+                        if (n.id.indexOf("optidigital-adslot-Content_") > -1) {
+                            $(n).next().remove();
+                            $(n).remove();
                         }
+                        if ($(n).hasClass("optidigital-wrapper-div")) {
+                            $(n).next().remove();
+                            $(n).remove();
+                        }
+                    }
+                    else {
+                        if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 || n.id.indexOf("optidigital-adslot-Rectangle_") > -1) {
+                            var papa = $(n).parent().parent().parent().parent();
+                            papa.prev().remove();
+                            papa.next().remove();
+                            papa.remove();
+                        }
+
                     }
                 }
                 if (toListen.includes("ocultar-avisos")) {
@@ -322,16 +359,31 @@ function onMutation(mutations) {
                         }
                     }
                 }
-
                 if (toListen.includes("espacio-lateral") && $('span:contains("Modo noche")').length > 0) {
-                    $($("main")[0]).css("grid-template-columns", "24fr 5fr");
-                    $($("main")[0]).css("padding-left", "0");
-                    $($("main")[0]).css("padding-right", "0");
-                    $($("main")[0]).css("margin", "0");
-                    $($("main")[0]).css("max-width", "100%");
-                    $($("#sidebar")[0]).css("max-width", "100%");
+                    var maxSizeSidebar = "100%";
+                    var gridSizeMain = "24fr 5fr";
+
+                    $($("main")[0]).css({
+                        "grid-template-columns": gridSizeMain,
+                        "padding-left": "0",
+                        "padding-right": "0",
+                        "margin": "0",
+                        "max-width": "100%"                    });
+                    $($("#sidebar")[0]).css({
+                        "max-width": maxSizeSidebar
+                    });
+                }
+                if (toListen.includes("ocultar-trending") && toListen.includes("ocultar-foros-relacionados") &&
+                    toListen.includes("ocultar-publicidad") && $('span:contains("Modo noche")').length > 0) {
+                    $($("main")[0]).css({
+                        "grid-template-columns": "24fr"
+                    });
+                    $($("#sidebar")[0]).css({
+                        "max-width": "0"
+                    });
                 }
             }
+
         }
         if (stopped) observe();
     }
