@@ -5,6 +5,15 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const pageInfo = tab.url.split("=")[1];
             const [id, queryParameters] = pageInfo.split(/[.\&#/_]/)
+            chrome.tabs.sendMessage(tabId, {
+                type: "hilo_mensaje_likes",
+                id: id
+            }, async (response) => {
+                console.log("hilo_mensaje_likes: ", await response.status);
+                if (response.status == 200) {
+                    findLikedPosts(tabId, response.message)
+                }
+            });
             if (!queryParameters || queryParameters.includes("highlight")) {
                 chrome.tabs.sendMessage(tabId, {
                     type: "hilo_info",
@@ -22,6 +31,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 console.log("Response hilo_usuarios_info: ", await response.status);
                 if (response.status == 200) addUsers(response.message);
             });
+
         }
         if (tab.url && tab.url.includes("search.php?searchid=")) {
             chrome.tabs.sendMessage(tabId, {
@@ -41,6 +51,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 if (response.status == 200) addUser(response.message);
             });
         }
+        return true;
     }
 });
 
@@ -51,6 +62,7 @@ chrome.commands.onCommand.addListener((shortcut) => {
         chrome.runtime.reload();
         chrome.tabs.reload();
     }
+    return true
 })
 
 chrome.runtime.onMessage.addListener((obj) => {
@@ -60,26 +72,54 @@ chrome.runtime.onMessage.addListener((obj) => {
     if (obj.type === "chrome-storage") {
         addToChromeStorage(obj.content.loc, obj.content.message, obj.content.action);
     }
+    if (obj.type === "update-likes") {
+        sendRequest('POST', server + 'updateLikes', obj.content, 'updateLikes')
+            .then((response) => response.json())
+            .then((response) => {
+                console.log('updateLikes' + ': ' + response.status)
+            });
+    }
+    return true;
 });
 
 const addUser = (json) => {
     sendRequest('POST', server + 'addUser', json, 'addUser')
+        .then((response) => response.json())
+        .then((response) => {
+            console.log('addUser' + ': ' + response.status)
+        });
 }
 
 const addUserHilosOld = (json) => {
     sendRequest('POST', server + 'addUserHilosOld', json, 'addUserHilosOld')
+        .then((response) => response.json())
+        .then((response) => {
+            console.log('addUserHilosOld' + ': ' + response.status)
+        });
 }
 
 const addUsers = (json) => {
     sendRequest('POST', server + 'addUsers', json, 'addUsers')
+        .then((response) => response.json())
+        .then((response) => {
+            console.log('addUsers' + ': ' + response.status)
+        });
 }
 
 const addPole = (json) => {
     sendRequest('POST', server + 'addPole', json, 'addPole')
+        .then((response) => response.json())
+        .then((response) => {
+            console.log('addPole' + ': ' + response.status)
+        });
 }
 
 const removePole = (json) => {
     sendRequest('POST', server + 'removePole', json, 'removePole')
+        .then((response) => response.json())
+        .then((response) => {
+            console.log('removePole' + ': ' + response.status)
+        });
 }
 
 const addToChromeStorage = (loc, message, action) => {
@@ -120,32 +160,38 @@ const addToChromeStorage = (loc, message, action) => {
                 delete items.notas[message.usuario];
             }
             else {
-                items.notas[message.usuario]= {"text": message.text};
+                items.notas[message.usuario] = { "text": message.text };
             }
         }
         chrome.storage.sync.set(items);
     });
 }
 
-const sendRequest = (method, url, data, sender) => {
-    var data = data;
+function sendRequest(method, url, data, sender) {
     var headers = {
         "Content-Type": "application/json",
         "Access-Control-Origin": "*"
     }
     var url = url;
-    fetch(url, {
+    return fetch(url, {
         method: method,
         headers: headers,
         body: JSON.stringify(data)
     })
-        .then(function (response) {
-            if (response.status == 200)
-                console.log(response.status)
-            else
-                console.log(response.status)
-        })
-        .catch(function (err) {
-            console.log(sender + ": " + err)
+}
+
+function findLikedPosts(tabId, json) {
+    sendRequest('POST', server + 'getAllLikes', json, 'getAllLikes')
+        .then((response) => response.json())
+        .then((response) => {
+            const status = response.status;
+            const content = response.content;
+            if (status == 200) {
+                console.log('getAllLikes' + ': ' + status)
+                chrome.tabs.sendMessage(tabId, { type: "likes_info", value: content, id: 0 });
+            }
+            else {
+                console.log(status)
+            }
         });
 }

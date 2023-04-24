@@ -12,7 +12,7 @@
     {
       "matches": ["https://*.forocoches.com/*"],
       "run_at": "document_start",
-      "all_frames": true,
+      "all_frames": false,
       "js": ["/static/thirdParty/jquery-3.6.3.min.js", "/static/contentScript.js"]
     }
   ],
@@ -34,5 +34,11 @@
     "default_title": "Forocoches premium",
     "default_popup": "templates/popup.html"
   },
+  "web_accessible_resources": [
+    {
+      "resources": [ "/static/images/like_0.png", "/static/images/like_1.png" ],
+      "matches": [ "https://*.forocoches.com/*" ]
+    }
+  ],  
   "manifest_version": 3
 }

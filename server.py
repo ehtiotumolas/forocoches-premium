@@ -10,7 +10,7 @@
 ######################################################
 
 
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, jsonify
 import json
 import pyodbc
 import binascii
@@ -27,6 +27,8 @@ connection.timeout = 3
 connection.autocommit = True
 
 # Utils
+
+
 def ConvertDate(date):
     fechaCon = {
         "ene": "enero", "feb": "febrero", "mar": "marzo", "abr": "abril", "may": "mayo", "jun": "junio", "jul": "julio", "ago": "agosto", "sep": "septiembre", "oct": "octubre", "nov": "noviembre", "dic": "diciembre"}
@@ -59,13 +61,13 @@ def addUser():
             try:
                 cursor.execute(query)
                 cursor.close()
-                return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+                return {'status': 200}, {'ContentType': 'application/json'}
             except Exception as e:
                 cursor.close()
                 print(e)
-                return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
+                return {'status': 400}, {'ContentType': 'application/json'}
         else:
-            return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
+            return {'status': 500}, {'ContentType': 'application/json'}
 
 
 @app.route("/addUsers", methods=["POST"])
@@ -93,10 +95,10 @@ def addUsers():
                 except Exception as e:
                     cursor.close()
                     print(e)
-                    return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
-            return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+                    return {'status': 400}, {'ContentType': 'application/json'}
+            return {'status': 200}, {'ContentType': 'application/json'}
         else:
-            return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
+            return {'status': 500}, {'ContentType': 'application/json'}
 
 
 @app.route("/getAllUsers", methods=["GET"])
@@ -131,7 +133,7 @@ def getAllUsers():
         print(f"GetALlUsers: + {e}")
         return f"{e}", 400
 
-    return json.dumps(res, default=str), 200, {'ContentType': 'application/json'}
+    return {'status': 200, 'content': res}
 
 
 @app.route("/getAllPoles", methods=["GET"])
@@ -166,7 +168,7 @@ def getAllPoles():
         print(f"GetAllPoles: + {e}")
         return f"{e}", 400
 
-    return json.dumps(res, default=str), 200, {'ContentType': 'application/json'}
+    return {'status': 200, 'content': res}, {'ContentType': 'application/json'}
 
 
 @app.route("/addPole", methods=["POST"])
@@ -193,13 +195,13 @@ def addPole():
             try:
                 cursor.execute(query)
                 cursor.close()
-                return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+                return {'status': 200}, {'ContentType': 'application/json'}
             except Exception as e:
                 cursor.close()
                 print(e)
-                return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
+                return {'status': 400}, {'ContentType': 'application/json'}
         else:
-            return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
+            return {'status': 500}, {'ContentType': 'application/json'}
 
 
 @app.route("/addUserHilosOld", methods=["POST"])
@@ -217,13 +219,13 @@ def addUserHilosOld():
             try:
                 cursor.execute(query)
                 cursor.close()
-                return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+                return {'status': 200}, {'ContentType': 'application/json'}
             except Exception as e:
                 cursor.close()
                 print(e)
-                return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
+                return {'status': 400}, {'ContentType': 'application/json'}
         else:
-            return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
+            return {'status': 500}, {'ContentType': 'application/json'}
 
 
 @app.route("/removePole", methods=["POST"])
@@ -238,14 +240,85 @@ def removePole():
             try:
                 cursor.execute(query)
                 cursor.close()
-                return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+                return {'status': 200}, {'ContentType': 'application/json'}
             except Exception as e:
                 cursor.close()
                 print(e)
-                return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
+                return {'status': 400}, {'ContentType': 'application/json'}
         else:
-            return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
-   
+            return {'status': 500}, {'ContentType': 'application/json'}
+
+
+@app.route("/updateLikes", methods=["POST"])
+def updateLikes():
+    session = {}
+    if request.method == 'POST':
+        req = request.get_json()
+        session['data'] = req
+        if 'data' in session:
+            encUsuario = str.encode(req["usuario"])
+            hexUsuario = binascii.b2a_hex(encUsuario)
+            hexUsuarioStr = str(str(hexUsuario)[1:]).replace('\'', '')
+            # print("poles...")
+            cursor = connection.cursor()
+            query = ""
+            if (req["action"] == "add"):
+                query = f'''BEGIN
+                            IF NOT EXISTS (SELECT * FROM mensajes_liked WHERE id = {req["id"]} AND usuario='{hexUsuarioStr}')
+                            BEGIN
+                                INSERT INTO mensajes_liked
+                                VALUES ({req["id"]}, '{hexUsuarioStr}')
+                            END
+                            BEGIN
+                                SELECT COUNT(1) from mensajes_liked
+                                WHERE id={req["id"]}
+                            END
+                        END'''
+            if (req["action"] == "remove"):
+                query = f'''DELETE FROM mensajes_liked WHERE id = {req["id"]} AND usuario='{hexUsuarioStr}' '''
+            try:
+                cursor.execute(query)
+                cursor.close()
+                return {'status': 200}, {'ContentType': 'application/json'}
+            except Exception as e:
+                cursor.close()
+                print(e)
+                return {'status': 400}, {'ContentType': 'application/json'}
+        else:
+            return {'status': 500}, {'ContentType': 'application/json'}
+
+
+@app.route("/getAllLikes", methods=["POST"])
+def getAllLikes():
+    session = {}
+    if request.method == 'POST':
+        req = request.get_json()
+        session['data'] = req
+        if 'data' in session:
+            posts = ','.join(f"'{post}'" for post in req["posts"])
+            encUsuario = str.encode(req["usuario"])
+            hexUsuario = binascii.b2a_hex(encUsuario)
+            hexUsuarioStr = str(str(hexUsuario)[1:]).replace('\'', '')
+            cursor = connection.cursor()
+            query = f'''SELECT id, COUNT(1) as likes, max(case when usuario='{hexUsuarioStr}' then 1 else 0 end) as liked
+                        FROM mensajes_liked
+                        WHERE id IN ({posts})
+                        GROUP BY id
+                        '''
+            try:
+                cursor.execute(query)
+                res = cursor.fetchall()
+                cursor.close()
+                res = [dict(zip(["post", "likes", "liked"], row))
+                       for row in res]
+                return {'status': 200, 'content': res}, {'ContentType': 'application/json'}
+            except Exception as e:
+                cursor.close()
+                print(e)
+                return {'status': 400}, {'ContentType': 'application/json'}
+        else:
+            return {'status': 500}, {'ContentType': 'application/json'}
+
 
 def CalculatePoints(hilos, mensajes, totalMensajes):
     multiplicador = 1

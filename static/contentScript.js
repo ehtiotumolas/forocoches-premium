@@ -32,6 +32,12 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     if (type === "usuario_info_old_hilos") {
         sendResponse(userInfoHilosOld());
     }
+    if (type === "hilo_mensaje_likes") {
+        sendResponse(getAllPostsId());
+    }
+    if (type === "likes_info") {
+        updateAllLikes(value);
+    }    
     return true;
 });
 
@@ -248,6 +254,7 @@ function onMutation(mutations) {
                                             .click(function (e) {
                                                 e.preventDefault();
                                                 var textToSave = `${$("#notas-popup-text-editable")[0].innerText}`;
+                                                if (savedNotas == undefined) savedNotas = {}
                                                 savedNotas[usuario] = { "text": textToSave };
                                                 if (textToSave == "") {
                                                     notasBtn.css({ border: 0, borderRadius: "6px" });
@@ -455,6 +462,64 @@ function onMutation(mutations) {
                         });
                     }
                 }
+                if (toListen.includes("likes")) {
+                    if (darkMode && n.tagName === 'A' && n.href.indexOf("report.php?p=") != -1) {
+                        var likeBtn = $("<a/>")
+                            .css({
+                                display: "flex",
+                                alignItems: "center",
+                                fontWeight: "700",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                color: "white"
+                            })
+                        $("<span/>")
+                            .attr('id', 'like-text')
+                            .css({
+                                fontSize: "1.5rem",
+                                height: "26px",
+                                textDecoration: "none",
+                                pointerEvents: "none"
+                            })
+                            .text(0)
+                            .appendTo(likeBtn);
+                        $("<span/>")
+                            .attr('id', 'like-button')
+                            .css({
+                                textDecoration: "none",
+                                cursor: "pointer",
+                                marginLeft: "6px",
+                                marginRight: "6px",
+                                fontSize: "1.625rem",
+                                display: "flex",
+                            })
+                            .text("❤")
+                            .click(function (e) {
+                                var post = $($(this)).parent()[0].closest('section');
+                                var postId = $(post).parent()[0].id.split('edit')[1];
+                                var usuario = $('.username')[0].innerHTML;
+                                var likes = $(this).prev('span')[0];
+                                if (!$(this).hasClass("liked")) {
+                                    $(this)
+                                        .css({ color: "red" })
+                                        .toggleClass("liked");
+                                    likes.innerText = Number(likes.innerText) + 1
+                                    updateLikes(postId, usuario, "add")
+                                }
+                                else {
+                                    $(this)
+                                        .css({ color: "white" })
+                                        .toggleClass("liked");
+                                    likes.innerText = Number(likes.innerText) - 1
+                                    updateLikes(postId, usuario, "remove")
+                                }
+                            })
+                            .appendTo(likeBtn);
+
+
+                        likeBtn.appendTo($(n).parent());
+                    }
+                }
             }
         }
         if (stopped) observe();
@@ -466,6 +531,33 @@ function observe() {
         subtree: true,
         childList: true,
     });
+}
+
+const updateLikes = (postId, user, action) => {
+    chrome.runtime.sendMessage({ sender: "contentScript", type: "update-likes", content: { id: postId, usuario: user, action: action } });
+}
+
+const updateAllLikes = (likedPosts) => {
+    for (var liked of likedPosts) {
+        var likedPost = $($(`#edit${liked.post}`)[0]);
+        likedPost.find('#like-text')[0].innerText = liked.likes;
+        if (liked.liked == 1) {
+            $(likedPost.find('#like-button')[0])
+            .toggleClass("liked")
+            .css({ color: "red" });
+        }
+    }
+}
+
+const getAllPostsId = () => {
+    if (darkMode) {
+        let posts = [];
+        let usuario = $('.username')[0].innerHTML;
+        $.each($('div[id*=edit]'), function (i, obj) {
+            posts.push(obj.id.split('edit')[1])
+        });
+        return { "status": 200, "message": {posts: posts, usuario: usuario} }
+    }
 }
 
 const hiloInfo = (id) => {
