@@ -3,6 +3,8 @@
   --clr-accent-600: rgb(243, 234, 234);
   --clr-accent-300: #f3c586;
   --clr-accent-900: #ff0202;
+  --clr-accent-700: rgb(224, 185, 185);
+  --clr-accent-800: rgb(223, 145, 145);
 
   --clr-primary-400: #292A44;
   --clr-primary-300: #a5a5ad;
@@ -166,6 +168,8 @@ svg {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+  -webkit-transition: opacity .2s;
+  transition: opacity .2s;
 }
 
 .page-visually-hidden {

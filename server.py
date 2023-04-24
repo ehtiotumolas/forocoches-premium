@@ -130,7 +130,7 @@ def getAllPoles():
         cursor = connection.cursor()
         query = "SELECT stat from estadisticas where id = 'max_mensajes'"
         cursor.execute(query)
-        query = f"""SELECT COUNT(1), usuario, usuario_id, hilo_id =
+        query = f"""SELECT TOP 20 COUNT(1), usuario, usuario_id, hilo_id =
                         STUFF((SELECT ', ' + CAST(hilo_id AS VARCHAR)
                             FROM poles b
                             WHERE a.usuario = b.usuario

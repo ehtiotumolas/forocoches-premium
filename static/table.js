@@ -56,13 +56,13 @@ export async function updateTableRanking() {
             });
 
             row.id = usuario;
-            var position = document.createElement("div");
             var numRows = $(".table_row.table_ranking").length;
+            var position = document.createElement("div");
             position.classList.add("table_cell", "table_cell_first");
             position.innerText = numRows + (currentPage * rowsPerPage);
-            if (position.innerText == 1) {row.classList.add("first-row")}
-            if (position.innerText == 2) {row.classList.add("second-row")}
-            if (position.innerText == 3) {row.classList.add("third-row")}
+            if (position.innerText == 1) { row.classList.add("first-row") }
+            if (position.innerText == 2) { row.classList.add("second-row") }
+            if (position.innerText == 3) { row.classList.add("third-row") }
             row.appendChild(position);
             var usuario_ele = document.createElement("div");
             usuario_ele.classList.add("table_cell_usuario");
@@ -95,14 +95,13 @@ export async function createTablePoles() {
     try {
         var theader = document.createElement("div");
         theader.classList.add("table_row", "table_header", "table_poles");
-        var headersList = ["&nbsp", "usuario", "poles", "+info"];
+        var headersList = ["&nbsp", "usuario", "poles"];
         for (var i = 0; i < headersList.length; i++) {
             var header = document.createElement("div");
             header.classList.add("table_header_poles");
             if (i == 0) { header.classList.add("table_header_poles_first") }
             if (i == 1) { header.classList.add("table_header_poles_usuario") }
             if (i == 2) { header.classList.add("table_header_poles_poles") }
-            if (i == 3) { header.classList.add("table_header_poles_mas_info") }
             header.innerHTML = headersList[i];
             theader.appendChild(header);
         }
@@ -128,23 +127,43 @@ export async function updateTablePoles() {
             const row = document.createElement("div");
             row.classList.add("table_row", "table_body", "table_poles");
             row.addEventListener("click", function () {
+                console.log(poles[i].hilos_id)
+                $(".show-poles").remove();
                 var selected = false;
-                if (row.classList.contains("selRow")) {
+                if (row.classList.contains("sel_row_pole")) {
                     selected = true;
                 }
-                userTable.querySelectorAll('.table_row').forEach(tr => tr.classList.remove("selRow"));
-                if (!selected) row.classList.add("selRow");
-                chrome.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + poles[i].usuario_id })
+                else {
+                    const rowPoles = document.createElement("div");
+                    rowPoles.classList.add("table_poles", "show-poles");
+                    let links = [];
+                    for (var pole of poles[i].hilos_id.split(", ")) {
+                        const aLink = document.createElement("a");
+                        aLink.innerText = pole;
+                        if (pole != poles[i].hilos_id.split(", ").pop()) {
+                            aLink.innerText += ", ";
+                        }
+                        aLink.classList.add("table_poles_link")
+                        aLink.onclick = function() { chrome.tabs.update(getCurrentTab().id, { url: `https://forocoches.com/foro/showthread.php?t=${pole}` }) };
+                        links.push(aLink);
+                    }
+
+                    rowPoles.innerHTML = "Poles:&ensp;";
+                    links.forEach(x=> rowPoles.append(x));
+                    $(rowPoles).insertAfter(row);
+                }
+                userTable.querySelectorAll('.table_row').forEach(tr => tr.classList.remove("sel_row_pole"));
+                if (!selected) row.classList.add("sel_row_pole");
             });
 
             row.id = usuario;
             var position = document.createElement("div");
             var numRows = document.getElementsByClassName("table_poles").length;
-            position.classList.add("table_cell", "table_cell_first");
+            position.classList.add("table_cell", "table_cell_first_poles");
             position.innerText = numRows;
-            if (position.innerText == 1) {row.classList.add("first-row")}
-            if (position.innerText == 2) {row.classList.add("second-row")}
-            if (position.innerText == 3) {row.classList.add("third-row")}
+            if (position.innerText == 1) { row.classList.add("first-row") }
+            if (position.innerText == 2) { row.classList.add("second-row") }
+            if (position.innerText == 3) { row.classList.add("third-row") }
             row.appendChild(position);
             var usuario_ele = document.createElement("div");
             usuario_ele.classList.add("table_cell_usuario_poles");
@@ -152,11 +171,9 @@ export async function updateTablePoles() {
             row.append(usuario_ele);
             for (let key in poles[i]) {
                 var cell = document.createElement("div");
-                var valido = false;
                 cell.classList.add("table_cell");
-                if (key == "poles") { cell.classList.add("table_cell_poles_poles"); valido = true; }
-                if (key == "mas_info") { cell.classList.add("table_cell_mas_info_poles"); valido = true; }
-                if (valido) {
+                if (key == "poles") {
+                    cell.classList.add("table_cell_poles_poles");
                     cell.innerText = poles[i][key];
                     row.appendChild(cell);
                 }

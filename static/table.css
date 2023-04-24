@@ -30,7 +30,6 @@
 .selRow {
     background-color: rgb(223, 145, 145) !important;
     background-image: none !important;
-    background: yellow;
     z-index: 6;
 }
 
@@ -100,7 +99,7 @@
     z-index: 100;
 }
 
-.table_cell_first, .table_cell_poles_poles, .table_header_poles_poles {
+.table_cell_first, .table_cell_first_poles, .table_cell_poles_poles, .table_header_poles_poles, .table_cell_mas_info_poles{
     text-align: center;
 }
 
@@ -182,7 +181,6 @@
 
 
 /* CONTAINER POLES */
-
 .container-poles {
     padding-bottom: 1rem;
 }
@@ -191,21 +189,47 @@
     align-items: center;
     margin-left: auto;
     margin-right: auto;
-    width: 70%;
+    width: 60%;
+}
+
+.show-poles {
+    padding: .3rem;
+    border: 2px solid var(--clr-accent-400);
+    border-top: 1px dashed var(--clr-accent-400);
+    font-weight: var(--fw-semi-bold);
+    font-size: var(--fs-300);
+    background-color: var(--clr-accent-800) !important;
+    background-image: none !important;
+}
+
+.table_poles_link {
+    color: var(--clr-primary-400);
+    font-weight: var(--fw-semi-bold);
+    cursor: pointer;
+}
+
+.table_poles_link:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.sel_row_pole {
+    border: 2px solid var(--clr-accent-400);
+    border-bottom: 0;
+    background-color: var(--clr-accent-800) !important;
+    background-image: none !important;
+    font-weight: var(--fw-bold);
+    z-index: 6;
 }
 
 .table_cell_first_poles, .table_header_poles_first {
-    width: 15%;
+    width: 25%;
 }
 
 .table_cell_usuario_poles, .table_header_poles_usuario {
-    width: 40%;
+    width: 50%;
 }
 
 .table_cell_poles_poles, .table_header_poles_poles {
     width: 25%;
-}
-
-.table_cell_mas_info_poles, .table_header_poles_mas_info {
-    width: 20%;
 }
