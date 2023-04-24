@@ -71,7 +71,7 @@ function onMutation(mutations) {
                         if (n.id.includes('edit')) {
                             var postId = "postmenu_" + n.id.split('edit')[1];
                             var postDiv = $(`div[id=${postId}]`)[0];
-                            var calavera = $("<a/>")
+                            var calaveraBtn = $("<a/>")
                                 .attr('id', 'ignorar-usuario-div')
                                 .css({
                                     position: "absolute",
@@ -90,19 +90,14 @@ function onMutation(mutations) {
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
                                     };
                                 });
-                            if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
-                                $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
-                            }
                             if ($('span:contains("Modo noche")').length != 0) {
-                                calavera.appendTo($(postDiv)
-                                    .css({
-                                        position: "relative",
-                                    })
-                                    .parent().parent().children("#container-opciones"));
+                                if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
+                                    $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
+                                }
+                                calaveraBtn.appendTo($(postDiv).parent().parent().children("#container-opciones"));
                             }
                             else {
-                                calavera
-                                    .css({ marginLeft: "0px" }).height("auto").appendTo($(postDiv).parent());
+                                calaveraBtn.css({ marginLeft: "0px", position: "relative" }).height("auto").appendTo($(postDiv).parent());
                             }
                         }
                         if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
@@ -133,7 +128,7 @@ function onMutation(mutations) {
                         if (n.id.includes('edit')) {
                             var postId = "postmenu_" + n.id.split('edit')[1];
                             var postDiv = $(`div[id=${postId}]`)[0];
-                            var notas = $("<a/>")
+                            var notasBtn = $("<a/>")
                                 .attr('id', 'notas-usuarios-div')
                                 .css({
                                     position: "absolute",
@@ -147,36 +142,39 @@ function onMutation(mutations) {
                                     e.preventDefault();
                                     $("#notas-popup-div").remove();
                                     if ($(this).children("#notas-popup-div").length == 0) {
-                                        $("<div/>")
+                                        var notas = $("<div/>")
                                             .attr('id', 'notas-popup-div')
+                                            .attr('contenteditable', true)
+                                            //Change color! Cannot see when is the last user on new design
                                             .css({
                                                 position: "absolute",
                                                 zIndex: 1,
                                                 textDecoration: "none",
-                                                cursor: "pointer",
                                                 height: "300px",
                                                 width: "300px",
-                                                left: "-50px",
                                                 backgroundColor: "rgba(0, 0, 0, 0.9)",
                                                 border: "1px",
-                                                borderRadius: "1.5rem"
-                                            }).appendTo($(this));
+                                                borderRadius: "1.5rem",
+                                                filter: "drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2))",
+                                            });
+                                        if ($('span:contains("Modo noche")').length != 0) {
+                                            $(notas).css({ marginLeft: "-20px", marginTop: "0px" })
+                                        }
+                                        else {
+                                            $(notas).css({ marginTop: "-20px" })
+                                        }
+
+                                        notas.insertAfter($(this).parent().children("#notas-usuarios-div"));
                                     }
                                 });
-                            if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
-                                $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
-                            }
                             if ($('span:contains("Modo noche")').length != 0) {
-                                notas.appendTo($(postDiv)
-                                    .css({
-                                        position: "relative",
-                                    })
-                                    .parent().parent().children("#container-opciones"));
+                                if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
+                                    $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
+                                }
+                                notasBtn.appendTo($(postDiv).parent().parent().children("#container-opciones"));
                             }
-
                             else {
-                                notas
-                                    .css({ marginLeft: "5px" }).height("auto").appendTo($(postDiv).parent());
+                                notasBtn.css({ marginLeft: "5px", position: "relative" }).height("auto").appendTo($(postDiv).parent());
                             }
                         }
                     }
