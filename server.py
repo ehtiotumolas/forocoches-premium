@@ -9,10 +9,11 @@ app = Flask(__name__)
 
 locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
 
-connection = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost\sqlexpress;DATABASE=FC;UID=SYSDBA;PWD=masterkey;Trusted_Connection=yes;MARS_Connection=Yes;')
+connection = pyodbc.connect(
+    'DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost\sqlexpress;DATABASE=FC;UID=SYSDBA;PWD=masterkey;Trusted_Connection=yes;MARS_Connection=Yes;')
 connection.timeout = 3
 
-#Utils
+# Utils
 def ConvertDate(date):
     fechaCon = {
         "ene": "enero", "feb": "febrero", "mar": "marzo", "abr": "abril", "may": "mayo", "jun": "junio", "jul": "julio", "ago": "agosto", "sep": "septiembre", "oct": "octubre", "nov": "noviembre", "dic": "diciembre"}
@@ -23,19 +24,20 @@ def ConvertDateNoDay(date):
         "ene": "enero", "feb": "febrero", "mar": "marzo", "abr": "abril", "may": "mayo", "jun": "junio", "jul": "julio", "ago": "agosto", "sep": "septiembre", "oct": "octubre", "nov": "noviembre", "dic": "diciembre"}
     return dt.strptime(date.replace(date.split(' ')[0], fechaCon[date.lower().split(' ')[0]]), "%B %Y")
 
+
 @app.route("/addUser", methods=["POST"])
 def addUser():
     session = {}
     if request.method == 'POST':
         req = request.get_json()
-        #print(req)
+        # print(req)
         session['data'] = req
         if 'data' in session:
-            #print("usuarios...")
+            # print("usuarios...")
             encUsuario = str.encode(req["usuario"])
             hexUsuario = binascii.b2a_hex(encUsuario)
             usuario = str(str(hexUsuario)[1:]).replace('\'', '')
-            cursor = connection.cursor()            
+            cursor = connection.cursor()
             query = f"""UPDATE usuarios SET mensajes = {req["mensajes"]}, registro = '{ConvertDate(req["registro"])}', hilos = {req["hilos"]}, updated = '{dt.today().strftime('%Y-%m-%d %H:%M:%S')}' where id= {req["id"]}
                     IF @@ROWCOUNT=0
                     INSERT INTO usuarios (id, usuario, mensajes, hilos, registro, updated) 
@@ -52,21 +54,22 @@ def addUser():
                 return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
         else:
             return json.dumps({'success': False}), 500, {'ContentType': 'applicati/json'}
-        
+
+
 @app.route("/addUsers", methods=["POST"])
 def addUsers():
     session = {}
     if request.method == 'POST':
         req = request.get_json()
-        #print(req)
+        # print(req)
         session['data'] = req
-        #print("usuarios...")
+        # print("usuarios...")
         if 'data' in session:
             for usuario in req:
                 encUsuario = str.encode(usuario["usuario"])
                 hexUsuario = binascii.b2a_hex(encUsuario)
                 hexUsuarioStr = str(str(hexUsuario)[1:]).replace('\'', '')
-                cursor = connection.cursor()            
+                cursor = connection.cursor()
 
                 try:
                     query = f"""UPDATE usuarios SET mensajes = {usuario["mensajes"]}, updated = '{dt.today().strftime('%Y-%m-%d %H:%M:%S')}' where id= {usuario["id"]}
@@ -84,10 +87,10 @@ def addUsers():
             return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
         else:
             return json.dumps({'success': False}), 500, {'ContentType': 'applicati/json'}
-        
+
 
 @app.route("/getAllUsers", methods=["GET"])
-def getAllUsers():        
+def getAllUsers():
     try:
         cursor = connection.cursor()
         query = "SELECT stat from estadisticas where id = 'max_mensajes'"
@@ -104,11 +107,12 @@ def getAllUsers():
         cursor.close()
 
         res = [dict(zip(["puntos", "usuario", "mensajes", "hilos", "id", "registro", "dias_antiguedad", "mensajes_dia", "hilos_dia"], row))
-            for row in res]
+               for row in res]
         for index in range(len(res)):
             for key in res[index]:
                 if key == "usuario":
-                    res[index][key] = (bytes.fromhex(res[index][key])).decode("utf-8")
+                    res[index][key] = (bytes.fromhex(
+                        res[index][key])).decode("utf-8")
 
     except Exception as e:
         connection.commit()
@@ -129,7 +133,7 @@ def addThread():
         if 'data' in session:
             print("poles...")
             cursor = connection.cursor()
-            
+
             query = f'''BEGIN
                             IF NOT EXISTS (SELECT * FROM poles WHERE hilo_id = {req["hilo_id"]})
                                 BEGIN
@@ -150,9 +154,11 @@ def addThread():
         else:
             return json.dumps({'success': False}), 500, {'ContentType': 'applicati/json'}
 
+
 @app.route("/")
 def client():
     return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=False)

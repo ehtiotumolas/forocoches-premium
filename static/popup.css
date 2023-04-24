@@ -1,0 +1,36 @@
+body {
+  font-size: var(--size-300);
+  font-family: var(--ff-body);
+  color: var(--clr-primary-100);
+  background-color: var(--clr-primary-400);
+}
+
+main {
+  padding-top: var(--fs-header);
+  min-width: 26rem;
+}
+
+p {
+  line-height: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.container {
+  --max-width: 800px;
+  --padding: 1rem;
+  width: min(var(--max-width), 100% - (var(--padding) * 2));
+
+  margin-inline: auto;
+}
+
+.container-table {
+  --padding: 0rem;
+}
+
+.container-nav {
+  margin: var(--size-400);
+}
+
+a{
+  color: var(--clr-neutral-900);
+}

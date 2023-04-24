@@ -1,5 +1,6 @@
-chrome.tabs.onUpdated.addListener(async (tabId, tab) => {
-    setTimeout(function () {
+chrome.tabs.onUpdated.addListener(function async (tabId, info, tab) {
+    if (info.status === 'complete')
+    {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const queryParameters = tab.url.split("?t=")[1];
             if (!queryParameters.includes("page")) {
@@ -29,7 +30,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, tab) => {
                 addUser(response);
             });
         }
-    }, 2000);
+    }
 });
 
 chrome.commands.onCommand.addListener((shortcut) => {

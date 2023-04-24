@@ -15,12 +15,12 @@ async function start() {
 }
 
 export async function getCurrentTab() {
-    return await chrome.tabs.query({ active: true, currentWindow: true }).tabs[0];
+    return await chrome.tabs.query({ active: true, currentWindow: true }).tabs;
 }
 
 toggleHidden();
 start();
 
 function toggleHidden() {
-    $("html, body, .table-container").toggleClass("visually-hidden");
+    $(".container-table, .error-message").toggleClass("visually-hidden");
 }

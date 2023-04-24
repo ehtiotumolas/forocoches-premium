@@ -35,7 +35,6 @@ const newUsersInfoLoaded = (id) => {
         var registro = $(`*[id*=${id}_menu] > div > div > div > div:contains("Registro")`)[0].innerText.split('Registro: ')[1].replaceAll('\n', '').trim();
         var mensajes = $(`*[id*=${id}_menu] > div > div > div > div:contains("Mensajes")`)[0].innerText.split('Mensajes: ')[1].replaceAll('.', '').trim();
         usuarios.push({"usuario": usuario, "id": usuario_id, "registro": registro, "mensajes": mensajes})
-        console.log(usuario, usuario_id, registro, mensajes);
     }
     return usuarios
 }
