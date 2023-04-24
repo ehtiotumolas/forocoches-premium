@@ -100,10 +100,55 @@ function onMutation(mutations) {
                             }
                         }
                         if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
-                            var usuario = $(n);
-                            $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
-                            if (($('span:contains("Modo noche")').length != 0)) usuario = $(usuario).parent('div')[0];
-                            $(usuario).next('div')[0].innerText = "(Texto ignorado)";
+                            if (toListen.includes("ocultar-usuarios-ignorados")) {
+                                var papa = $(n).parent().parent().parent();
+                                if ($('span:contains("Modo noche")').length != 0) {
+                                    papa.remove();
+                                }
+                                else {
+                                    papa.parent().parent().remove();
+                                }
+                            }
+                            else {
+                                var usuario = $(n);
+                                $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
+                                if (($('span:contains("Modo noche")').length != 0)) usuario = $(usuario).parent('div')[0];
+                                $(usuario).next('div')[0].innerText = "(Texto ignorado)";
+                            }
+                        }
+                    }
+                    if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
+                        var id = "#edit" + $(n).parent()[0].id.split("_")[1];
+                        $(id).remove();
+                    }
+                }
+                if (toListen.includes("notas-usuario")) {
+                    if (n.tagName == 'DIV') {
+                        if (n.id.includes('edit')) {
+                            var postId = "postmenu_" + n.id.split('edit')[1];
+                            var postDiv = $(`div[id=${postId}]`)[0];
+                            var notas = $("<a/>")
+                                .attr('id', 'notas-usuarios-div')
+                                .css({
+                                    position: "relative",
+                                    zIndex: 5,
+                                    marginLeft: "-20px",
+                                    cursor: "pointer"
+                                })
+                                .height("48px")
+                                .width("14px")
+                                .text("🖊️")
+                                .click(function (e) {
+                                    e.preventDefault();
+                                    alert("Notas!");
+                                });
+                            if ($('span:contains("Modo noche")').length != 0) {
+                                notas.prependTo($(postDiv).parent().parent()[0]);
+                            }
+                            else {
+                                notas
+                                    .css({ marginLeft: "-5px" }).height("auto").appendTo(postDiv);
+                            }
                         }
                     }
                     if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
