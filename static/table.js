@@ -90,7 +90,6 @@ export async function updateTableRanking() {
     }
 }
 
-
 export async function createTablePoles() {
     try {
         var theader = document.createElement("div");
@@ -137,10 +136,10 @@ export async function updateTablePoles() {
                     const rowPoles = document.createElement("div");
                     rowPoles.innerHTML = "Poles:&ensp;";
                     rowPoles.classList.add("table_poles", "show-poles");
-                    for (var pole of poles[i].hilos_id.split(", ")) {
+                    for (var pole of poles[i].hilos_id.split(",")) {
                         var aLink = document.createElement("a");
                         aLink.innerText = pole;
-                        if (pole != poles[i].hilos_id.split(", ").pop()) {
+                        if (pole != poles[i].hilos_id.split(",").pop()) {
                             aLink.innerText += ", ";
                         }
                         aLink.classList.add("table_poles_link")

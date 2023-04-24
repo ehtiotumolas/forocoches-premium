@@ -20,12 +20,13 @@ async function retrieveStorage(key) {
 
 chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     console.log("Listening")
-    const { type, value, id } = obj;
+    const { type, value } = obj;
+    const id = $("a[href*=searchthreadid]")[0].href.split('=')[1].split('&')[0];
     if (type === "hilo_info") {
         sendResponse(hiloInfo(id));
     }
     if (type === "usuario_info") {
-        sendResponse(userInfo(id));
+        sendResponse(userInfo(value));
     }
     if (type === "hilo_usuarios_info") {
         sendResponse(usersInfo(id));

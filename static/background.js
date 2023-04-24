@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 const server = 'http://192.168.0.172:5001/';
+=======
+const server = "https://www.forocochero.com"
+>>>>>>> Stashed changes
 
 chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
     if (info.status === 'complete') {
@@ -8,7 +12,6 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             if (!queryParameters || queryParameters.includes("highlight")) {
                 chrome.tabs.sendMessage(tabId, {
                     type: "hilo_info",
-                    id: id
                 }, async (response) => {
                     console.log("Response hilo_info: ", await response.status);
                     if (response.status == 200) addPole(response.message);
@@ -17,14 +20,12 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             }
             chrome.tabs.sendMessage(tabId, {
                 type: "hilo_usuarios_info",
-                id: id
             }, async (response) => {
                 console.log("Response hilo_usuarios_info: ", await response.status);
                 if (response.status == 200) addUsers(response.message);        
             });
             chrome.tabs.sendMessage(tabId, {
                 type: "hilo_mensaje_likes",
-                id: id
             }, async (response) => {
                 console.log("hilo_mensaje_likes: ", await response.status);
                 if (response.status == 200)
@@ -43,7 +44,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
             chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info",
-                id: queryParameters
+                value: queryParameters
             }, async (response) => {
                 console.log("Response usuario_info: ", await response.status);
                 if (response.status == 200) addUser(response.message); 
@@ -67,7 +68,7 @@ chrome.runtime.onMessage.addListener((obj) => {
         addToChromeStorage(obj.content.loc, obj.content.message, obj.content.action);
     }
     if (obj.type === "update-likes") {
-        sendRequest('POST', server + 'updateLikes', obj.content, 'updateLikes')
+        sendRequest('POST', server + '/' + 'updateLikes', obj.content, 'updateLikes')
             .then((response) => response.json())
             .then((response) => {
                 console.log('updateLikes' + ': ' + response.status)
@@ -76,7 +77,7 @@ chrome.runtime.onMessage.addListener((obj) => {
 });
 
 const addUser = (json) => {
-    sendRequest('POST', server + 'addUser', json, 'addUser')
+    sendRequest('POST', server + '/' + 'addUser', json, 'addUser')
         .then((response) => response.json())
         .then((response) => {
             console.log('addUser' + ': ' + response.status)
@@ -84,7 +85,7 @@ const addUser = (json) => {
 }
 
 const addUserHilosOld = (json) => {
-    sendRequest('POST', server + 'addUserHilosOld', json, 'addUserHilosOld')
+    sendRequest('POST', server + '/' + 'addUserHilosOld', json, 'addUserHilosOld')
         .then((response) => response.json())
         .then((response) => {
             console.log('addUserHilosOld' + ': ' + response.status)
@@ -92,7 +93,7 @@ const addUserHilosOld = (json) => {
 }
 
 const addUsers = (json) => {
-    sendRequest('POST', server + 'addUsers', json, 'addUsers')
+    sendRequest('POST', server + '/' + 'addUsers', json, 'addUsers')
         .then((response) => response.json())
         .then((response) => {
             console.log('addUsers' + ': ' + response.status)
@@ -100,7 +101,7 @@ const addUsers = (json) => {
 }
 
 const addPole = (json) => {
-    sendRequest('POST', server + 'addPole', json, 'addPole')
+    sendRequest('POST', server + '/' + 'addPole', json, 'addPole')
         .then((response) => response.json())
         .then((response) => {
             console.log('addPole' + ': ' + response.status)
@@ -108,7 +109,7 @@ const addPole = (json) => {
 }
 
 const removePole = (json) => {
-    sendRequest('POST', server + 'removePole', json, 'removePole')
+    sendRequest('POST', server + '/' + 'removePole', json, 'removePole')
         .then((response) => response.json())
         .then((response) => {
             console.log('removePole' + ': ' + response.status)
@@ -174,7 +175,7 @@ function sendRequest(method, url, data, sender) {
 }
 
 function findLikedPosts(tabId, json) {
-    sendRequest('POST', server + 'getAllLikes', json, 'getAllLikes')
+    sendRequest('POST', server + '/' + 'getAllLikes', json, 'getAllLikes')
         .then((response) => response.json())
         .then((response) => {
             const status = response.status;
