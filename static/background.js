@@ -21,7 +21,7 @@ chrome.tabs.onUpdated.addListener(function async (tabId, info, tab) {
             });
         }
         if (tab.url && tab.url.includes("foro/member.php")) {
-            const queryParameters = tab.url.split("?u=")[1];
+            const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
             chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info",
                 id: queryParameters

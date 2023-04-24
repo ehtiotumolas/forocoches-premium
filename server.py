@@ -132,10 +132,10 @@ def addThread():
     session = {}
     if request.method == 'POST':
         req = request.get_json()
-        print(req)
+        #print(req)
         session['data'] = req
         if 'data' in session:
-            print("poles...")
+            #print("poles...")
             cursor = connection.cursor()
 
             query = f'''BEGIN
