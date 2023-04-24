@@ -53,6 +53,8 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
 });
 
 const listenThread = () => {
+    onMutation([{ addedNodes: [document.documentElement] }]);
+    observe();
     retrieveStorage()
         .then(() => {
             $.each(opciones, function (opcion) {
@@ -65,17 +67,17 @@ const listenThread = () => {
                     }
                     toListen.push(opcion);
                 }
-            });
-            onMutation([{ addedNodes: [document.documentElement] }]);
-            observe();
+            })
         })
 };
 
 function onMutation(mutations) {
     let stopped;
+    console.log("onMutation")
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
+                console.log("insideLoop")
                 if (darkMode == undefined && ((n.tagName == 'MAIN') || (n.tagName == 'A' && n.id == 'poststop'))) {
                     if (n.tagName == 'MAIN') {
                         darkMode = true;
@@ -568,6 +570,8 @@ function observe() {
     });
 }
 
+listenThread();
+
 const updateLikes = (postId, user, action) => {
     chrome.runtime.sendMessage({ sender: "contentScript", type: "update-likes", content: { id: postId, usuario: user, action: action } });
 }
@@ -691,7 +695,7 @@ const usersInfo = (id) => {
 const findEstadisticas = () => {
     try {
         var mensajes_totales, hilos_totales;
-        if (darkMode) {            
+        if (darkMode) {
             mensajes_totales = $('span:contains("Mensajes totales:")')[0].innerText.split('Mensajes totales: ')[1].replaceAll('.', '');
             hilos_totales = $('span:contains("Temas:")')[0].innerText.split('Temas: ')[1].replaceAll('.', '');
         }
@@ -734,5 +738,3 @@ document.onmousedown = function (e) {
         $("#notas-popup-div").remove();
     }
 }
-
-listenThread();
