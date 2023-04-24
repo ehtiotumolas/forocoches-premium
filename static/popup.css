@@ -212,7 +212,8 @@ button:disabled {
 /* CONTAINER ERROR */
 .container-error {
   height: 100%;
-  padding-left: 1rem;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
   display: flex;
   justify-content: center;
   align-items: center; 
