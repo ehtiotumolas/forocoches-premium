@@ -2,48 +2,94 @@
 chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     const { type, value, id } = obj;
     if (type === "hilo_info") {
-        sendResponse(newHiloInfoLoaded(id));
+        sendResponse(hiloInfo(id));
     }
     if (type === "usuario_info") {
-        sendResponse(newUserInfoLoaded(id));
+        sendResponse(userInfo(id));
     }
     if (type === "hilo_usuarios_info") {
-        sendResponse(newUsersInfoLoaded(id));
+        sendResponse(usersInfo(id));
+    }
+    if (type === "usuario_info_old_hilos") {
+        sendResponse(userInfoHilosOld());
     }
     return true;
 });
 
-const newHiloInfoLoaded = (id) => {
+const hiloInfo = (id) => {
     var numero;
     if ($('span:contains("Modo noche")').length > 0) {
         numero = $("div > div > div > div > a", ".postbit_wrapper")[1].href.split('php?u=')[1]
     }
-    return { "hilo_id": id, "usuario_id": numero }
-
-}
-const newUserInfoLoaded = (id) => {
-    var usuario, mensajes, hilos, registro;
-    if ($('span:contains("Modo noche")').length > 0) {
-        usuario = $(document).attr('title').replace("Forocoches - Ver Perfil: ", "");
-        mensajes = $($('span:contains("Mensajes"):not(:contains("privados"))')[0]).prev("span")[0].innerText.replace(".", "");
-        hilos = $($('span:contains("Hilos")')[0]).prev("span")[0].innerText.replace(".", "");
-        registro = $($('span:contains("Desde")')[0]).next("span")[0].innerText;
+    else {
+        numero = ($('a[class="bigusername"]')[1]).href.split('php?u=')[1]
     }
-    return { "usuario": usuario, "id": id, "mensajes": mensajes ? mensajes : 0, "hilos": hilos ? hilos : 0, "registro": registro };
+    return  {"status": 200, "message": { "hilo_id": id, "usuario_id": numero }}
+
+}
+const userInfo = (id) => {
+    var usuario, mensajes, hilos, registro;
+    usuario = $(document).attr('title').replace("Forocoches - Ver Perfil: ", "");
+    try {
+        if ($('span:contains("Modo noche")').length > 0) {
+            var usuario, mensajes, hilos, registro;
+            mensajes = $($('span:contains("Mensajes"):not(:contains("privados"))')[0]).prev("span")[0].innerText.replace(".", "");
+            hilos = $($('span:contains("Hilos")')[0]).prev("span")[0].innerText.replace(".", "");
+            registro = $($('span:contains("Desde")')[0]).next("span")[0].innerText
+        }
+        else{
+            var [registro, mensajes] = $('span:contains("Registro: "):contains("Mensajes")')[0].innerText.split('\n')
+            registro = registro.split("Registro: ")[1];
+            mensajes = mensajes.split("Mensajes: ")[1].replaceAll('.', '')
+        }
+        return {"status": 200, "message": { "usuario": usuario, "id": id, "mensajes": mensajes ? mensajes : 0, "hilos": hilos ? hilos : 0, "registro": registro }}
+    }
+    catch {
+        return {"status": 400}
+    }
 }
 
-const newUsersInfoLoaded = (id) => {
+const userInfoHilosOld = () => {
+    if ($('span:contains("Modo noche")').length == 0) {
+        var url = ($("a[href^='search.php?']:contains('Buscar')")[0]).href;
+        var matches = url.match(/(exactname=1|starteronly=1|forumchoice[[]]=0|showposts=0|replyless=0|replylimit=0|searchuser)/g).length;
+        if (matches == 7 || (matches == 6 && !url.match("forumchoice[[]]=")) 
+            || (!url.match("userid=0")) && !url.match("showposts=1")) {
+            hilos = $('span:contains("Mostrando resultado")')[0].innerText.split('\n')[0].split("de ")[1];
+            usuario = $('*:contains("Autores de Tema:") > a > b')[0].innerText;
+            return {"status": 200, "message": { "usuario": usuario, "hilos": hilos }};
+        }
+    }
+    return {"status": 400}
+}
+
+const usersInfo = (id) => {
     var usuarios = []
-    if ($('span:contains("Modo noche")').length > 0) {
-        var elements = $('*[id*=postmenu_]:visible')
-        for (var element of elements) {
+    var elements = $('*[id*=postmenu_]:visible')
+    for (var element of elements) {
+        if ($('span:contains("Modo noche")').length > 0) {
             var id = element.id;
-            var usuario = $(`*[id*=${id}_menu] > div > div > h2`)[0].innerText.replaceAll('\n', '').trim();
-            var usuario_id = $(`*[id*=${id}_menu] > div > div > h2 >a`)[0].href.split('php?u=')[1].trim();
-            var registro = $(`*[id*=${id}_menu] > div > div > div > div:contains("Registro")`)[0].innerText.split('Registro: ')[1].replaceAll('\n', '').trim();
-            var mensajes = $(`*[id*=${id}_menu] > div > div > div > div:contains("Mensajes")`)[0].innerText.split('Mensajes: ')[1].replaceAll('.', '').trim();
+            try {
+                var usuario = $(`*[id*=${id}_menu] > div > div > h2`)[0].innerText.replaceAll('\n', '').trim();
+                var usuario_id = $(`*[id*=${id}_menu] > div > div > h2 > a`)[0].href.split('php?u=')[1].trim();
+                var registro = $(`*[id*=${id}_menu] > div > div > div > div:contains("Registro")`)[0].innerText.split('Registro: ')[1].replaceAll('\n', '').trim();
+                var mensajes = $(`*[id*=${id}_menu] > div > div > div > div:contains("Mensajes")`)[0].innerText.split('Mensajes: ')[1].replaceAll('.', '').trim();
+                usuarios.push({ "usuario": usuario, "id": usuario_id, "registro": registro, "mensajes": mensajes ? mensajes : 0 })
+            }
+            catch {
+                console.log("Usuario invitado")
+            }
+        }
+        else {
+            var id = element.id;
+            var usuario = ($(`*[id*=${id}] > a`)[0]).innerText;
+            var usuario_id = ($(`*[id*=${id}] > a`)[0]).href.split('php?u=')[1].trim();
+            var info = $($($(`*[id*=${id}]:visible`)[0]).parent()[0]).find('div:contains("Mens.")')[1].innerText;
+            var [registro, mensajes] = info.split('|')
+            registro = registro.trim()
+            var mensajes = mensajes.trim().split(' ')[0].replace(".", "");
             usuarios.push({ "usuario": usuario, "id": usuario_id, "registro": registro, "mensajes": mensajes ? mensajes : 0 })
         }
     }
-    return usuarios
+    return {"status": 200, "message": usuarios}
 }
