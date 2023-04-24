@@ -1,19 +1,44 @@
-$("#submit-temas-ignorados").click(function () {
+
+function submitTemasIgnorados() {
   var tema = $("#temas-ignorados-input").val().trim();
   if (tema != "") {
     createIgnorado(tema, "tema");
     addToChromeStorage("tema", tema, "add")
     $("#temas-ignorados-input").val('');
   }
-});
+}
 
-$("#submit-usuarios-ignorados").click(function () {
+function submitUsariosIgnorados() {
   var usuario = $("#usuarios-ignorados-input").val().trim();
   if (usuario != "") {
     createIgnorado(usuario, "usuario");
     addToChromeStorage("usuario", usuario, "add")
     $("#usuarios-ignorados-input").val('');
   }
+}
+
+document.getElementById("usuarios-ignorados-input")
+  .addEventListener("keyup", function (event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+      submitUsariosIgnorados();
+    }
+  });
+
+document.getElementById("temas-ignorados-input")
+  .addEventListener("keyup", function (event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+      submitTemasIgnorados();
+    }
+  });
+
+$("#submit-usuarios-ignorados").click(function () {
+  submitUsariosIgnorados();
+});
+
+$("#submit-temas-ignorados").click(function () {
+  submitTemasIgnorados();
 });
 
 function createIgnorado(id, loc) {
@@ -39,7 +64,7 @@ function addToChromeStorage(loc, id, action) {
         if (action == "add") {
           items.temas_ignorados.push(id);
         }
-        if (action == "remove"){
+        if (action == "remove") {
           items.temas_ignorados = items.temas_ignorados.filter(x => x !== id);
         }
       }
@@ -50,7 +75,7 @@ function addToChromeStorage(loc, id, action) {
         if (action == "add") {
           items.usuarios_ignorados.push(id);
         }
-        if (action == "remove"){
+        if (action == "remove") {
           items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== id);
         }
       }
@@ -77,6 +102,5 @@ function loadLists() {
     }
   });
 }
-
 
 loadLists();
