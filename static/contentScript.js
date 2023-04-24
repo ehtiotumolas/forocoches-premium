@@ -19,12 +19,12 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
 const hiloInfo = (id) => {
     var numero;
     if ($('span:contains("Modo noche")').length > 0) {
-        numero = $("div > div > div > div > a", ".postbit_wrapper")[1].href.split('php?u=')[1]
+        numero = $("div > div > div > div > a", ".postbit_wrapper")[1].innerText
     }
     else {
-        numero = ($('a[class="bigusername"]')[1]).href.split('php?u=')[1]
+        numero = ($('a[class="bigusername"]')[1]).innerText
     }
-    return  {"status": 200, "message": { "hilo_id": id, "usuario_id": numero }}
+    return  {"status": 200, "message": { "hilo_id": id, "usuario": numero }}
 
 }
 const userInfo = (id) => {

@@ -1,9 +1,14 @@
-import { fetchUsers, buscarUsuario, usuarios } from "./users.js";
-import { createTable, currentPage, setPagina, rowsPerPage } from "./table.js";
+import { fetchUsers, fetchPoles, buscarUsuario, usuarios } from "./users.js";
+import { createTableRanking, createTablePoles, currentPage, setPagina, rowsPerPage } from "./table.js";
 
 async function start() {
     await fetchUsers()
-        .then(() => createTable())
+        .then(() => createTableRanking())
+        .catch((e) => {
+            console.log(e);
+        });
+    await fetchPoles()
+        .then(() => createTablePoles())
         .catch((e) => {
             console.log(e);
         });
@@ -34,14 +39,12 @@ start();
 
 $(".nav-element-container").click(function (e) {
     $('.main-content:not("visually-hidden")').addClass("visually-hidden")
-    if ($(this).hasClass("clicked"))
-    {
+    if ($(this).hasClass("clicked")) {
         $(this).removeClass("clicked")
         $(".container-default").removeClass("visually-hidden");
         $('.container-' + $(this).attr('id')).addClass("visually-hidden");
     }
-    else
-    {
+    else {
         $(".nav-element-container").removeClass("clicked");
         $(".container-")
         $(this).addClass("clicked");
@@ -62,5 +65,5 @@ $("#pagina-first").click(function () {
 });
 
 $("#pagina-last").click(function () {
-    setPagina(Math.floor(usuarios.length/rowsPerPage));
+    setPagina(Math.floor(usuarios.length / rowsPerPage));
 });

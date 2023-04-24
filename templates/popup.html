@@ -33,13 +33,13 @@
                         <div class="nav-element-container" id="ranking">
                             <div class="nav-element">Ranking</div>
                         </div>
-                        <div class="nav-element-container">
+                        <div class="nav-element-container" id="poles">
                             <div class="nav-element">Poles</div>
                         </div>
-                        <div class="nav-element-container">
+                        <div class="nav-element-container" id="ignorados">
                             <div class="nav-element">Ignorados</div>
                         </div>
-                        <div class="nav-element-container">
+                        <div class="nav-element-container" id="opciones">
                             <div class="nav-element">Opciones</div>
                         </div>
                     </div>
@@ -48,7 +48,8 @@
         </div>
         <div class="section-body">
             <div class="container-default main-content">
-                Aqui irá el texto general y todas esas cosas que se suelen poner para que la gente entienda de que va esto.
+                Aqui irá el texto general y todas esas cosas que se suelen poner para que la gente entienda de que va
+                esto.
             </div>
             <div class="container-ranking main-content visually-hidden">
                 <div class="grupo-input">
@@ -60,18 +61,30 @@
                 <div class="message-wrapper">
                     <label class="input-message" id="add-user-message"></label>
                     <label class="input-info"></label>
-
                 </div>
-                <div class="container-table">
-                    <div class="content-table" id="content-table">
+                <div class="container-table-ranking">
+                    <div class="content-table-ranking" id="content-table-ranking">
                     </div>
                     <div class="container-pagina">
-                        <div class="arrow-pagina" id="pagina-first">🡨🡨 primera</div>
+                        <div class="arrow-pagina page-visually-hidden" id="pagina-first">🡨🡨 primera</div>
                         <div class="arrow-pagina page-visually-hidden" id="pagina-left">🡨 anterior</div>
                         <div class="arrow-pagina" id="pagina-right">siguiente 🡪</div>
                         <div class="arrow-pagina" id="pagina-last">última 🡪🡪</div>
                     </div>
                 </div>
+            </div>
+            <div class="container-poles main-content visually-hidden">
+                <div class="poles-title">Top 20 poleadores</div>
+                <div class="container-table-poles">
+                    <div class="content-table-poles" id="content-table-poles">
+                    </div>
+                </div>
+            </div>
+            <div class="container-ignorados main-content visually-hidden">
+                ignorados
+            </div>
+            <div class="container-opciones main-content visually-hidden">
+                opciones
             </div>
             <div class="container-error main-content visually-hidden">
                 <h1 class="error-message">Algo pasa con el servidor. Contacta <a
