@@ -1,6 +1,7 @@
 import { fetchUsers, fetchPoles, buscarUsuario, usuarios } from "./users.js";
 import { createTableRanking, createTablePoles, currentPage, setPagina, rowsPerPage } from "./table.js";
 
+// STARTS
 async function start() {
     try {
         await fetchUsers()
@@ -32,12 +33,13 @@ async function start() {
     }
 }
 
+// SEARCH USER
 ['click'].forEach(evt => {
     document.getElementById("submit-buscar")
         .addEventListener(evt, function (event) {
             event.preventDefault();
             this.tabIndex = 1;
-            buscarUsuario(document.getElementById("user-buscar").value);
+            buscarUsuario($("#user-buscar").val());
         });
 });
 
@@ -49,12 +51,12 @@ document.getElementById("user-buscar")
         }
     });
 
+// CHROME STUFF
 export async function getCurrentTab() {
     return await chrome.tabs.query({ active: true, currentWindow: true }).tabs;
 }
 
-start();
-
+// HIDES MAIN CONTENT
 $(".nav-element-container").click(function (e) {
     $('.main-content:not("visually-hidden")').addClass("visually-hidden")
     if ($(this).hasClass("clicked")) {
@@ -70,6 +72,7 @@ $(".nav-element-container").click(function (e) {
     }
 });
 
+// PAGES
 $("#pagina-left").click(function () {
     setPagina(currentPage - 1);
 });
@@ -85,3 +88,31 @@ $("#pagina-first").click(function () {
 $("#pagina-last").click(function () {
     setPagina(Math.floor(usuarios.length / rowsPerPage));
 });
+
+
+// IGNORADOS BUTTONS
+$("#submit-temas-ignorados").click(function () {
+    createIgnorado($("#temas-ignorados-input").val(), "tema");
+});
+
+$("#submit-usuarios-ignorados").click(function () {
+    createIgnorado($("#usuarios-ignorados-input").val(), "usuario");
+});
+
+function createIgnorado(id, what) {
+    var divWrapper = $("<div>", {
+        class: `${what}-ignorado-wrapper`
+    });
+    var divUsuario = $(`<div>${id}</div>`, {
+        class: `${what}-ignorado-usuario`
+    });
+    var divEliminar = $(`<div>-</div>`, {
+        class: `${what}-ignorado-eliminar`
+    });
+    divWrapper.append(divUsuario, divEliminar);
+    $(`.list-wrapper.${what}s-ignorados`).append(divWrapper);
+}
+
+
+
+start();

@@ -11,7 +11,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  font-size: var(--fs-500);
+  font-size: var(--fs-400);
 }
 
 .section-nav {
@@ -75,7 +75,7 @@ a {
   justify-content: center;
   align-items: center;
   width: auto;
-  height: 2rem;
+  /* height: 2rem; */
   gap: 1rem;
 }
 
@@ -89,7 +89,7 @@ a {
 }
 
 .input-message {
-  font-size: var(--fs-400);
+  font-size: var(--fs-300);
 }
 
 .input-button[disabled],
@@ -120,7 +120,8 @@ button:disabled {
   background-color: var(--clr-primary-400);
   color: var(--clr-neutral-100);
   font-weight: var(--fw-regular);
-  font-size: var(--fs-300);
+  font-size: var(--fs-350);
+  text-align: center;
 }
 
 .input-box:focus {
@@ -130,24 +131,30 @@ button:disabled {
 .input-button {
   display: block;
   font-size: var(--fs-button);
-  width: 15em;
+  width: 13em;
   height: 2.5rem;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1rem;
-  margin-top: -1rem;
+  margin-top: -.8rem;
+}
+
+.input-button:hover {
+  background-color: var(--clr-accent-800);
+  border: 1px solid var(--clr-accent-700);
+  border-radius: .1rem;
 }
 
 .input-label {
   color: white;
   font-weight: var(--fw-regular);
-  font-size: var(--fs-400);
+  font-size: var(--fs-300);
   position: relative;
   pointer-events: none;
   margin-left: auto;
   margin-right: auto;
-  top: -1.2rem;
+  top: -1.4rem;
   opacity: 50%;
   transition: 0.2s ease all;
   -moz-transition: 0.2s ease all;
@@ -158,6 +165,7 @@ button:disabled {
 .input-box:not(:placeholder-shown)~.input-label {
   top: -2.5rem;
   opacity: 100%;
+  font-size: var(--fs-200);
   font-weight: var(--fw-regular);
   color: var(--clr-accent-300);
 }
@@ -178,11 +186,11 @@ button:disabled {
 .bar:before,
 .bar:after {
   content: '';
-  height: .10rem;
+  height: .20rem;
   width: 0;
   bottom: 0;
   position: absolute;
-  background: #ffffff;
+  background:var( --clr-accent-300);
   transition: 0.5s ease all;
   -moz-transition: 0.5s ease all;
   -webkit-transition: 0.5s ease all;
@@ -216,7 +224,54 @@ button:disabled {
 /* POLES */
 
 .poles-title {
+  font-size: var(--fs-600);
   text-align: center;
   padding: 1rem;
-  font-size: var(--fs-600);
+}
+
+
+/* IGNORADOS */
+
+.content-ignorados {
+  display: flex;
+  margin: 2%;
+  height: fit-content;
+}
+
+.container-usuarios-ignorados {
+  width: 50%;
+  border-width: 2px 2px 2px 2px;
+  border-style: dashed;
+  border-color: var(--clr-accent-400);
+}
+
+.container-temas-ignorados {
+  /* height: auto; */
+  /* height: 100%; */
+  o: 50%;
+  border-width: 2px 2px 2px 0px;
+  border-style: dashed;
+  border-color: var(--clr-accent-400);
+}
+
+.grupo-input.usuarios-ignorados {
+  margin: 0;
+}
+
+.grupo-input.temas-ignorados {
+  margin: 0;
+}
+
+.message-wrapper.usuarios-ignorados {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.message-wrapper.temas-ignorados {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.list-wrapper {
+  height: 5rem;
 }
