@@ -17,14 +17,16 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
 });
 
 const hiloInfo = (id) => {
-    var numero;
+    var usuario, usuario_id;
     if ($('span:contains("Modo noche")').length > 0) {
-        numero = $("div > div > div > div > a", ".postbit_wrapper")[1].innerText
+        usuario = $("div > div > div > div > a", ".postbit_wrapper")[1].innerText;
+        usuario_id = $("div > div > div > div > a", ".postbit_wrapper")[1].href.split("php?u=")[1];
     }
     else {
-        numero = ($('a[class="bigusername"]')[1]).innerText
+        usuario = ($('a[class="bigusername"]')[1]).innerText;
+        usuario_id = ($('a[class="bigusername"]')[1]).href.split("php?u=")[1];
     }
-    return  {"status": 200, "message": { "hilo_id": id, "usuario": numero }}
+    return  {"status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id}}
 
 }
 const userInfo = (id) => {
@@ -34,7 +36,7 @@ const userInfo = (id) => {
         if ($('span:contains("Modo noche")').length > 0) {
             var usuario, mensajes, hilos, registro;
             mensajes = $($('span:contains("Mensajes"):not(:contains("privados"))')[0]).prev("span")[0].innerText.replace(".", "");
-            hilos = $($('span:contains("Hilos")')[0]).prev("span")[0].innerText.replace(".", "");
+            hilos = $($('span:contains("Hilos")')[2]).prev("span")[0].innerText.replace(".", "")
             registro = $($('span:contains("Desde")')[0]).next("span")[0].innerText
         }
         else{

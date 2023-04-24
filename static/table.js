@@ -52,7 +52,7 @@ export async function updateTableRanking() {
                 }
                 userTable.querySelectorAll('.table_row').forEach(tr => tr.classList.remove("selRow"));
                 if (!selected) row.classList.add("selRow");
-                chrome.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + usuarios[i].id })
+                chrome.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + usuarios[i].usuario_id })
             });
 
             row.id = usuario;
@@ -134,7 +134,7 @@ export async function updateTablePoles() {
                 }
                 userTable.querySelectorAll('.table_row').forEach(tr => tr.classList.remove("selRow"));
                 if (!selected) row.classList.add("selRow");
-                chrome.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + poles[i].id })
+                chrome.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + poles[i].usuario_id })
             });
 
             row.id = usuario;

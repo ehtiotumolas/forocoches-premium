@@ -107,7 +107,7 @@ def getAllUsers():
         res.sort(key=lambda tup: tup[0], reverse=True)
         cursor.close()
 
-        res = [dict(zip(["puntos", "usuario", "mensajes", "hilos", "id", "registro", "dias_antiguedad", "mensajes_dia", "hilos_dia"], row))
+        res = [dict(zip(["puntos", "usuario", "mensajes", "hilos", "usuario_id", "registro", "dias_antiguedad", "mensajes_dia", "hilos_dia"], row))
                for row in res]
         for index in range(len(res)):
             for key in res[index]:
@@ -130,19 +130,19 @@ def getAllPoles():
         cursor = connection.cursor()
         query = "SELECT stat from estadisticas where id = 'max_mensajes'"
         cursor.execute(query)
-        query = f"""SELECT COUNT(1), usuario, hilo_id =
+        query = f"""SELECT COUNT(1), usuario, usuario_id, hilo_id =
                         STUFF((SELECT ', ' + CAST(hilo_id AS VARCHAR)
                             FROM poles b
                             WHERE a.usuario = b.usuario
                             FOR XML PATH('')), 1, 2, '')
                     FROM poles a
-                    GROUP BY usuario
+                    GROUP BY usuario, usuario_id
                     ORDER BY COUNT(1) DESC
                 """
         cursor.execute(query)
         res = cursor.fetchall()
         cursor.close()
-        res = [dict(zip(["poles", "usuario", "hilos_id"], row))
+        res = [dict(zip(["poles", "usuario", "usuario_id", "hilos_id"], row))
                for row in res]
         for index in range(len(res)):
             for key in res[index]:
@@ -176,8 +176,8 @@ def addHilos():
             query = f'''BEGIN
                             IF NOT EXISTS (SELECT * FROM poles WHERE hilo_id = {req["hilo_id"]})
                                 BEGIN
-                                    INSERT INTO poles (usuario, hilo_id) 
-                                    VALUES ('{hexUsuarioStr}', {req["hilo_id"]})
+                                    INSERT INTO poles (usuario, usuario_id, hilo_id) 
+                                    VALUES ('{hexUsuarioStr}', {req["usuario_id"]}, {req["hilo_id"]})
                                 END
                         END'''
             try:
