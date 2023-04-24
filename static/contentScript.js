@@ -163,8 +163,10 @@ const hiloInfo = (id) => {
         usuario_id = divFound.href.split("php?u=")[1];
     }
     else {
-        usuario = ($('a[class="bigusername"]')[1]).innerText;
-        usuario_id = ($('a[class="bigusername"]')[1]).href.split("php?u=")[1];
+        var postFound = $('a[name="2"]')[0].href.split('#post')[1]
+        var aFound = $(`div[id=postmenu_${postFound}] > a`)[0];
+        usuario = aFound.innerText;
+        usuario_id = aFound.href.split("php?u=")[1];
     }
     return { "status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id } }
 
