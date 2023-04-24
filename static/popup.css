@@ -445,7 +445,6 @@ input[type="color"]::-webkit-color-swatch {
 
 .topDiv {
   cursor: pointer;
-  background-color: var(--clr-primary-200);
   font-size: var(--fs-500);
   padding-left: .5rem;
 }
@@ -457,6 +456,7 @@ input[type="color"]::-webkit-color-swatch {
   padding-right: 1.5rem;
   background-color: var(--clr-primary-200);
   font-size: var(--fs-350);
+  font-weight: var(--fw-thin);
   line-height: 1.4rem;
 }
 

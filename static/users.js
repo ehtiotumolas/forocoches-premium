@@ -2,13 +2,10 @@ import { setPagina, rowsPerPage } from "./table.js";
 
 export var usuarios;
 export var poles;
-<<<<<<< Updated upstream
-=======
 const server = "https://www.forocochero.com"
->>>>>>> Stashed changes
 
 export async function fetchUsers() {
-    var url = 'http://192.168.0.172:5001/getAllUsers';
+    var url = `${server}/getAllUsers`;
     try {
         await fetch(url, {
             method: 'GET',
@@ -34,7 +31,7 @@ export async function fetchUsers() {
 }
 
 export async function fetchPoles() {
-    var url = 'http://192.168.0.172:5001/getAllPoles';
+    var url = `${server}/getAllPoles`;
     try {
         await fetch(url, {
             method: 'GET',

@@ -21,24 +21,34 @@ async function retrieveStorage(key) {
 chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     console.log("Listening")
     const { type, value } = obj;
-    const id = $("a[href*=searchthreadid]")[0].href.split('=')[1].split('&')[0];
-    if (type === "hilo_info") {
-        sendResponse(hiloInfo(id));
-    }
     if (type === "usuario_info") {
         sendResponse(userInfo(value));
-    }
-    if (type === "hilo_usuarios_info") {
-        sendResponse(usersInfo(id));
+        return;
     }
     if (type === "usuario_info_old_hilos") {
         sendResponse(userInfoHilosOld());
+        return;
     }
     if (type === "hilo_mensaje_likes") {
         sendResponse(getAllPostsId());
+        return;
+    }
+    if (type === "estadisticas") {
+        sendResponse(findEstadisticas());
+        return;
+    }
+    const id = $("a[href*=searchthreadid]")[0].href.split('=')[1].split('&')[0];
+    if (type === "hilo_info") {
+        sendResponse(hiloInfo(id));
+        return;
+    }
+    if (type === "hilo_usuarios_info") {
+        sendResponse(usersInfo(id));
+        return;
     }
     if (type === "likes_info") {
         updateAllLikes(value);
+        return;
     }
 });
 
@@ -345,12 +355,7 @@ function onMutation(mutations) {
                     if (n.tagName == 'DIV') {
                         if (darkMode != undefined && darkMode) {
                             if ($(n).hasClass("fixed_adslot")) {
-                                if ($(n).parent().parent()[0].id !== "sidebar") {
-                                    $(n).parent().parent().remove();
-                                }
-                                else {
-                                    $(n).parent().remove();
-                                }
+                                $(n).parent().remove();
                             }
                             if (n.id.indexOf("optidigital-adslot-Content_") > -1) {
                                 $(n).remove();
@@ -380,7 +385,7 @@ function onMutation(mutations) {
                     if (n.tagName == 'TABLE' && $(n).hasClass("cajasprin")) {
                         $(n).next('br').remove();
                         $(n).prev('br').remove();
-                        $(n).remove();
+                        //$(n).remove();
                     }
                 }
                 if (toListen.includes("ocultar-trending")) {
@@ -595,12 +600,17 @@ const hiloInfo = (id) => {
     };
 
     if (darkMode) {
-        var postFound = $(".date-and-time-gray").filter(function () {
-            return this.innerText === "#2";
-        }).parent().parent().parent().parent()[0].id.split('post')[1]
-        var divFound = $(`div[id='postmenu_${postFound}'] > a`)[0];
-        usuario = divFound.innerText
-        usuario_id = divFound.href.split("php?u=")[1];
+        try {
+            var postFound = $(".date-and-time-gray").filter(function () {
+                return this.innerText === "#2";
+            }).parent().parent().parent().parent()[0].id.split('post')[1]
+            var divFound = $(`div[id='postmenu_${postFound}'] > a`)[0];
+            usuario = divFound.innerText
+            usuario_id = divFound.href.split("php?u=")[1];
+        }
+        catch (err) {
+            return { "status": 404, "message": err }
+        }
     }
     else {
         var postFound = $('a[name="2"]')[0].href.split('#post')[1]
@@ -676,6 +686,22 @@ const usersInfo = (id) => {
         }
     }
     return { "status": 200, "message": usuarios }
+}
+
+const findEstadisticas = () => {
+    try {
+        if (darkMode) {
+            var mensajes_totales, hilos_totales;
+            mensajes_totales = $('span:contains("Mensajes totales:")')[0].innerText.split('Mensajes totales: ')[1].replaceAll('.', '');
+            hilos_totales = $('span:contains("Temas:")')[0].innerText.split('Temas: ')[1].replaceAll('.', '');
+        }
+        else {
+        }
+        return { "status": 200, "message": { "mensajes_totales": mensajes_totales, "hilos_totales": hilos_totales } }
+    }
+    catch {
+        return { "status": 400 }
+    }
 }
 
 const shadeColor = (color, percent) => {

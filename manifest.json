@@ -2,7 +2,7 @@
   "name": "Forocoches premium",
   "version": "1.3.1",
   "description": "Forocoches en esteroides",
-  "permissions": ["storage", "scripting"],
+  "permissions": ["storage"],
   "host_permissions": [
       "https://*.forocoches.com/*", 
       "https://*.forocochero.com/*"

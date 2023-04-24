@@ -19,6 +19,8 @@
   --ff-body: var(--ff-primary);
   --ff-heading: var(--ff-primary);
 
+  --fw-thin: 200;
+  --fw-thinish: 300;
   --fw-regular: 400;
   --fw-semi-bold: 500;
   --fw-bold: 700;

@@ -1,8 +1,5 @@
-<<<<<<< Updated upstream
-const server = 'http://192.168.0.172:5001/';
-=======
+
 const server = "https://www.forocochero.com"
->>>>>>> Stashed changes
 
 chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
     if (info.status === 'complete') {
@@ -16,6 +13,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                     console.log("Response hilo_info: ", await response.status);
                     if (response.status == 200) addPole(response.message);
                     if (response.status == 400) removePole(response.message);
+                    if (response.status == 404) console.log(response.message);
                 });
             }
             chrome.tabs.sendMessage(tabId, {
@@ -40,7 +38,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 if (response.status == 200) addUserHilosOld(response.message);
             });
         }
-        if (tab.url && tab.url.includes("foro/member.php")) {
+        if (tab.url && tab.url.includes("member.php")) {
             const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
             chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info",
@@ -48,6 +46,14 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             }, async (response) => {
                 console.log("Response usuario_info: ", await response.status);
                 if (response.status == 200) addUser(response.message); 
+            });
+        }
+        if (tab.url && tab.url == "https://forocoches.com/foro/") {
+            chrome.tabs.sendMessage(tabId, {
+                type: "estadisticas"
+            }, async (response) => {
+                console.log("Response estadisticas: ", await response.status);
+                if (response.status == 200) addEstadisticas(response.message); 
             });
         }
     }
@@ -113,6 +119,14 @@ const removePole = (json) => {
         .then((response) => response.json())
         .then((response) => {
             console.log('removePole' + ': ' + response.status)
+        });
+}
+
+const addEstadisticas = (json) => {
+    sendRequest('POST', server + '/' + 'addEstadisticas', json, 'addEstadisticas')
+        .then((response) => response.json())
+        .then((response) => {
+            console.log('addEstadisticas' + ': ' + response.status)
         });
 }
 
