@@ -380,7 +380,10 @@ function onMutation(mutations) {
                                     papa = papa.parents("table:first");
                                 }
                                 papa.prev().remove();
-                                papa.next().remove();
+                                if (n.id.indexOf("optidigital-adslot-Billboard_") == -1)
+                                {
+                                    papa.next().remove();
+                                }                                
                                 papa.remove();
                             }
                             if (n.id.indexOf("opd_bottomstickyad") > -1) {
