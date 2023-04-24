@@ -39,7 +39,6 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     if (type === "likes_info") {
         updateAllLikes(value);
     }
-    return true;
 });
 
 const listenThread = () => {
@@ -576,7 +575,7 @@ const getAllPostsId = () => {
     $.each($('div[id*=edit]'), function (i, obj) {
         posts.push(obj.id.split('edit')[1])
     });
-    return { "status": 200, "message": { posts: posts, usuario: forocochero } }
+    return { "status": 200, "message": { "posts": posts, "usuario": forocochero } };
 }
 
 const hiloInfo = (id) => {

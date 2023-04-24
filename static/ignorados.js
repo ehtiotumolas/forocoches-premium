@@ -1,8 +1,8 @@
 function submitTemasIgnorados(thread) {
   if (thread != "") {
     createIgnorado(thread, "tema");
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: {loc: "tema", message: thread, action: "add"}});
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload"});
+    chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "tema", message: thread, action: "add" } });
+    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
     $("#temas-ignorados-input").val('');
   }
 }
@@ -10,8 +10,8 @@ function submitTemasIgnorados(thread) {
 function submitUsariosIgnorados(user) {
   if (user != "") {
     createIgnorado(user, "usuario");
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: {loc: "usuario", message: user, action: "add"}});
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload"});
+    chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "usuario", message: user, action: "add" } });
+    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
     $("#usuarios-ignorados-input").val('');
   }
 }
@@ -50,8 +50,8 @@ function createIgnorado(id, loc) {
   $(divEliminar).click(async function (e) {
     e.preventDefault();
     $(this).parent().remove();
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: {loc: loc, message: id, action: "remove"}});
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload"});
+    chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: loc, message: id, action: "remove" } });
+    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
   });
   divWrapper.append(divUsuario, divEliminar);
   $(`.list-wrapper.${loc}s-ignorados`).append(divWrapper);
@@ -75,7 +75,9 @@ function loadIgnoradosLists() {
 chrome.runtime.onMessage.addListener((obj) => {
   if (obj.sender == "contentScript" && obj.type == "ignore_usuario") {
     submitUsariosIgnorados(obj.content);
+    return true;
   }
+  return true;
 });
 
 

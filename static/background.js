@@ -5,15 +5,6 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const pageInfo = tab.url.split("=")[1];
             const [id, queryParameters] = pageInfo.split(/[.\&#/_]/)
-            chrome.tabs.sendMessage(tabId, {
-                type: "hilo_mensaje_likes",
-                id: id
-            }, async (response) => {
-                console.log("hilo_mensaje_likes: ", await response.status);
-                if (response.status == 200) {
-                    findLikedPosts(tabId, response.message)
-                }
-            });
             if (!queryParameters || queryParameters.includes("highlight")) {
                 chrome.tabs.sendMessage(tabId, {
                     type: "hilo_info",
@@ -30,15 +21,24 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             }, async (response) => {
                 console.log("Response hilo_usuarios_info: ", await response.status);
                 if (response.status == 200) addUsers(response.message);
+                return true;
             });
-
+            chrome.tabs.sendMessage(tabId, {
+                type: "hilo_mensaje_likes",
+                id: id
+            }, async (response) => {
+                console.log("hilo_mensaje_likes: ", await response.status);
+                if (response.status == 200)
+                    findLikedPosts(tabId, response.message);
+                    return true;
+            });
         }
         if (tab.url && tab.url.includes("search.php?searchid=")) {
             chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info_old_hilos"
             }, async (response) => {
                 console.log("Response usuario_info_old_hilos: ", await response.status);
-                if (response.status == 200) addUserHilosOld(response.message);
+                if (response.status == 200) addUserHilosOld(response.message);  return true;
             });
         }
         if (tab.url && tab.url.includes("foro/member.php")) {
@@ -48,19 +48,20 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 id: queryParameters
             }, async (response) => {
                 console.log("Response usuario_info: ", await response.status);
-                if (response.status == 200) addUser(response.message);
+                if (response.status == 200) addUser(response.message);   return true;
             });
         }
         return true;
     }
+    return true;
 });
 
 chrome.commands.onCommand.addListener((shortcut) => {
     console.log('reload bitch');
-    console.log(shortcut);
     if (shortcut.includes("+Z")) {
         chrome.runtime.reload();
         chrome.tabs.reload();
+        return true;
     }
     return true
 })
@@ -189,6 +190,7 @@ function findLikedPosts(tabId, json) {
             if (status == 200) {
                 console.log('getAllLikes' + ': ' + status)
                 chrome.tabs.sendMessage(tabId, { type: "likes_info", value: content, id: 0 });
+                return true;
             }
             else {
                 console.log(status)
