@@ -27,8 +27,6 @@ connection.timeout = 3
 connection.autocommit = True
 
 # Utils
-
-
 def ConvertDate(date):
     fechaCon = {
         "ene": "enero", "feb": "febrero", "mar": "marzo", "abr": "abril", "may": "mayo", "jun": "junio", "jul": "julio", "ago": "agosto", "sep": "septiembre", "oct": "octubre", "nov": "noviembre", "dic": "diciembre"}

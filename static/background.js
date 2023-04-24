@@ -1,12 +1,12 @@
 const server = 'http://192.168.0.172:5001/';
 
-chrome.tabs.onUpdated.addListener(function async(info, tab) {
+chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
     if (info.status === 'complete') {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const pageInfo = tab.url.split("=")[1];
             const [id, queryParameters] = pageInfo.split(/[.\&#/_]/)
             if (!queryParameters || queryParameters.includes("highlight")) {
-                chrome.tabs.sendMessage({
+                chrome.tabs.sendMessage(tabId, {
                     type: "hilo_info",
                     id: id
                 }, async (response) => {
@@ -15,7 +15,7 @@ chrome.tabs.onUpdated.addListener(function async(info, tab) {
                     if (response.status == 400) removePole(response.message);
                 });
             }
-            chrome.tabs.sendMessage({
+            chrome.tabs.sendMessage(tabId, {
                 type: "hilo_usuarios_info",
                 id: id
             }, async (response) => {
@@ -24,7 +24,7 @@ chrome.tabs.onUpdated.addListener(function async(info, tab) {
             });
         }
         if (tab.url && tab.url.includes("search.php?searchid=")) {
-            chrome.tabs.sendMessage({
+            chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info_old_hilos"
             }, async (response) => {
                 console.log("Response usuario_info_old_hilos: ", await response.status);
@@ -33,7 +33,7 @@ chrome.tabs.onUpdated.addListener(function async(info, tab) {
         }
         if (tab.url && tab.url.includes("foro/member.php")) {
             const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
-            chrome.tabs.sendMessage({
+            chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info",
                 id: queryParameters
             }, async (response) => {

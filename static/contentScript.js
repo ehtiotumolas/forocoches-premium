@@ -15,22 +15,23 @@ async function retrieveStorage(key) {
         })
 }
 
-chrome.runtime.onMessage.addListener((obj, sendResponse) => {
-    if (obj.type === "hilo_info") {
+chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
+    console.log("Listening")
+    const { type, value, id } = obj;
+    if (type === "hilo_info") {
         sendResponse(hiloInfo(id));
     }
-    if (obj.type === "usuario_info") {
+    if (type === "usuario_info") {
         sendResponse(userInfo(id));
     }
-    if (obj.type === "hilo_usuarios_info") {
+    if (type === "hilo_usuarios_info") {
         sendResponse(usersInfo(id));
     }
-    if (obj.type === "usuario_info_old_hilos") {
+    if (type === "usuario_info_old_hilos") {
         sendResponse(userInfoHilosOld());
     }
     return true;
 });
-
 
 const listenThread = () => {
     if (location.href.includes("forumdisplay.php")) {
@@ -53,6 +54,7 @@ const listenThread = () => {
             });
     }
 }
+
 function onMutation(mutations) {
     let stopped;
     for (const { addedNodes } of mutations) {
@@ -153,8 +155,12 @@ const hiloInfo = (id) => {
     };
 
     if ($('span:contains("Modo noche")').length > 0) {
-        usuario = $("div > div > div > div > a[href^='member.php?']", ".postbit_wrapper")[0].innerText
-        usuario_id = $("div > div > div > div > a[href^='member.php?']", ".postbit_wrapper")[1].href.split("php?u=")[1];;
+        var postFound = $(".date-and-time-gray").filter(function () {
+            return this.innerText === "#2";
+        }).parent().parent().parent().parent()[0].id.split('post')[1]
+        var divFound = $(`div[id='postmenu_${postFound}'] > a`)[0];
+        usuario = divFound.innerText
+        usuario_id = divFound.href.split("php?u=")[1];
     }
     else {
         usuario = ($('a[class="bigusername"]')[1]).innerText;

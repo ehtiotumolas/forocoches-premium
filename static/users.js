@@ -58,13 +58,10 @@ export async function fetchPoles() {
 export function buscarUsuario(usuario) {
     try {
         var offset = (parseInt(getComputedStyle(document.body).getPropertyValue('--fs-header')) * 16 + 50);
-        var element = document.getElementById(usuario.trim())
-        if (element == null) {
-            var usuarioEncontrado = Object.keys(usuarios).find(key => usuarios[key].usuario === usuario);
-            if (usuarioEncontrado != null) {
-                setPagina(Math.floor(usuarioEncontrado/rowsPerPage));
-                var element = document.getElementById(usuario.trim())
-            }
+        var usuarioEncontrado = Object.keys(usuarios).find(key => usuarios[key].usuario === usuario);
+        if (usuarioEncontrado != null) {
+            setPagina(Math.floor(usuarioEncontrado / rowsPerPage));
+            var element = document.getElementById(usuario.trim())
         }
         var pos = element.getBoundingClientRect();
         var total = (pos.top - offset);
