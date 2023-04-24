@@ -101,12 +101,12 @@ $(".topDiv").each(function () {
     });
 });
 
-document.getElementsByClassName("donateIcon")[0]
+document.getElementById("footer-donate")
     .addEventListener("click", function () {
         openInNewTab("https://www.paypal.com/donate/?hosted_button_id=G8DCS8GX6METS");
     });
 
-document.getElementsByClassName("rateIcon")[0]
+document.getElementById("footer-rate")
     .addEventListener("click", function () {
         openInNewTab("https://chrome.google.com/webstore/detail/forocoches-premium/hdiegimcikljdcgohlcnilgephloaiaa/reviews");
     });

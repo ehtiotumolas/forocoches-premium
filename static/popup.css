@@ -33,58 +33,59 @@ body {
 
 /* FOOTER */
 .section-footer {
-  margin-top: auto;
-  margin-top: 1rem;
+  margin-bottom:0;
   width: 100%;
   align-items: center;
-  border-top: 2px solid var(--clr-neutral-900);
-  height: 3rem;
+  border-top: 1px solid var(--clr-neutral-900);
   font-size: var(--fs-300);
 }
 
 .container-footer {
-  height: 3rem;
+  width: 100%;
   display: flex;
+  margin-left: 0;
+  margin-right: 0;
   vertical-align: middle;
   align-items: center;
+  justify-content: center;
   padding-right: 1rem;
+  gap: 5rem;
+  height: 4rem;
 }
 
 .footer-item {
   color: var(--clr-primary-400);
   font-size: var(--fs-500);
   font-weight: var(--fw-semi-bold);
-  height: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: .2rem;
+  gap: .1rem;
   vertical-align: middle;
-  padding: 2rem;
+  cursor: pointer;
 }
 
 .nav-img {
   display: inline-block;
   height: 1.6em;
   width: 1.6em;
-  cursor: pointer;
   background-repeat:no-repeat;
   background-size:contain;
 }
 
-.donateIcon {
+#footer-donate-img {
   background-image: url(images/donate.png);
 }
 
-.donateIcon:hover {
+#footer-donate:hover #footer-donate-img {
   background-image: url(images/donate_over.png);
 }
 
-.rateIcon {
+#footer-rate-img {
   background-image: url(images/rate.png);
 }
 
-.rateIcon:hover {
+#footer-rate:hover #footer-rate-img {
   background-image: url(images/rate_over.png);
 }
 
