@@ -59,14 +59,13 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (darkMode === "" && $('span:contains("Modo noche")').length > 0) 
-                {
+                if (darkMode === "" && $('span:contains("Modo noche")').length > 0) {
                     darkMode = true;
                 }
                 if (toListen.includes("temas-ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent();
-                        if (($('span:contains("Modo noche")').length != 0)) papa = $(papa).parent();
+                        if ((darkMode)) papa = $(papa).parent();
                         $(papa).next("separator").remove();
                         $(papa).remove();
                     }
@@ -94,9 +93,9 @@ function onMutation(mutations) {
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
                                     };
                                 });
-                            if ($('span:contains("Modo noche")').length != 0) {
+                            if (darkMode) {
                                 if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
-                                    $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
+                                    $("<div/>").attr('id', 'container-opciones').css({ paddingLeft: "5px" }).insertAfter($(postDiv).parent().parent().children()[0]);;
                                 }
                                 calaveraBtn.appendTo($(postDiv).parent().parent().children("#container-opciones"));
                             }
@@ -107,7 +106,7 @@ function onMutation(mutations) {
                         if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
                             if (toListen.includes("ocultar-usuarios-ignorados")) {
                                 var papa = $(n).parent().parent().parent();
-                                if ($('span:contains("Modo noche")').length != 0) {
+                                if (darkMode) {
                                     papa.remove();
                                 }
                                 else {
@@ -117,7 +116,7 @@ function onMutation(mutations) {
                             else {
                                 var usuario = $(n);
                                 $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
-                                if (($('span:contains("Modo noche")').length != 0)) usuario = $(usuario).parent('div')[0];
+                                if ((darkMode)) usuario = $(usuario).parent('div')[0];
                                 $(usuario).next('div')[0].innerText = "(Texto ignorado)";
                             }
                         }
@@ -127,13 +126,13 @@ function onMutation(mutations) {
                         $(id).remove();
                     }
                     if (n.tagName == 'SPAN') {
-                        if (darkMode && usuarios_ignorados.some(substring => n.innerText.includes(`@${substring}`))) {
+                        if (darkMode && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`@${substring}`))) {
                             var papa = $(n).parent().parent().parent().parent().parent();
                             papa.next("separator").remove();
                             papa.remove();
                         }
                         else {
-                            if (usuarios_ignorados.some(substring => n.innerText.includes(`${substring}`)) && $(n).parent().hasClass("smallfont")) {
+                            if (usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`${substring}`)) && $(n).parent().hasClass("smallfont")) {
                                 var papa = $(n).parent().parent().parent();
                                 papa.next("separator").remove();
                                 papa.remove();
@@ -147,7 +146,7 @@ function onMutation(mutations) {
                             var postId = "postmenu_" + n.id.split('edit')[1];
                             var postDiv = $(`div[id=${postId}]`)[0];
                             var usuario = "";
-                            if ($('span:contains("Modo noche")').length != 0) {
+                            if (darkMode) {
                                 usuario = $(postDiv)[0].innerText;
                             }
                             else {
@@ -178,7 +177,7 @@ function onMutation(mutations) {
                                                 borderRadius: "1.5rem",
                                                 filter: "drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2))",
                                             })
-                                        if ($('span:contains("Modo noche")').length != 0) {
+                                        if (darkMode) {
                                             $(notas).css({ marginLeft: "-20px", marginTop: "0px" })
                                         }
                                         else {
@@ -249,7 +248,6 @@ function onMutation(mutations) {
                                             .click(function (e) {
                                                 e.preventDefault();
                                                 var textToSave = `${$("#notas-popup-text-editable")[0].innerText}`;
-                                                chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: { loc: "notas", message: { "usuario": usuario, "text": textToSave }, action: "add" } });
                                                 savedNotas[usuario] = { "text": textToSave };
                                                 if (textToSave == "") {
                                                     notasBtn.css({ border: 0, borderRadius: "6px" });
@@ -257,20 +255,22 @@ function onMutation(mutations) {
                                                 else {
                                                     notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
                                                 }
+                                                chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: { loc: "notas", message: { "usuario": usuario, "text": textToSave }, action: "add" } });
+                                                chrome.runtime.sendMessage({ sender: "contentScript", type: "reload" });
                                             })
                                             .appendTo(notas);
 
                                         notas.insertAfter($(this).parent().children("#notas-usuarios-div"));
-                                        if (savedNotas.hasOwnProperty(usuario)) {
+                                        if (savedNotas != undefined && savedNotas.hasOwnProperty(usuario)) {
                                             $('#notas-popup-text-editable')[0].innerText = savedNotas[usuario].text;
                                         }
                                     }
                                 });
-                            if (savedNotas.hasOwnProperty(usuario)) {
+                            if (savedNotas != undefined && savedNotas.hasOwnProperty(usuario)) {
                                 notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
                             }
 
-                            if ($('span:contains("Modo noche")').length != 0) {
+                            if (darkMode) {
                                 if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
                                     $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
                                 }
@@ -287,7 +287,7 @@ function onMutation(mutations) {
                     }
                 }
                 if (toListen.includes("op-color")) {
-                    if ($('span:contains("Modo noche")').length != 0) {
+                    if (darkMode) {
                         if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px var(--coral)') {
                             n.style.backgroundColor = opciones["op-color"].value;
                         }
@@ -403,9 +403,29 @@ function onMutation(mutations) {
                         else if (toListen.includes("ocultar-foros-relacionados") &&
                             toListen.includes("ocultar-trending") &&
                             toListen.includes("ocultar-publicidad")) {
-                            $($("main")[0]).css({
-                                "grid-template-columns": "24fr",
-                                "max-width": "90%"
+                            if ($(window).width() > 1024) {
+                                $($("main")[0]).css({
+                                    "grid-template-columns": "24fr",
+                                    "max-width": "90%"
+                                });
+                            }
+                            else {
+                                $($("main")[0]).css({
+                                    "max-width": "100%"
+                                });
+                            }
+                            $(window).resize(function () {
+                                if ($(window).width() <= 1024) {
+                                    $($("main")[0]).css({
+                                        "max-width": "100%"
+                                    });
+                                }
+                                else {
+                                    $($("main")[0]).css({
+                                        "grid-template-columns": "24fr",
+                                        "max-width": "90%"
+                                    });
+                                }
                             });
                         }
                         else {
@@ -415,6 +435,24 @@ function onMutation(mutations) {
                                 "padding-right": "0",
                             });
                         }
+                    }
+                }
+                if (toListen.includes("avatar-cuadrado")) {
+                    if (darkMode && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
+                        $(n).css({
+                            borderRadius: "0"
+                        });
+                    }
+                }
+                if (toListen.includes("avatar-grande")) {
+                    if (darkMode && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
+                        $(n).css({
+                            width: "70px",
+                            height: "70px"
+                        });
+                        $(n).parent().css({
+                            height: "70px"
+                        });
                     }
                 }
             }
