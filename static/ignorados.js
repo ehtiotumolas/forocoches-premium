@@ -2,7 +2,7 @@ $("#submit-temas-ignorados").click(function () {
   var tema = $("#temas-ignorados-input").val().trim();
   if (tema != "") {
     createIgnorado(tema, "tema");
-    addToChromeStorage("temas-ignorados", tema)
+    addToChromeStorage("temas-ignorados", tema, "push")
     $("#temas-ignorados-input").val('');
   }
 });
@@ -11,7 +11,7 @@ $("#submit-usuarios-ignorados").click(function () {
   var usuario = $("#usuarios-ignorados-input").val().trim();
   if (usuario != "") {
     createIgnorado(usuario, "usuario");
-    addToChromeStorage("usuarios-ignorados", usuario)
+    addToChromeStorage("usuarios-ignorados", usuario, "push")
     $("#usuarios-ignorados-input").val('');
   }
 });
@@ -23,21 +23,36 @@ function createIgnorado(id, loc) {
     .addClass(`${loc}-ignorado-id`);
   var divEliminar = $(`<div>-</div>`)
     .addClass(`${loc}-ignorado-eliminar`);
+  $(divEliminar).click(function (e) {
+    e.preventDefault();
+    $(this).parent().remove();
+    addToChromeStorage(loc, id, "pop");
+  });
   divWrapper.append(divUsuario, divEliminar);
   $(`.list-wrapper.${loc}s-ignorados`).append(divWrapper);
 }
 
-function addToChromeStorage(loc, id) {
+function addToChromeStorage(loc, id, action) {
   chrome.storage.sync.get(function (items) {
     if (loc == "temas-ignorados") {
       if (Object.keys(items).length > 0 && items.temas_ignorados) {
-        items.temas_ignorados.push(id);
+        if (action == "add") {
+          items.temas_ignorados.push(id);
+        }
+        if (action == "remove"){
+          items.temas_ignorados.pop(id);
+        }
       }
       else { items.temas_ignorados = [id]; }
     }
     if (loc == "usuarios-ignorados") {
       if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
-        items.usuarios_ignorados.push(id);
+        if (action == "add") {
+          items.usuarios_ignorados.push(id);
+        }
+        if (action == "remove"){
+          items.usuarios_ignorados.pop(id);
+        }
       }
       else { items.usuarios_ignorados = [id]; }
     }

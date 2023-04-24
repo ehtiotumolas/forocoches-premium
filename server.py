@@ -171,8 +171,8 @@ def getAllPoles():
     return json.dumps(res, default=str), 200, {'ContentType': 'application/json'}
 
 
-@app.route("/addHilos", methods=["POST"])
-def addHilos():
+@app.route("/addPole", methods=["POST"])
+def addPole():
     session = {}
     if request.method == 'POST':
         req = request.get_json()

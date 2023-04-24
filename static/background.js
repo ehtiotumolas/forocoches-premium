@@ -3,20 +3,21 @@ const server = 'http://192.168.0.172:5001/';
 chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {   
     if (info.status === 'complete') {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
-            const queryParameters = tab.url.split("?t=")[1].split("&")[0];
-            if (!queryParameters.includes("page")) {
+            const pageInfo = tab.url.split("=")[1];
+            const [id, queryParameters] = pageInfo.split("&")
+            if (!queryParameters) {
                 chrome.tabs.sendMessage(tabId, {
                     type: "hilo_info",
-                    id: queryParameters
+                    id: id
                 }, async (response) => {
                     console.log("Response hilo_info: ", await response.status);
-                    if (response.status == 200) addHilos(response.message);
+                    if (response.status == 200) addPole(response.message);
                     if (response.status == 400) removePole(response.message);
                 });
             }
             chrome.tabs.sendMessage(tabId, {
                 type: "hilo_usuarios_info",
-                id: queryParameters
+                id: id
             }, async (response) => {
                 console.log("Response hilo_usuarios_info: ", await response.status);
                 if (response.status == 200) addUsers(response.message);
@@ -61,8 +62,8 @@ const addUsers = (json) => {
     sendRequest('POST', server + 'addUsers', json, 'addUsers')
 }
 
-const addHilos = (json) => {
-    sendRequest('POST', server + 'addHilos', json, 'addHilos')
+const addPole = (json) => {
+    sendRequest('POST', server + 'addPole', json, 'addPole')
 }
 
 const removePole = (json) => {

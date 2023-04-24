@@ -291,4 +291,5 @@ button:disabled {
 .tema-ignorado-eliminar {
    margin-left: auto;
    padding-right: 2rem;;
+   cursor: pointer;
 }
