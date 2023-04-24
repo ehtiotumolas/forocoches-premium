@@ -74,13 +74,12 @@ function onMutation(mutations) {
                             var calavera = $("<a/>")
                                 .attr('id', 'ignorar-usuario-div')
                                 .css({
-                                    position: "relative",
-                                    zIndex: 5,
-                                    marginLeft: "-20px",
-                                    cursor: "pointer"
+                                    position: "absolute",
+                                    textDecoration: "none",
+                                    marginTop: "-22px",
+                                    cursor: "pointer",
                                 })
                                 .height("48px")
-                                .width("14px")
                                 .text("💀")
                                 .click(function (e) {
                                     e.preventDefault();
@@ -91,12 +90,19 @@ function onMutation(mutations) {
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
                                     };
                                 });
+                            if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
+                                $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
+                            }
                             if ($('span:contains("Modo noche")').length != 0) {
-                                calavera.prependTo($(postDiv).parent().parent()[0]);
+                                calavera.appendTo($(postDiv)
+                                    .css({
+                                        position: "relative",
+                                    })
+                                    .parent().parent().children("#container-opciones"));
                             }
                             else {
                                 calavera
-                                    .css({ marginLeft: "-5px" }).height("auto").appendTo(postDiv);
+                                    .css({ marginLeft: "0px" }).height("auto").appendTo($(postDiv).parent());
                             }
                         }
                         if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
@@ -130,9 +136,8 @@ function onMutation(mutations) {
                             var notas = $("<a/>")
                                 .attr('id', 'notas-usuarios-div')
                                 .css({
-                                    position: "relative",
-                                    zIndex: 5,
-                                    marginLeft: "-20px",
+                                    position: "absolute",
+                                    textDecoration: "none",
                                     cursor: "pointer"
                                 })
                                 .height("48px")
@@ -140,14 +145,38 @@ function onMutation(mutations) {
                                 .text("🖊️")
                                 .click(function (e) {
                                     e.preventDefault();
-                                    alert("Notas!");
+                                    $("#notas-popup-div").remove();
+                                    if ($(this).children("#notas-popup-div").length == 0) {
+                                        $("<div/>")
+                                            .attr('id', 'notas-popup-div')
+                                            .css({
+                                                position: "absolute",
+                                                zIndex: 1,
+                                                textDecoration: "none",
+                                                cursor: "pointer",
+                                                height: "300px",
+                                                width: "300px",
+                                                left: "-50px",
+                                                backgroundColor: "rgba(0, 0, 0, 0.9)",
+                                                border: "1px",
+                                                borderRadius: "1.5rem"
+                                            }).appendTo($(this));
+                                    }
                                 });
-                            if ($('span:contains("Modo noche")').length != 0) {
-                                notas.prependTo($(postDiv).parent().parent()[0]);
+                            if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
+                                $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
                             }
+                            if ($('span:contains("Modo noche")').length != 0) {
+                                notas.appendTo($(postDiv)
+                                    .css({
+                                        position: "relative",
+                                    })
+                                    .parent().parent().children("#container-opciones"));
+                            }
+
                             else {
                                 notas
-                                    .css({ marginLeft: "-5px" }).height("auto").appendTo(postDiv);
+                                    .css({ marginLeft: "5px" }).height("auto").appendTo($(postDiv).parent());
                             }
                         }
                     }
@@ -357,6 +386,12 @@ const shadeColor = (color, percent) => {
     var GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
     var BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
     return "#" + RR + GG + BB;
+}
+
+document.onclick = function (e) {
+    if ((e.target.id !== 'notas-popup-div' && e.target.id !== 'notas-usuarios-div') || e.target.id == '') {
+        $("#notas-popup-div").remove();
+    }
 }
 
 listenThread();
