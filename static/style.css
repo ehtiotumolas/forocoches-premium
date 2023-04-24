@@ -159,6 +159,11 @@ svg {
   margin-inline: auto;
 }
 
+.dashed {
+  border-style: dashed;
+  border-color: var(--clr-accent-400);
+}
+
 .visually-hidden {
   position: absolute;
   width: 0;

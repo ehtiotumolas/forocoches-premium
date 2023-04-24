@@ -52,7 +52,7 @@
                 Aqui irá el texto general y todas esas cosas que se suelen poner para que la gente entienda de que va
                 esto.
             </div>
-            <div class="container-ranking main-content visually-hidden">
+            <div class="container-ranking main-content visually-hidden dashed">
                 <div class="grupo-input">
                     <input type="input" placeholder=" " class="input-box" id="user-buscar">
                     <span class="bar"></span>
@@ -63,8 +63,8 @@
                     <label class="input-message" id="add-user-message"></label>
                     <label class="input-info"></label>
                 </div>
-                <div class="container-table-ranking">
-                    <div class="content-table-ranking" id="content-table-ranking">
+                <div class="container-table-ranking ">
+                    <div class="content-table-ranking table" id="content-table-ranking">
                     </div>
                     <div class="container-pagina">
                         <div class="arrow-pagina page-visually-hidden" id="pagina-first">🡨🡨 primera</div>
@@ -74,16 +74,16 @@
                     </div>
                 </div>
             </div>
-            <div class="container-poles main-content visually-hidden">
+            <div class="container-poles main-content visually-hidden dashed">
                 <div class="poles-title">Top 20 poleadores</div>
-                <div class="container-table-poles">
+                <div class="container-table-poles table">
                     <div class="content-table-poles" id="content-table-poles">
                     </div>
                 </div>
             </div>
             <div class="container-ignorados main-content visually-hidden">
                 <div class="content-ignorados">
-                    <div class="container-usuarios-ignorados">
+                    <div class="container-usuarios-ignorados dashed">
                         <div class="poles-title usuarios-ignorados">Usuarios Ignorados</div>
                         <div class="grupo-input usuarios-ignorados">
                             <input type="input" placeholder=" " class="input-box" id="usuarios-ignorados-input">
@@ -94,7 +94,7 @@
                         <div class="list-wrapper usuarios-ignorados">
                         </div>
                     </div>
-                    <div class="container-temas-ignorados">
+                    <div class="container-temas-ignorados dashed">
                         <div class="poles-title temas-ignorados">Temas Ignorados</div>
                         <div class="grupo-input temas-ignorados">
                             <input type="input" placeholder=" " class="input-box" id="temas-ignorados-input">
@@ -107,12 +107,84 @@
                     </div>
                 </div>
             </div>
-            <div class="container-opciones main-content visually-hidden">
-                <div class="content-opciones">
-                    <div class="opciones-generales">General</div>
-                    <div class="opciones-generales">Viejo Diseño</div>
-                    <div class="opciones-generales">Nuevo Diseño</div>
-                    <div class="opciones-ignorar">Ignorar</div>
+            <div class="container-opciones main-content visually-hidden dashed">
+                <div class="content-opciones grid">
+                    <div class="opciones-left grid">
+                        <div class="opciones-generales">
+                            <div class=" opciones-header">General</div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Quitar publicidad
+                                </label>
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                        </div>
+                        <div class="opciones-ignorar opciones-header">
+                            <div class=" opciones-header">Ignorar</div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Ocultar ignorados (hard)
+                                </label>
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opciones-right grid">
+                        <div class="opciones-viejo opciones-header">
+                            <div class=" opciones-header">Viejo Diseño</div> 
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                        </div>
+                        <div class="opciones-nuevo opciones-header">
+                            <div class=" opciones-header">Nuevo Diseño</div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                            <div class="checkbox-wrapper">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" /> Checkbox
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="container-error main-content visually-hidden">

@@ -4,8 +4,8 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
     if (info.status === 'complete') {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const pageInfo = tab.url.split("=")[1];
-            const [id, queryParameters] = pageInfo.split("&")
-            if (!queryParameters) {
+            const [id, queryParameters] = pageInfo.split(/[.\&#/_]/)
+            if (!queryParameters || queryParameters.includes("highlight")) {
                 chrome.tabs.sendMessage(tabId, {
                     type: "hilo_info",
                     id: id
@@ -32,8 +32,10 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             });
         }
         if (tab.url && tab.url.includes("foro/member.php")) {
+            const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
             chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info",
+                id: queryParameters
             }, async (response) => {
                 console.log("Response usuario_info: ", await response.status);
                 if (response.status == 200) addUser(response.message);
