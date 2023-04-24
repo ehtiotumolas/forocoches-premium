@@ -49,10 +49,12 @@ function onMutation(mutations) {
                         var papa = $(`#edit${id}`)
                         $(papa).remove();
                     }
-                    // WE NEED TO CHECK FOR ELEMENT B AND SEE IF THE ELEMENT BEFORE (PARENT?) CONTAINS THE ID
-                    if (n.tagName == 'DIV' && usuarios_ignorados.some(substring => n.innerText == (`Cita de ${substring}`))) {
-                        $($(n).children('div')[0]).children('b')[0].innerText = "(Usuario Ignorado)";
-                        $(n).next('div')[0].innerText = "(Texto ignorado)";
+                    // WE NEED TO CHECK FOR OLD THEME VERSION
+                    if (n.tagName == 'DIV' && $(n).children('b').length > 0 && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
+                        var usuario = $(n);
+                        $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
+                        if (($('span:contains("Modo noche")').length != 0)) usuario = $(usuario).parent('div')[0];
+                        $(usuario).next('div')[0].innerText = "(Texto ignorado)";
                     }
                 }
             }

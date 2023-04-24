@@ -1,6 +1,6 @@
 $("#submit-temas-ignorados").click(function () {
-  var tema = $("#temas-ignorados-input").val();
-  if (tema.trim() != "") {
+  var tema = $("#temas-ignorados-input").val().trim();
+  if (tema != "") {
     createIgnorado(tema, "tema");
     addToChromeStorage("temas-ignorados", tema)
     $("#temas-ignorados-input").val('');
@@ -8,8 +8,8 @@ $("#submit-temas-ignorados").click(function () {
 });
 
 $("#submit-usuarios-ignorados").click(function () {
-  var usuario = $("#usuarios-ignorados-input").val();
-  if (usuario.trim() != "") {
+  var usuario = $("#usuarios-ignorados-input").val().trim();
+  if (usuario != "") {
     createIgnorado(usuario, "usuario");
     addToChromeStorage("usuarios-ignorados", usuario)
     $("#usuarios-ignorados-input").val('');
