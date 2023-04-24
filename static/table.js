@@ -135,21 +135,22 @@ export async function updateTablePoles() {
                 }
                 else {
                     const rowPoles = document.createElement("div");
+                    rowPoles.innerHTML = "Poles:&ensp;";
                     rowPoles.classList.add("table_poles", "show-poles");
-                    let links = [];
                     for (var pole of poles[i].hilos_id.split(", ")) {
-                        const aLink = document.createElement("a");
+                        var aLink = document.createElement("a");
                         aLink.innerText = pole;
                         if (pole != poles[i].hilos_id.split(", ").pop()) {
                             aLink.innerText += ", ";
                         }
                         aLink.classList.add("table_poles_link")
-                        aLink.onclick = function() { chrome.tabs.update(getCurrentTab().id, { url: `https://forocoches.com/foro/showthread.php?t=${pole}` }) };
-                        links.push(aLink);
+                        aLink.onclick = function(e) { 
+                            var urlPole = `https://forocoches.com/foro/showthread.php?t=${this.innerText.split(', ')[0]}`
+                            chrome.tabs.update(getCurrentTab().id, { url: `${urlPole}` }) 
+                        };
+                       
+                        rowPoles.append(aLink)
                     }
-
-                    rowPoles.innerHTML = "Poles:&ensp;";
-                    links.forEach(x=> rowPoles.append(x));
                     $(rowPoles).insertAfter(row);
                 }
                 userTable.querySelectorAll('.table_row').forEach(tr => tr.classList.remove("sel_row_pole"));
