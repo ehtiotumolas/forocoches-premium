@@ -1,3 +1,18 @@
+const mo = new MutationObserver(onMutation);
+let whatsIgnored;
+let temas_ignorados;
+let usuarios_ignorados;
+
+async function startListening(key) {
+    return new Promise((resolve, reject) => {
+        chrome.storage.sync.get(key, resolve);
+    })
+        .then(result => {
+            temas_ignorados = result.temas_ignorados;
+            usuarios_ignorados = result.usuarios_ignorados;
+        })
+}
+
 chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     const { type, value, id } = obj;
     if (type === "hilo_info") {
@@ -15,9 +30,40 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     return true;
 });
 
+function onMutation(mutations) {
+    let stopped;
+    for (const { addedNodes } of mutations) {
+        for (const n of addedNodes) {
+            if (n.tagName) {
+                if (whatsIgnored == "temas_ignorados") {
+                    if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados.some(substring => n.innerText.includes(substring))) {
+                        var papa = $(n).parent().parent().parent()
+                        if (($('span:contains("Modo noche")').length != 0)) papa = $(papa).parent();
+                        $(papa).next("separator").remove();
+                        $(papa).remove();
+                    }
+                }
+                if (whatsIgnored == "usuarios_ignorados") {
+                    if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
+                        var papa = $(n).parent()[0].id.replace("postmenu_", "#edit")
+                        $(papa).remove();
+                    }
+                }
+            }
+        }
+        if (stopped) observe();
+    }
+}
+
+function observe() {
+    mo.observe(document, {
+        subtree: true,
+        childList: true,
+    });
+}
+
 const hiloInfo = (id) => {
     var usuario, usuario_id;
-
     if ($('center:contains("Tema especificado inválido")')[0] != null) {
         console.log("Tema especificado inválido");
         return { "status": 400, "message": { "hilo_id": id } }
@@ -31,10 +77,10 @@ const hiloInfo = (id) => {
         usuario = ($('a[class="bigusername"]')[1]).innerText;
         usuario_id = ($('a[class="bigusername"]')[1]).href.split("php?u=")[1];
     }
-
     return { "status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id } }
 
 }
+
 const userInfo = (id) => {
     var usuario, mensajes, hilos, registro;
     usuario = $(document).attr('title').replace("Forocoches - Ver Perfil: ", "");
@@ -101,3 +147,24 @@ const usersInfo = (id) => {
     }
     return { "status": 200, "message": usuarios }
 }
+
+const removeIgnoredHilos = () => {
+    if (location.href.includes("forumdisplay.php")) {
+        startListening()
+            .then(() => {
+                whatsIgnored = "temas_ignorados";
+                onMutation([{ addedNodes: [document.documentElement] }]);
+                observe();
+            });
+    }
+    if (location.href.includes("showthread.php?")) {
+        startListening()
+            .then(() => {
+                whatsIgnored = "usuarios_ignorados";
+                onMutation([{ addedNodes: [document.documentElement] }]);
+                observe();
+            });
+    }
+}
+
+removeIgnoredHilos();

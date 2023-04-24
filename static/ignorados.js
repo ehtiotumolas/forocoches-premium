@@ -1,62 +1,67 @@
-let usuarios_ignorados = [];
-let temas_ignorados = [];
-
-
 $("#submit-temas-ignorados").click(function () {
-  createIgnorado($("#temas-ignorados-input").val(), "tema");
-  $("#temas-ignorados-input").val('');
+  var tema = $("#temas-ignorados-input").val();
+  if (tema.trim() != "") {
+    createIgnorado(tema, "tema");
+    addToChromeStorage("temas-ignorados", tema)
+    $("#temas-ignorados-input").val('');
+  }
 });
 
 $("#submit-usuarios-ignorados").click(function () {
-  createIgnorado($("#usuarios-ignorados-input").val(), "usuario");
-  $("#usuarios-ignorados-input").val('');
+  var usuario = $("#usuarios-ignorados-input").val();
+  if (usuario.trim() != "") {
+    createIgnorado(usuario, "usuario");
+    addToChromeStorage("usuarios-ignorados", usuario)
+    $("#usuarios-ignorados-input").val('');
+  }
 });
 
-function createIgnorado(id, what) {
+function createIgnorado(id, loc) {
   var divWrapper = $("<div>")
-    .addClass(`${what}-ignorado-wrapper`);
+    .addClass(`${loc}-ignorado-wrapper`);
   var divUsuario = $(`<div>${id}</div>`)
-    .addClass(`${what}-ignorado-id`);
+    .addClass(`${loc}-ignorado-id`);
   var divEliminar = $(`<div>-</div>`)
-    .addClass(`${what}-ignorado-eliminar`);
+    .addClass(`${loc}-ignorado-eliminar`);
   divWrapper.append(divUsuario, divEliminar);
-  $(`.list-wrapper.${what}s-ignorados`).append(divWrapper);
-  if (what == "usuario") {
-    usuarios_ignorados.push(id);
-    addToChromeStorage("usuarios_ignorados", usuarios_ignorados)
-  }
-  else {
-    temas_ignorados.push(id);
-    addToChromeStorage("temas_ignorados", temas_ignorados)
-  }
+  $(`.list-wrapper.${loc}s-ignorados`).append(divWrapper);
 }
 
-async function addToChromeStorage(key, list) {
-  await chrome.storage.sync.set({[key]: list })
-  .then(() => {
-      console.log(`Added ${list} to ${key}`);
+function addToChromeStorage(loc, id) {
+  chrome.storage.sync.get(function (items) {
+    if (loc == "temas-ignorados") {
+      if (Object.keys(items).length > 0 && items.temas_ignorados) {
+        items.temas_ignorados.push(id);
+      }
+      else { items.temas_ignorados = [id]; }
+    }
+    if (loc == "usuarios-ignorados") {
+      if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
+        items.usuarios_ignorados.push(id);
+      }
+      else { items.usuarios_ignorados = [id]; }
+    }
+    chrome.storage.sync.set(items, function () {
+      console.log(`Added ${id}`);
+    });
+
   });
 }
 
-async function getTemasIgnorados() {
-  await chrome.storage.sync.get("temas_ignorados")
-  .then((x) => {
-      console.log("Value currently is " + x.temas_ignorados);
-      temas_ignorados = x.temas_ignorados;
+function loadLists() {
+  chrome.storage.sync.get(function (items) {
+    if (Object.keys(items).length > 0 && items.temas_ignorados) {
+      items.temas_ignorados.forEach((x) => {
+        createIgnorado(x, "tema")
+      });
+    }
+    if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
+      items.usuarios_ignorados.forEach((x) => {
+        createIgnorado(x, "usuario")
+      });
+    }
   });
 }
 
-async function getUsuariosIgnorados() {
-  await chrome.storage.sync.get("usuarios_ignorados")
-  .then((x) => {
-      console.log("Value currently is " + x.usuarios_ignorados);
-      usuarios_ignorados = x.usuarios_ignorados;
-  });
-}
 
-async function start() {
-  await getTemasIgnorados();
-  await getUsuariosIgnorados();
-}
-
-start();
+loadLists();

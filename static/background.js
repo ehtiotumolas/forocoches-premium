@@ -1,5 +1,6 @@
 const server = 'http://192.168.0.172:5001/';
-chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
+
+chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {   
     if (info.status === 'complete') {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const queryParameters = tab.url.split("?t=")[1].split("&")[0];
@@ -10,7 +11,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 }, async (response) => {
                     console.log("Response hilo_info: ", await response.status);
                     if (response.status == 200) addHilos(response.message);
-                    if (response.status == 400 ) removePole(response.message);
+                    if (response.status == 400) removePole(response.message);
                 });
             }
             chrome.tabs.sendMessage(tabId, {
@@ -21,16 +22,6 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 if (response.status == 200) addUsers(response.message);
             });
         }
-        if (tab.url && tab.url.includes("foro/member.php")) {
-            const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
-            chrome.tabs.sendMessage(tabId, {
-                type: "usuario_info",
-                id: queryParameters
-            }, async (response) => {
-                console.log("Response usuario_info: ", await response.status);
-                if (response.status == 200) addUser(response.message);
-            });
-        }
         if (tab.url && tab.url.includes("search.php?searchid=")) {
             chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info_old_hilos"
@@ -39,11 +30,19 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 if (response.status == 200) addUserHilosOld(response.message);
             });
         }
+        if (tab.url && tab.url.includes("foro/member.php")) {
+            chrome.tabs.sendMessage(tabId, {
+                type: "usuario_info",
+            }, async (response) => {
+                console.log("Response usuario_info: ", await response.status);
+                if (response.status == 200) addUser(response.message);
+            });
+        }
     }
 });
 
 chrome.commands.onCommand.addListener((shortcut) => {
-    console.log('lets reload');
+    console.log('reload bitch');
     console.log(shortcut);
     if (shortcut.includes("+M")) {
         chrome.runtime.reload();
