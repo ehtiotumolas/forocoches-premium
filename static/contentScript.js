@@ -28,10 +28,6 @@ chrome.runtime.onMessage.addListener((obj, sendResponse) => {
     if (obj.type === "usuario_info_old_hilos") {
         sendResponse(userInfoHilosOld());
     }
-    if (obj.from === "ignorados" && obj.type === "chrome-storage") {
-        alert("he")
-        addToChromeStorage(obj.value.loc, obj.value.id, obj.value.action);
-    }
     return true;
 });
 
@@ -89,8 +85,8 @@ function onMutation(mutations) {
                                     var usuario = postDiv.children[0].innerText;
                                     if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: {loc: "usuario", id: usuario, action: "add"}});
+                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "reload"});
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
-                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "reload", content: "" });
                                     };
                                 });
                             if ($('span:contains("Modo noche")').length != 0) {

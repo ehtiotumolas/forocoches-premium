@@ -1,18 +1,18 @@
 function submitTemasIgnorados(thread) {
   if (thread != "") {
     createIgnorado(thread, "tema");
-    chrome.runtime.sendMessage({ from: "ignorados", type: "chrome-storage", content: {loc: "tema", id: thread, action: "add"}});
+    chrome.runtime.sendMessage({ from: "ignorados", type: "chrome-storage", content: {loc: "tema", value: thread, action: "add"}});
+    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload"});
     $("#temas-ignorados-input").val('');
-    chrome.runtime.sendMessage({ from: "ignorados", type: "reload", content: "" });
   }
 }
 
 function submitUsariosIgnorados(user) {
   if (user != "") {
     createIgnorado(user, "usuario");
-    chrome.runtime.sendMessage({ from: "ignorados", type: "chrome-storage", content: {loc: "usuario", id: user, action: "add"}});
+    chrome.runtime.sendMessage({ from: "ignorados", type: "chrome-storage", content: {loc: "usuario", value: user, action: "add"}});
+    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload"});
     $("#usuarios-ignorados-input").val('');
-    chrome.runtime.sendMessage({ from: "ignorados", type: "reload", content: "" });
   }
 }
 
@@ -51,7 +51,7 @@ function createIgnorado(id, loc) {
     e.preventDefault();
     $(this).parent().remove();
     chrome.runtime.sendMessage({ from: "ignorados", type: "chrome-storage", content: {loc: loc, id: id, action: "remove"}});
-    chrome.runtime.sendMessage({ type: "reload"});
+    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload"});
   });
   divWrapper.append(divUsuario, divEliminar);
   $(`.list-wrapper.${loc}s-ignorados`).append(divWrapper);

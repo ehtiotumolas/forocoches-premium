@@ -56,9 +56,8 @@ chrome.runtime.onMessage.addListener((obj) => {
     if (obj.type === "reload") {
         chrome.tabs.reload();
     }
-    if (obj.from = "contentScript" && obj.type === "chrome-storage") {
+    if (obj.type === "chrome-storage") {
         addToChromeStorage(obj.content.loc, obj.content.id, obj.content.action);
-        chrome.tabs.reload();
     }
     
 });
