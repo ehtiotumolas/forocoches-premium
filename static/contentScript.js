@@ -4,7 +4,8 @@ let usuarios_ignorados;
 let opciones;
 let toListen = [];
 let savedNotas;
-let darkMode = "";
+let darkMode;
+let forocochero;
 async function retrieveStorage(key) {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.get(key, resolve);
@@ -37,7 +38,7 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     }
     if (type === "likes_info") {
         updateAllLikes(value);
-    }    
+    }
     return true;
 });
 
@@ -65,8 +66,15 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (darkMode === "" && $('span:contains("Modo noche")').length > 0) {
-                    darkMode = true;
+                if (darkMode == undefined && n.tagName === 'DIV' && n.id === 'posts') {
+                    if ($('body').hasClass('showthread')) {
+                        darkMode = true;
+                        forocochero = $('.username')[0].innerHTML;
+                    }
+                    else {
+                        darkMode = false;
+                        forocochero = $('.smallfont > strong > a')[0].innerText;
+                    }
                 }
                 if (toListen.includes("temas-ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
@@ -148,15 +156,19 @@ function onMutation(mutations) {
                 }
                 if (toListen.includes("notas-usuario")) {
                     if (n.tagName == 'DIV') {
-                        if (n.id.includes('edit')) {
-                            var postId = "postmenu_" + n.id.split('edit')[1];
-                            var postDiv = $(`div[id=${postId}]`)[0];
+                        if (n.id.includes('postmenu_') && !n.id.includes('_menu')) {
+                            var postDiv = $(n)[0];
                             var usuario = "";
                             if (darkMode) {
                                 usuario = $(postDiv)[0].innerText;
                             }
                             else {
-                                usuario = $(postDiv)[0].innerText;
+                                try {
+                                    usuario = $(postDiv)[0].innerText;
+                                }
+                                catch (err) {
+                                    console.log(err)
+                                }
                             }
                             var notasBtn = $("<a/>")
                                 .attr('id', 'notas-usuarios-div')
@@ -248,6 +260,7 @@ function onMutation(mutations) {
                                                 margin: "auto",
                                                 left: 0,
                                                 right: 0,
+                                                cursor: "pointer",
                                                 marginTop: "10px"
                                             })
                                             .text("Guardar")
@@ -463,7 +476,7 @@ function onMutation(mutations) {
                     }
                 }
                 if (toListen.includes("likes")) {
-                    if (darkMode && n.tagName === 'A' && n.href.indexOf("report.php?p=") != -1) {
+                    if (n.tagName === 'A' && n.href.indexOf("report.php?p=") != -1) {
                         var likeBtn = $("<a/>")
                             .css({
                                 display: "flex",
@@ -471,8 +484,13 @@ function onMutation(mutations) {
                                 fontWeight: "700",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                color: "white"
+                                color: "white",
+                                textDecoration: "none",
+                                position: "relative"
                             })
+                        if (!darkMode) {
+                            likeBtn.css({ justifyContent: "right" })
+                        }
                         $("<span/>")
                             .attr('id', 'like-text')
                             .css({
@@ -495,28 +513,32 @@ function onMutation(mutations) {
                             })
                             .text("❤")
                             .click(function (e) {
-                                var post = $($(this)).parent()[0].closest('section');
+                                var post, postId, likes
+                                if (darkMode) {
+                                    post = $($(this)).parent()[0].closest('section');
+                                }
+                                else {
+                                    post = $($(this)).parent()[0].closest('div')
+                                }
                                 var postId = $(post).parent()[0].id.split('edit')[1];
-                                var usuario = $('.username')[0].innerHTML;
                                 var likes = $(this).prev('span')[0];
+
                                 if (!$(this).hasClass("liked")) {
                                     $(this)
                                         .css({ color: "red" })
                                         .toggleClass("liked");
                                     likes.innerText = Number(likes.innerText) + 1
-                                    updateLikes(postId, usuario, "add")
+                                    updateLikes(postId, forocochero, "add")
                                 }
                                 else {
                                     $(this)
                                         .css({ color: "white" })
                                         .toggleClass("liked");
                                     likes.innerText = Number(likes.innerText) - 1
-                                    updateLikes(postId, usuario, "remove")
+                                    updateLikes(postId, forocochero, "remove")
                                 }
                             })
                             .appendTo(likeBtn);
-
-
                         likeBtn.appendTo($(n).parent());
                     }
                 }
@@ -543,21 +565,18 @@ const updateAllLikes = (likedPosts) => {
         likedPost.find('#like-text')[0].innerText = liked.likes;
         if (liked.liked == 1) {
             $(likedPost.find('#like-button')[0])
-            .toggleClass("liked")
-            .css({ color: "red" });
+                .toggleClass("liked")
+                .css({ color: "red" });
         }
     }
 }
 
 const getAllPostsId = () => {
-    if (darkMode) {
-        let posts = [];
-        let usuario = $('.username')[0].innerHTML;
-        $.each($('div[id*=edit]'), function (i, obj) {
-            posts.push(obj.id.split('edit')[1])
-        });
-        return { "status": 200, "message": {posts: posts, usuario: usuario} }
-    }
+    let posts = [];
+    $.each($('div[id*=edit]'), function (i, obj) {
+        posts.push(obj.id.split('edit')[1])
+    });
+    return { "status": 200, "message": { posts: posts, usuario: forocochero } }
 }
 
 const hiloInfo = (id) => {
