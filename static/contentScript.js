@@ -15,22 +15,26 @@ async function retrieveStorage(key) {
         })
 }
 
-chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
-    const { type, value, id } = obj;
-    if (type === "hilo_info") {
+chrome.runtime.onMessage.addListener((obj, sendResponse) => {
+    if (obj.type === "hilo_info") {
         sendResponse(hiloInfo(id));
     }
-    if (type === "usuario_info") {
+    if (obj.type === "usuario_info") {
         sendResponse(userInfo(id));
     }
-    if (type === "hilo_usuarios_info") {
+    if (obj.type === "hilo_usuarios_info") {
         sendResponse(usersInfo(id));
     }
-    if (type === "usuario_info_old_hilos") {
+    if (obj.type === "usuario_info_old_hilos") {
         sendResponse(userInfoHilosOld());
+    }
+    if (obj.from === "ignorados" && obj.type === "chrome-storage") {
+        alert("he")
+        addToChromeStorage(obj.value.loc, obj.value.id, obj.value.action);
     }
     return true;
 });
+
 
 const listenThread = () => {
     if (location.href.includes("forumdisplay.php")) {
@@ -64,21 +68,10 @@ function onMutation(mutations) {
                     }
                 }
                 if (toListen == "usuarios_ignorados") {
-                    if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
-                        var id = "#edit" + $(n).parent()[0].id.split("_")[1];
-                        $(id).remove();
-                    }
                     if (n.tagName == 'DIV') {
-                        if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
-                            var usuario = $(n);
-                            $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
-                            if (($('span:contains("Modo noche")').length != 0)) usuario = $(usuario).parent('div')[0];
-                            $(usuario).next('div')[0].innerText = "(Texto ignorado)";
-                        }
                         if (n.id.includes('edit')) {
                             var postId = "postmenu_" + n.id.split('edit')[1];
                             var postDiv = $(`div[id=${postId}]`)[0];
-                            var usuario = postDiv.children[0].innerText;
                             var calavera = $("<a/>")
                                 .attr('id', 'ignorar-usuario-div')
                                 .css({
@@ -93,10 +86,11 @@ function onMutation(mutations) {
                                 .text("💀")
                                 .click(function (e) {
                                     e.preventDefault();
+                                    var usuario = postDiv.children[0].innerText;
                                     if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
-                                        addToChromeStorage("usuario", usuario, "add")
-                                        chrome.runtime.sendMessage({ from: "contentScript", type: "ignore_usuario", content: usuario });
-                                        chrome.runtime.sendMessage({ from: "contentScript", type: "reload", content: "" });
+                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: {loc: "usuario", id: usuario, action: "add"}});
+                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
+                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "reload", content: "" });
                                     };
                                 });
                             if ($('span:contains("Modo noche")').length != 0) {
@@ -107,6 +101,16 @@ function onMutation(mutations) {
                                     .css({ marginLeft: "-5px" }).height("auto").appendTo(postDiv);
                             }
                         }
+                        if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
+                            var usuario = $(n);
+                            $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
+                            if (($('span:contains("Modo noche")').length != 0)) usuario = $(usuario).parent('div')[0];
+                            $(usuario).next('div')[0].innerText = "(Texto ignorado)";
+                        }
+                    }
+                    if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
+                        var id = "#edit" + $(n).parent()[0].id.split("_")[1];
+                        $(id).remove();
                     }
                 }
             }
@@ -206,35 +210,6 @@ const usersInfo = (id) => {
         }
     }
     return { "status": 200, "message": usuarios }
-}
-
-const addToChromeStorage = (loc, id, action) => {
-    chrome.storage.sync.get(function (items) {
-        if (loc == "tema") {
-            if (Object.keys(items).length > 0 && items.temas_ignorados) {
-                if (action == "add") {
-                    items.temas_ignorados.push(id);
-                }
-                if (action == "remove") {
-                    items.temas_ignorados = items.temas_ignorados.filter(x => x !== id);
-                }
-            }
-            else { items.temas_ignorados = [id]; }
-        }
-        if (loc == "usuario") {
-            if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
-                if (action == "add") {
-                    items.usuarios_ignorados.push(id);
-                }
-                if (action == "remove") {
-                    items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== id);
-                }
-            }
-            else { items.usuarios_ignorados = [id]; }
-        }
-        chrome.storage.sync.set(items);
-
-    });
 }
 
 listenThread();

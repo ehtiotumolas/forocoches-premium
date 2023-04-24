@@ -1,12 +1,12 @@
 const server = 'http://192.168.0.172:5001/';
 
-chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
+chrome.tabs.onUpdated.addListener(function async(info, tab) {
     if (info.status === 'complete') {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const pageInfo = tab.url.split("=")[1];
             const [id, queryParameters] = pageInfo.split(/[.\&#/_]/)
             if (!queryParameters || queryParameters.includes("highlight")) {
-                chrome.tabs.sendMessage(tabId, {
+                chrome.tabs.sendMessage( {
                     type: "hilo_info",
                     id: id
                 }, async (response) => {
@@ -15,7 +15,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                     if (response.status == 400) removePole(response.message);
                 });
             }
-            chrome.tabs.sendMessage(tabId, {
+            chrome.tabs.sendMessage({
                 type: "hilo_usuarios_info",
                 id: id
             }, async (response) => {
@@ -24,7 +24,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             });
         }
         if (tab.url && tab.url.includes("search.php?searchid=")) {
-            chrome.tabs.sendMessage(tabId, {
+            chrome.tabs.sendMessage({
                 type: "usuario_info_old_hilos"
             }, async (response) => {
                 console.log("Response usuario_info_old_hilos: ", await response.status);
@@ -33,7 +33,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
         }
         if (tab.url && tab.url.includes("foro/member.php")) {
             const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
-            chrome.tabs.sendMessage(tabId, {
+            chrome.tabs.sendMessage( {
                 type: "usuario_info",
                 id: queryParameters
             }, async (response) => {
@@ -53,10 +53,14 @@ chrome.commands.onCommand.addListener((shortcut) => {
 })
 
 chrome.runtime.onMessage.addListener((obj) => {
-    const { type} = obj;
-    if (type === "reload") {
+    if (obj.type === "reload") {
         chrome.tabs.reload();
     }
+    if (obj.from = "contentScript" && obj.type === "chrome-storage") {
+        addToChromeStorage(obj.content.loc, obj.content.id, obj.content.action);
+        chrome.tabs.reload();
+    }
+    
 });
 
 const addUser = (json) => {
@@ -77,6 +81,35 @@ const addPole = (json) => {
 
 const removePole = (json) => {
     sendRequest('POST', server + 'removePole', json, 'removePole')
+}
+
+const addToChromeStorage = (loc, id, action) => {
+    chrome.storage.sync.get(function (items) {
+        if (loc == "tema") {
+            if (Object.keys(items).length > 0 && items.temas_ignorados) {
+                if (action == "add") {
+                    items.temas_ignorados.push(id);
+                }
+                if (action == "remove") {
+                    items.temas_ignorados = items.temas_ignorados.filter(x => x !== id);
+                }
+            }
+            else { items.temas_ignorados = [id]; }
+        }
+        if (loc == "usuario") {
+            if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
+                if (action == "add") {
+                    items.usuarios_ignorados.push(id);
+                }
+                if (action == "remove") {
+                    items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== id);
+                }
+            }
+            else { items.usuarios_ignorados = [id]; }
+        }
+        chrome.storage.sync.set(items);
+
+    });
 }
 
 const sendRequest = (method, url, data, sender) => {

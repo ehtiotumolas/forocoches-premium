@@ -10,6 +10,7 @@
     <script type="module" src="../static/popup.js" defer></script>
     <script type="module" src="../static/users.js" defer></script>
     <script type="module" src="../static/table.js" defer></script>
+    <script type="module" src="../static/opciones.js" defer></script>
     <script type="module" src="../static/ignorados.js" defer></script>
     <link rel=stylesheet type="text/css" href="../static/popup.css">
     <link rel=stylesheet type="text/css" href="../static/table.css">
@@ -113,23 +114,23 @@
                         <div class=" opciones-header">General</div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> Ocultar publicidad
+                                <input type="checkbox" id="checkbox-ocultar-publicidad"/> Ocultar publicidad
                             </label>
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> Color de fondo en los mensajes del creador del hilo 
+                                <input type="checkbox" id="checkbox-op-color"/> Color de fondo en los mensajes del creador del hilo 
                                 <input type="color" id="op-color" value="#DF9191">
                             </label>
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> Colorear hilos sin mensajes
+                                <input type="checkbox" id="checkbox-hilos-color"/> Colorear hilos sin mensajes
                             </label>
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> opción
+                                <input type="checkbox" id="checkbox-"/> opción
                             </label>
                         </div>
                     </div>
@@ -137,17 +138,17 @@
                         <div class=" opciones-header">Ignorados</div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> Activar usuarios ignorados (versión mejorada)
+                                <input type="checkbox" id="checkbox-activar-usuarios-ignorados"/> Activar usuarios ignorados (versión mejorada)
                             </label>
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> Activar temas ignorados (versión mejorada)
+                                <input type="checkbox" id="checkbox-activar-temas-ignorados"/> Activar temas ignorados (versión mejorada)
                             </label>
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> Ocultar completamente mensajes de usuarios 
+                                <input type="checkbox" id="checkbox-ocultar-usuarios-ignoradoss"/> Ocultar completamente mensajes de usuarios 
                                 ignorados (no aparecerá un texto diciendo que un mensaje fué ignorado)
                             </label>
                         </div>
@@ -156,7 +157,7 @@
                         <div class=" opciones-header">Diseño Viejo</div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> opción
+                                <input type="checkbox" id="checkbox-"/> opción
                             </label>
                         </div>
                     </div>
@@ -164,17 +165,17 @@
                         <div class=" opciones-header">Diseño Nuevo</div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> Ocultar sección "Trending"
+                                <input type="checkbox" id="checkbox-ocultar-trending"/> Ocultar sección "Trending"
                             </label>
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> Ocultar sección "Foros Relacionados"
+                                <input type="checkbox" id="checkbox-ocultar-foros-relacionados"/> Ocultar sección "Foros Relacionados"
                             </label>
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
-                                <input type="checkbox" /> opción
+                                <input type="checkbox" id="checkbox-"/> opción
                             </label>
                         </div>
                     </div>

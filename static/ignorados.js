@@ -1,18 +1,16 @@
 function submitTemasIgnorados(thread) {
-  var tema = thread;
-  if (tema != "") {
-    createIgnorado(tema, "tema");
-    addToChromeStorage("tema", tema, "add");
+  if (thread != "") {
+    createIgnorado(thread, "tema");
+    chrome.runtime.sendMessage({ from: "ignorados", type: "chrome-storage", content: {loc: "tema", id: thread, action: "add"}});
     $("#temas-ignorados-input").val('');
     chrome.runtime.sendMessage({ from: "ignorados", type: "reload", content: "" });
   }
 }
 
 function submitUsariosIgnorados(user) {
-  var usuario = user;
-  if (usuario != "") {
-    createIgnorado(usuario, "usuario");
-    addToChromeStorage("usuario", usuario, "add");
+  if (user != "") {
+    createIgnorado(user, "usuario");
+    chrome.runtime.sendMessage({ from: "ignorados", type: "chrome-storage", content: {loc: "usuario", id: user, action: "add"}});
     $("#usuarios-ignorados-input").val('');
     chrome.runtime.sendMessage({ from: "ignorados", type: "reload", content: "" });
   }
@@ -49,11 +47,11 @@ function createIgnorado(id, loc) {
     .addClass(`${loc}-ignorado-id`);
   var divEliminar = $(`<div>-</div>`)
     .addClass(`${loc}-ignorado-eliminar`);
-  $(divEliminar).click(function (e) {
+  $(divEliminar).click(async function (e) {
     e.preventDefault();
     $(this).parent().remove();
-    addToChromeStorage(loc, id, "remove");
-    chrome.runtime.sendMessage({ from: "ignorados", type: "reload", content: "" });
+    chrome.runtime.sendMessage({ from: "ignorados", type: "chrome-storage", content: {loc: loc, id: id, action: "remove"}});
+    chrome.runtime.sendMessage({ type: "reload"});
   });
   divWrapper.append(divUsuario, divEliminar);
   $(`.list-wrapper.${loc}s-ignorados`).append(divWrapper);
@@ -74,39 +72,11 @@ function loadLists() {
   });
 }
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  if (message.from == "contentScript" && message.type == "ignore_usuario") {
-    submitUsariosIgnorados(message.content);
+chrome.runtime.onMessage.addListener((obj) => {
+  if (obj.sender == "contentScript" && obj.type == "ignore_usuario") {
+    submitUsariosIgnorados(obj.content);
   }
 });
 
-function addToChromeStorage(loc, id, action) {
-  chrome.storage.sync.get(function (items) {
-    if (loc == "tema") {
-      if (Object.keys(items).length > 0 && items.temas_ignorados) {
-        if (action == "add") {
-          items.temas_ignorados.push(id);
-        }
-        if (action == "remove") {
-          items.temas_ignorados = items.temas_ignorados.filter(x => x !== id);
-        }
-      }
-      else { items.temas_ignorados = [id]; }
-    }
-    if (loc == "usuario") {
-      if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
-        if (action == "add") {
-          items.usuarios_ignorados.push(id);
-        }
-        if (action == "remove") {
-          items.usuarios_ignorados = items.usuarios_ignorados.filter(x => x !== id);
-        }
-      }
-      else { items.usuarios_ignorados = [id]; }
-    }
-    chrome.storage.sync.set(items);
-
-  });
-}
 
 loadLists();
