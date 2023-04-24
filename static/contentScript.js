@@ -73,11 +73,9 @@ const listenThread = () => {
 
 function onMutation(mutations) {
     let stopped;
-    console.log("onMutation")
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                console.log("insideLoop")
                 if (darkMode == undefined && ((n.tagName == 'MAIN') || (n.tagName == 'A' && n.id == 'poststop'))) {
                     if (n.tagName == 'MAIN') {
                         darkMode = true;
@@ -360,6 +358,9 @@ function onMutation(mutations) {
                                 $(n).parent().remove();
                             }
                             if (n.id.indexOf("optidigital-adslot-Content_") > -1) {
+                                if ($(n).next('SEPARATOR').length) {
+                                    $(n).next('SEPARATOR').remove();
+                                }
                                 $(n).remove();
                             }
                             if ($(n).hasClass("optidigital-wrapper-div")) {
@@ -381,6 +382,9 @@ function onMutation(mutations) {
                                 papa.prev().remove();
                                 papa.next().remove();
                                 papa.remove();
+                            }
+                            if (n.id.indexOf("opd_bottomstickyad") > -1) {
+                                n.remove();
                             }
                         }
                     }
