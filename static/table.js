@@ -1,6 +1,8 @@
 import { usuarios } from "./users.js";
 import { getCurrentTab } from "./popup.js";
 
+export let currentPage = 0;
+
 export async function createTable() {
     try {
         var theader = document.createElement("div");
@@ -30,31 +32,36 @@ export async function createTable() {
 }
 export async function updateTable() {
     try {
-        var userTable = document.getElementById("content-table");
-        userTable.querySelectorAll('.table_body').forEach(x => x.remove())
-        for (let user of usuarios) {
+        var desde = currentPage * 50;
+        var hasta = Math.min(((currentPage + 1) * 50), usuarios.length);
+        if (desde > hasta) {
+            currentPage =  Math.floor(hasta/50);
+            return;
+        }
+        var userTable = $(".content-table")[0];
+        $(".table_body").remove();
+        for (let i = desde; i < hasta; i++) {
             const row = document.createElement("div");
             row.classList.add("table_row", "table_body");
             row.addEventListener("click", function () {
                 var selected = false;
                 if (row.classList.contains("selRow")) {
                     selected = true;
-                }
-                userTable.querySelectorAll('.table_row').forEach(tr => tr.classList.remove("selRow"));
+                }                
                 if (!selected) row.classList.add("selRow");
                 chrome.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + user.id })
             });
 
-            row.id = user.usuario;
+            row.id = usuarios[i].usuario;
             var position = document.createElement("div");
             position.classList.add("table_cell", "table_cell_first");
-            position.innerText = document.getElementsByClassName("table_row").length;
+            position.innerText = document.getElementsByClassName("table_row").length + (currentPage * 50);
             row.appendChild(position);
             var usuario = document.createElement("div");
             usuario.classList.add("table_cell_usuario");
-            usuario.innerText = user.usuario;
+            usuario.innerText = usuarios[i].usuario;
             row.append(usuario);
-            for (let key in user) {
+            for (let key in usuarios[i]) {
                 var cell = document.createElement("div");
                 var valido = false;
                 cell.classList.add("table_cell");
@@ -62,7 +69,7 @@ export async function updateTable() {
                 if (key == "mensajes") { cell.classList.add("table_cell_mensajes"); valido = true; }
                 if (key == "hilos") { cell.classList.add("table_cell_hilos"); valido = true; }
                 if (valido) {
-                    cell.innerText = user[key];
+                    cell.innerText = usuarios[i][key];
                     row.appendChild(cell);
                 }
             }
@@ -74,4 +81,9 @@ export async function updateTable() {
         console.log(e)
         return {"status": 400, "message": "Not OK"};
     }
+}
+
+export function setPagina(numero) {
+    currentPage = numero;
+    updateTable();
 }

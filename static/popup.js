@@ -1,14 +1,9 @@
-import { fetchUsers, buscarUsuario } from "./users.js";
-import { createTable } from "./table.js";
+import { fetchUsers, buscarUsuario, usuarios } from "./users.js";
+import { createTable, currentPage, setPagina } from "./table.js";
 
 async function start() {
     await fetchUsers()
         .then(() => createTable())
-        .then((x) => {
-            if (x.status != 200) {
-                toggleHidden();
-            }
-        })
         .catch((e) => {
             console.log(e);
         });
@@ -37,6 +32,28 @@ export async function getCurrentTab() {
 
 start();
 
-function toggleHidden() {
-    $(".container-table, .container-error").toggleClass("visually-hidden");
-}
+$(".nav-element-container").click(function (e) {
+    $(".nav-element-container").removeClass("clicked");
+    $(this).toggleClass("clicked");
+    $('.container-' + $(this).attr('id')).toggleClass("visually-hidden");
+});
+
+$("#pagina-left").click(function () {
+    setPagina(currentPage - 1);
+    if (currentPage == 0) {
+        document.getElementById("pagina-left").classList.add("visually-hidden")}
+    if (Math.floor(usuarios.length/50) > currentPage) {
+        document.getElementById("pagina-right").classList.remove("visually-hidden")
+    }
+    console.log(currentPage)
+});
+
+$("#pagina-right").click(function () {
+    setPagina(currentPage + 1);
+    if (currentPage != 0) {
+        document.getElementById("pagina-left").classList.remove("visually-hidden")}
+    if (Math.floor(usuarios.length/50) == currentPage) {
+        document.getElementById("pagina-right").classList.add("visually-hidden")
+    }
+    console.log(currentPage)
+});

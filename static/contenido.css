@@ -1,0 +1,22 @@
+.container-error {
+  padding-left: 1rem;
+}
+
+.container-ranking {
+  position: relative;
+  height: 5rem;
+}
+
+.container-pagina {
+  display:flex;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+  padding-top: .3rem;
+}
+
+.arrow-pagina {
+  cursor: pointer;
+  position: relative;
+  width: 5rem;
+}

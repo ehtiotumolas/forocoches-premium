@@ -34,14 +34,9 @@
     z-index: 6;
 }
 
-.container-table {
-    max-height: 10rem;
-}
-
 .content-table {
     display: table;
     width: 100%;
-    max-height: 10rem;
     margin: auto;
     color: var(--clr-primary-400);
     font-size: var(--fs-400);

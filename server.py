@@ -12,7 +12,7 @@ locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
 connection = pyodbc.connect(
     'DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost\sqlexpress;DATABASE=FC;UID=SYSDBA;PWD=masterkey;Trusted_Connection=yes;MARS_Connection=Yes;')
 connection.timeout = 3
-connection.autocommit = True;
+connection.autocommit = True
 
 # Utils
 def ConvertDate(date):
@@ -20,12 +20,10 @@ def ConvertDate(date):
         "ene": "enero", "feb": "febrero", "mar": "marzo", "abr": "abril", "may": "mayo", "jun": "junio", "jul": "julio", "ago": "agosto", "sep": "septiembre", "oct": "octubre", "nov": "noviembre", "dic": "diciembre"}
     return dt.strptime(date.replace(date.split('-')[1], fechaCon[date.split('-')[1]]), "%d-%B-%Y")
 
-
 def ConvertDateNoDay(date):
     fechaCon = {
         "ene": "enero", "feb": "febrero", "mar": "marzo", "abr": "abril", "may": "mayo", "jun": "junio", "jul": "julio", "ago": "agosto", "sep": "septiembre", "oct": "octubre", "nov": "noviembre", "dic": "diciembre"}
     return dt.strptime(date.replace(date.split(' ')[0], fechaCon[date.lower().split(' ')[0]]), "%B %Y")
-
 
 @app.route("/addUser", methods=["POST"])
 def addUser():
@@ -174,20 +172,20 @@ def addUserHilosOld():
             return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
 
 
-@app.route("/")
-def client():
-    return render_template('index.html')
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=False)
-
-
 def CalculatePoints(hilos, mensajes, totalMensajes):
     multiplicador = 1
     for i in range(0, len(str(totalMensajes)) - 3):
         multiplicador *= 10
     return ((mensajes + hilos * 10)/totalMensajes)*multiplicador
+
+@app.route('/')
+def test():
+    return render_template('popup.html')
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5001, debug=True)
+
 
 # Reverse encoding
 # (bytes.fromhex(res[index][key])).decode("utf-8")

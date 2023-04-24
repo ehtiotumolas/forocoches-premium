@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="/thirdParty/jquery-3.6.3.min.js" defer></script>
+    <script src="/static/thirdParty/jquery-3.6.3.min.js" defer></script>
     <script type="module" src="../static/popup.js" defer></script>
     <script type="module" src="../static/users.js" defer></script>
     <script type="module" src="../static/table.js" defer></script>
@@ -14,28 +14,41 @@
     <link rel=stylesheet type="text/css" href="../static/table.css">
     <link rel=stylesheet type="text/css" href="../static/style.css">
     <link rel=stylesheet type="text/css" href="../static/nav.css">
+    <link rel=stylesheet type="text/css" href="../static/contenido.css">
     <title>Document</title>
 </head>
 
 <body>
     <header class="primary-header bg-neutral-100">
         <div class="container-header">
-            <div class="nav-wrapper">
-                <div class="fs-primary-heading text-primary-400 fw-bold">Forocoches Premium</div>
-                <nav class="primary-nav bg-neutral-100" id="primary-nav">
-                </nav>
-            </div>
+            <a href="#"><img src="/static/images/android-chrome-192x192.png" alt="forocoches-premium-logo"
+                    class="header-img"></a>
+            <div class="fs-primary-heading text-primary-400 fw-semi-bold">Forocoches Premium</div>
         </div>
     </header>
+    <section class="section-nav">
+        <div class="container-nav">
+            <nav class="primary-nav" id="primary-nav">
+                <div class="nav-wrapper noselect">
+                    <div class="nav-element-container" id="nav-ranking">
+                        <div class="nav-element">Ranking</div>
+                    </div>
+                    <div class="nav-element-container">
+                        <div class="nav-element">Poles</div>
+                    </div>
+                    <div class="nav-element-container">
+                        <div class="nav-element">Ignorados</div>
+                    </div>
+                    <div class="nav-element-container">
+                        <div class="nav-element">Opciones</div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </section>
     <div class="popup-body">
-        <section class="container-error visually-hidden">
-            <div class="container-nav">
-                <h1 class="error-message">Algo pasa con el servidor. Contacta <a
-                        href="mailto:ehtiotumolas@gmail.com">ehtiotumolas@gmail.com</a></h1>
-            </div>
-        </section>
-        <section class="container-ranking visually-hidden">
-            <div class="container">
+        <section>
+            <div class="container-ranking">
                 <div class="grupo-input">
                     <input type="input" placeholder=" " class="input-box" id="user-buscar">
                     <span class="bar"></span>
@@ -50,13 +63,23 @@
                 <div class="container-table">
                     <div class="content-table" id="content-table">
                     </div>
+                    <div class="container-pagina">
+                        <div class="arrow-pagina visually-hidden" id="pagina-left">🡨 anterior</div>
+                        <div class="arrow-pagina" id="pagina-right">siguiente 🡪</div>
+                    </div>
                 </div>
+            </div>
         </section>
-    </div>
-    <section class="cta | clr-neutral-100 bg-neutral-100 text-primary-400 padding-block-450">
-        <div class="container-footer">
+        <div class="container-error visually-hidden">
+            <h1 class="error-message">Algo pasa con el servidor. Contacta <a
+                    href="mailto:ehtiotumolas@gmail.com">ehtiotumolas@gmail.com</a></h1>
         </div>
-    </section>
+    </div>
+    <footer class="primary-footer text-primary-400">
+        <div class="container-footer clr-neutral-100 bg-neutral-100">
+            <h2 class="fs-200 fw-semi-bold push-to-right">Copyright 2023. All Rights Reserved</h2>
+        </div>
+    </footer>
 </body>
 
 </html>

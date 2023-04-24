@@ -5,10 +5,11 @@
   --clr-accent-900: #ff0202;
 
   --clr-primary-400: #292A44;
+  --clr-primary-300: #a5a5ad;
   --clr-primary-200: #43445c;
   --clr-primary-100: rgb(243, 234, 234);
 
-  --clr-neutral-900: #C4402A;
+  --clr-neutral-900: #db6f5c;
   --clr-neutral-100: rgb(243, 234, 234);
 
   --ff-primary: 'Be Vietnam Pro', sans-serif;
@@ -42,7 +43,7 @@
   --fs-even-columns: 7rem;
 
   --fs-body: var(--fs-400);
-  --fs-primary-heading: var(--fs-800);
+  --fs-primary-heading: var(--fs-650);
   --fs-secondary-heading: var(--fs-700);
   --fs-button: var(--fs-400);
 
@@ -92,6 +93,7 @@ html:focus-within {
 html,
 body {
   width: 30rem;
+  height: 15rem;
 }
 
 /* Set core body defaults */
@@ -218,7 +220,6 @@ svg {
 .fs-primary-heading {
   font-size: var(--fs-primary-heading);
   line-height: 1.2;
-  padding-left: 1rem;
 }
 
 .fs-secondary-heading {
@@ -272,6 +273,10 @@ svg {
   font-size: var(--fs-900);
 }
 
+.padding-block-300 {
+  padding-block: var(--size-300);
+}
+
 .padding-block-400 {
   padding-block: var(--size-400);
 }
@@ -306,4 +311,28 @@ svg {
   user-select: none;
   /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
+}
+
+
+::-webkit-scrollbar-corner { background: rgba(0,0,0,0.5); }
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--clr-primary-300) var(--clr-primary-400);
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: .2rem;
+    height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--clr-primary-300);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--clr-primary-300);
+  border-radius: 20px;
+  border: 3px solid var(--clr-primary-400);
 }
