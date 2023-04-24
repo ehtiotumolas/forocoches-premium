@@ -45,11 +45,9 @@ function onMutation(mutations) {
                 }
                 if (whatsIgnored == "usuarios_ignorados" && usuarios_ignorados) {
                     if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
-                        var id = $(n).parent()[0].id.split("postmenu_")[1];
-                        var papa = $(`#edit${id}`)
+                        var papa = $(n).parent().parent().parent().parent()[0];
                         $(papa).remove();
                     }
-                    // WE NEED TO CHECK FOR OLD THEME VERSION
                     if (n.tagName == 'DIV' && $(n).children('b').length > 0 && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
                         var usuario = $(n);
                         $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
