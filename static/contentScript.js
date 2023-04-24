@@ -36,7 +36,7 @@ const listenThread = () => {
     if (location.href.includes("forumdisplay.php")) {
         retrieveStorage()
             .then(() => {
-                toListen.push("temas_ignorados")
+                toListen = ["temas_ignorados"];
                 onMutation([{ addedNodes: [document.documentElement] }]);
                 observe();
             });
@@ -44,7 +44,10 @@ const listenThread = () => {
     if (location.href.includes("showthread.php?")) {
         retrieveStorage()
             .then(() => {
-                toListen.push("usuarios_ignorados")
+                toListen = ["usuarios_ignorados"];
+                if (opciones["op-color"].checked) {
+                    toListen.push("op-color");
+                }
                 onMutation([{ addedNodes: [document.documentElement] }]);
                 observe();
             });
@@ -55,7 +58,7 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (toListen == "temas_ignorados") {
+                if (toListen.includes("temas_ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent()
                         if (($('span:contains("Modo noche")').length != 0)) papa = $(papa).parent();
@@ -63,7 +66,7 @@ function onMutation(mutations) {
                         $(papa).remove();
                     }
                 }
-                if (toListen == "usuarios_ignorados") {
+                if (toListen.includes("usuarios_ignorados")) {
                     if (n.tagName == 'DIV') {
                         if (n.id.includes('edit')) {
                             var postId = "postmenu_" + n.id.split('edit')[1];
@@ -75,7 +78,6 @@ function onMutation(mutations) {
                                     zIndex: 5,
                                     marginLeft: "-20px",
                                     cursor: "pointer"
-
                                 })
                                 .height("48px")
                                 .width("14px")
@@ -84,8 +86,8 @@ function onMutation(mutations) {
                                     e.preventDefault();
                                     var usuario = postDiv.children[0].innerText;
                                     if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
-                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: {loc: "usuario", message: usuario, action: "add"}});
-                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "reload"});
+                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: { loc: "usuario", message: usuario, action: "add" } });
+                                        chrome.runtime.sendMessage({ sender: "contentScript", type: "reload" });
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
                                     };
                                 });
@@ -107,6 +109,27 @@ function onMutation(mutations) {
                     if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
                         var id = "#edit" + $(n).parent()[0].id.split("_")[1];
                         $(id).remove();
+                    }
+                }
+
+                if (toListen.includes("op-color")) {
+                    if ($('span:contains("Modo noche")').length != 0) {
+                        if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px var(--coral)') {
+                            n.style.backgroundColor = opciones["op-color"].value;
+                        }
+                    }
+                    else {
+                        if (n.tagName == 'IMG' && n.alt == "Respuesta rapida a este mensaje" && $(n).parent().parent().parent().parent().parent().hasClass("tborder-author")) {
+                            var papa = $(n).parent().parent().parent().parent();
+                            //Removes border
+                            $(papa).parent().removeClass();
+                            $(papa).children().children().css('border', 'none');
+                            //Changes background color
+                            $(papa).find('.alt1-author').css('background-color', opciones["op-color"].value);
+                            $(papa).find('.alt2').css('background-color', shadeColor(opciones["op-color"].value, -5));
+                            //Leave citas normal background
+                            $($(papa).find('.alt2:contains("Cita de")')[0]).css('background-color', '');
+                        }
                     }
                 }
             }
@@ -206,6 +229,25 @@ const usersInfo = (id) => {
         }
     }
     return { "status": 200, "message": usuarios }
+}
+
+const shadeColor = (color, percent) => {
+    var R = parseInt(color.substring(1, 3), 16);
+    var G = parseInt(color.substring(3, 5), 16);
+    var B = parseInt(color.substring(5, 7), 16);
+    R = parseInt(R * (100 + percent) / 100);
+    G = parseInt(G * (100 + percent) / 100);
+    B = parseInt(B * (100 + percent) / 100);
+    R = (R < 255) ? R : 255;
+    G = (G < 255) ? G : 255;
+    B = (B < 255) ? B : 255;
+    R = Math.round(R)
+    G = Math.round(G)
+    B = Math.round(B)
+    var RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+    var GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+    var BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
+    return "#" + RR + GG + BB;
 }
 
 listenThread();
