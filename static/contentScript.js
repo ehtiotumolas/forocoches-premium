@@ -65,8 +65,8 @@ function onMutation(mutations) {
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
-                if (darkMode == undefined && n.tagName === 'DIV' && n.id === 'posts') {
-                    if ($('body').hasClass('showthread')) {
+                if (darkMode == undefined && ((n.tagName == 'MAIN') || (n.tagName == 'A' && n.id == 'poststop'))) {
+                    if (n.tagName == 'MAIN') {
                         darkMode = true;
                         forocochero = $('.username')[0].innerHTML;
                     }
@@ -342,7 +342,7 @@ function onMutation(mutations) {
                 }
                 if (toListen.includes("ocultar-publicidad")) {
                     if (n.tagName == 'DIV') {
-                        if (darkMode) {
+                        if (darkMode != undefined && darkMode) {
                             if ($(n).hasClass("fixed_adslot")) {
                                 if ($(n).parent().parent()[0].id !== "sidebar") {
                                     $(n).parent().parent().remove();
@@ -352,11 +352,9 @@ function onMutation(mutations) {
                                 }
                             }
                             if (n.id.indexOf("optidigital-adslot-Content_") > -1) {
-                                $(n).next().remove();
                                 $(n).remove();
                             }
                             if ($(n).hasClass("optidigital-wrapper-div")) {
-                                $(n).next().remove();
                                 $(n).remove();
                             }
                             if ($(n)[0].id === "h1") {
@@ -366,7 +364,8 @@ function onMutation(mutations) {
                         else {
                             if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 ||
                                 n.id.indexOf("optidigital-adslot-Rectangle_") > -1 ||
-                                n.id.indexOf("optidigital-adslot-Skyscraper_") > -1) {
+                                n.id.indexOf("optidigital-adslot-Skyscraper_") > -1 ||
+                                n.id == 'fcs') {
                                 var papa = $(n).parents("table:first");
                                 if (n.id.indexOf("optidigital-adslot-Skyscraper_") > -1) {
                                     papa = papa.parents("table:first");
@@ -378,6 +377,11 @@ function onMutation(mutations) {
                             }
 
                         }
+                    }
+                    if (n.tagName == 'TABLE' && $(n).hasClass("cajasprin")) {
+                        $(n).next('br').remove();
+                        $(n).prev('br').remove();
+                        $(n).remove();
                     }
                 }
                 if (toListen.includes("ocultar-trending")) {
