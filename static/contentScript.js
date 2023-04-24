@@ -142,10 +142,15 @@ function onMutation(mutations) {
                                     e.preventDefault();
                                     $("#notas-popup-div").remove();
                                     if ($(this).children("#notas-popup-div").length == 0) {
+                                        var usuario = "";
+                                        if ($('span:contains("Modo noche")').length != 0) {
+                                            usuario = $(this).parent().next('div').children('div').children('a')[0].innerText;
+                                        }
+                                        else {
+                                            usuario = $(this).parent().children('div').children('a')[0].innerText;
+                                        }
                                         var notas = $("<div/>")
                                             .attr('id', 'notas-popup-div')
-                                            .attr('contenteditable', true)
-                                            //Change color! Cannot see when is the last user on new design
                                             .css({
                                                 position: "absolute",
                                                 zIndex: 1,
@@ -156,14 +161,77 @@ function onMutation(mutations) {
                                                 border: "1px",
                                                 borderRadius: "1.5rem",
                                                 filter: "drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2))",
-                                            });
+                                            })
                                         if ($('span:contains("Modo noche")').length != 0) {
                                             $(notas).css({ marginLeft: "-20px", marginTop: "0px" })
                                         }
                                         else {
                                             $(notas).css({ marginTop: "-20px" })
                                         }
+                                        $("<div/>")
+                                            .attr('id', 'notas-popup-title')
+                                            .css({
+                                                position: "absolute",
+                                                color: "white",
+                                                zIndex: 1,
+                                                textDecoration: "none",
+                                                height: "20px",
+                                                width: "fit-content",
+                                                backgroundColor: "transparent",
+                                                left: 0,
+                                                right: 0,
+                                                margin: "auto",
+                                                padding: "10px",
+                                                backgroundColor: "rgba(0, 0, 0, 1)",
+                                            })
+                                            .text(`NOTAS de ${usuario}`)
+                                            .appendTo(notas);
+                                            
+                                        var textContainer = $("<div/>")
+                                            .attr('id', 'notas-popup-text-container')
+                                            .css({
+                                                height: "220px",
+                                                width: "280px",
+                                                backgroundColor: "white",
+                                                backgroundColor: "rgba(255,255,255, 0.2)",
+                                                color: "white",
+                                                margin: "auto",
+                                                marginTop: "40px",
+                                                textDecoration: "none",
+                                                border: "1px",
+                                                borderRadius: "1rem",
+                                                overflow: "auto",
+                                                outline: "0px solid transparent"
+                                            }).appendTo(notas);
 
+                                        $("<p/>")
+                                            .attr('id', 'notas-popup-text-editable')
+                                            .attr('contenteditable', true)
+                                            .css({
+                                                height: "170px",
+                                                width: "250px",
+                                                border: "1px",
+                                                marginTop: 10,
+                                                marginLeft: 10,
+                                                marginBottom: 10,
+                                                borderRadius: "1rem",
+                                                outline: "0px solid transparent"
+
+                                            }).appendTo(textContainer);
+                                        $("<button/>")
+                                            .attr('id', 'notas-popup-button')
+                                            .attr('contenteditable', true)
+                                            .css({
+                                                position: "absolute",
+                                                height: "22px",
+                                                width: "80px",
+                                                margin: "auto",
+                                                left: 0,
+                                                right: 0,
+                                                marginTop: "10px"
+                                            })
+                                            .text("Guardar")
+                                            .appendTo(notas);
                                         notas.insertAfter($(this).parent().children("#notas-usuarios-div"));
                                     }
                                 });
@@ -387,7 +455,13 @@ const shadeColor = (color, percent) => {
 }
 
 document.onclick = function (e) {
-    if ((e.target.id !== 'notas-popup-div' && e.target.id !== 'notas-usuarios-div') || e.target.id == '') {
+    if ((e.target.id !== 'notas-popup-div' &&
+        e.target.id !== 'notas-usuarios-div' &&
+        e.target.id !== 'notas-popup-title' &&
+        e.target.id !== 'notas-popup-edit' &&
+        e.target.id !== 'notas-popup-text-container' &&
+        e.target.id !== 'notas-popup-text-editable') ||
+        e.target.id == '') {
         $("#notas-popup-div").remove();
     }
 }

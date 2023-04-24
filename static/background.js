@@ -47,8 +47,9 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
 chrome.commands.onCommand.addListener((shortcut) => {
     console.log('reload bitch');
     console.log(shortcut);
-    if (shortcut.includes("+M")) {
+    if (shortcut.includes("+Z")) {
         chrome.runtime.reload();
+        chrome.tabs.reload();
     }
 })
 

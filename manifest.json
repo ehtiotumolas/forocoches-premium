@@ -20,7 +20,7 @@
     "service_worker": "static/background.js"
   },
   "commands": {
-    "Ctrl+M": {
+    "Ctrl+Z": {
       "suggested_key": {
         "default": "Ctrl+Shift+Z" },
       "description": "Ctrl+Shift+Z"
