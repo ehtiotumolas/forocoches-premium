@@ -1,11 +1,23 @@
-# FOROCOCHES PREMIUM
+<p align="center">$\color{#e74a4a}\Huge{\textsf{FOROCOCHES PREMIUM}}$ </p>
+<p align="center"> $\huge{\textsf{Disfruta de extra funcionalidades mientras foreas en forocoches}}$ </p>
 
-## Disfruta de extra funcionalidades mientras foreas en forocoches
+<p align="center">Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras puede ser añadidas al foro. </p>
 
-Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras puede ser añadidas al foro.
-
-**Ignora usuarios completamente**<br>
-&emsp; Los mensajes e hilos de usuarios ignorados usando esta extensión desaparecerán completamente del foro.
+<table>
+  <tr>
+    <td rowspan="2">
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-ignore-user.png" width="50"/>
+    </td>
+    <td>
+      <b>Ignora usuarios completamente</b>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Los mensajes e hilos de usuarios ignorados usando esta extensión desaparecerán completamente del foro.
+    </td>
+  </tr>
+</table>
 
 **Ignora temas**<br>
 &emsp; ¿Cansad@ de ver siempre los mismo? Ahora puedes eliminar del foro hilos que contengan palabras específicas.
