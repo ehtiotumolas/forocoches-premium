@@ -1,6 +1,8 @@
-
+//APIs server
 const server = "https://www.forocochero.com"
 
+//Listens to chrome tabs on forocoches.com
+//Depending on the content of the URL, different actions are performed
 chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
     if (info.status === 'complete') {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
@@ -11,17 +13,21 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                     type: "hilo_info",
                 }, async (response) => {
                     console.log("Response hilo_info: ", await response.status);
+                    //If thread exists, add Pole
                     if (response.status == 200) addPole(response.message);
+                    //If thread is now deleted, remove pole from DB
                     if (response.status == 400) removePole(response.message);
                     if (response.status == 404) console.log(response.message);
                 });
             }
+            //Finds out the number of messages created by each user in the thread
             chrome.tabs.sendMessage(tabId, {
                 type: "hilo_usuarios_info",
             }, async (response) => {
                 console.log("Response hilo_usuarios_info: ", await response.status);
                 if (response.status == 200) addUsers(response.message);        
             });
+            //Finds out if any of the messages on the current thread have any likes
             chrome.tabs.sendMessage(tabId, {
                 type: "hilo_mensaje_likes",
             }, async (response) => {
@@ -30,6 +36,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                     findLikedPosts(tabId, response.message);            
             });
         }
+        //Gets number of threads created by a particular searched user
         if (tab.url && tab.url.includes("search.php?searchid=")) {
             chrome.tabs.sendMessage(tabId, {
                 type: "usuario_info_old_hilos"
@@ -38,6 +45,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 if (response.status == 200) addUserHilosOld(response.message);
             });
         }
+        //Gets the number of threads and messages created by a particular user
         if (tab.url && tab.url.includes("member.php")) {
             const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
             chrome.tabs.sendMessage(tabId, {
@@ -48,6 +56,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 if (response.status == 200) addUser(response.message); 
             });
         }
+        //Gets forocoches´ total number of messages
         if (tab.url && tab.url == "https://forocoches.com/foro/") {
             chrome.tabs.sendMessage(tabId, {
                 type: "estadisticas"
@@ -59,20 +68,25 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
     }
 });
 
-chrome.commands.onCommand.addListener((shortcut) => {
-    console.log('reload bitch');
-    if (shortcut.includes("+Z")) {
-        chrome.runtime.reload();
-        chrome.tabs.reload();
-    }})
+//Reloads the extensions and tab
+// chrome.commands.onCommand.addListener((shortcut) => {
+//     console.log('reload bitch');
+//     if (shortcut.includes("+Z")) {
+//         chrome.runtime.reload();
+//         chrome.tabs.reload();
+//     }})
 
+//Listen to messages from other scripts
 chrome.runtime.onMessage.addListener((obj) => {
+    //Reloads current tab
     if (obj.type === "reload") {
         chrome.tabs.reload();
     }
+    //Adds to local chrome storage
     if (obj.type === "chrome-storage") {
         addToChromeStorage(obj.content.loc, obj.content.message, obj.content.action);
     }
+    //Updates message's likes on the DB
     if (obj.type === "update-likes") {
         sendRequest('POST', server + '/' + 'updateLikes', obj.content, 'updateLikes')
             .then((response) => response.json())
@@ -82,6 +96,7 @@ chrome.runtime.onMessage.addListener((obj) => {
     }
 });
 
+//Adds user's number of messages and threads to the DB
 const addUser = (json) => {
     sendRequest('POST', server + '/' + 'addUser', json, 'addUser')
         .then((response) => response.json())
@@ -90,6 +105,7 @@ const addUser = (json) => {
         });
 }
 
+//Adds user's number of messages and threads to the DB from the search page
 const addUserHilosOld = (json) => {
     sendRequest('POST', server + '/' + 'addUserHilosOld', json, 'addUserHilosOld')
         .then((response) => response.json())
@@ -98,6 +114,7 @@ const addUserHilosOld = (json) => {
         });
 }
 
+//Adds all thread users number of messages to the DB
 const addUsers = (json) => {
     sendRequest('POST', server + '/' + 'addUsers', json, 'addUsers')
         .then((response) => response.json())
@@ -106,6 +123,7 @@ const addUsers = (json) => {
         });
 }
 
+//Add thread's pole to the DB
 const addPole = (json) => {
     sendRequest('POST', server + '/' + 'addPole', json, 'addPole')
         .then((response) => response.json())
@@ -114,6 +132,7 @@ const addPole = (json) => {
         });
 }
 
+//Removes pole from the DB when thread is deleted
 const removePole = (json) => {
     sendRequest('POST', server + '/' + 'removePole', json, 'removePole')
         .then((response) => response.json())
@@ -122,6 +141,7 @@ const removePole = (json) => {
         });
 }
 
+//Adds forocoches' total number of messages to the DB
 const addEstadisticas = (json) => {
     sendRequest('POST', server + '/' + 'addEstadisticas', json, 'addEstadisticas')
         .then((response) => response.json())
@@ -130,6 +150,7 @@ const addEstadisticas = (json) => {
         });
 }
 
+//Adds info such as ignored users, ignored threads and notes to the local Chrome storage
 const addToChromeStorage = (loc, message, action) => {
     chrome.storage.sync.get(function (items) {
         if (loc == "tema") {
@@ -175,6 +196,7 @@ const addToChromeStorage = (loc, message, action) => {
     });
 }
 
+//Helps calling API
 function sendRequest(method, url, data, sender) {
     var headers = {
         "Content-Type": "application/json",
@@ -188,6 +210,7 @@ function sendRequest(method, url, data, sender) {
     })
 }
 
+//Finds all liked messages from the current thread
 function findLikedPosts(tabId, json) {
     sendRequest('POST', server + '/' + 'getAllLikes', json, 'getAllLikes')
         .then((response) => response.json())

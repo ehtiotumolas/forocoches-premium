@@ -4,6 +4,7 @@ export var usuarios;
 export var poles;
 const server = "https://www.forocochero.com"
 
+//Fetches all users from the DB
 export async function fetchUsers() {
     var url = `${server}/getAllUsers`;
     try {
@@ -30,6 +31,7 @@ export async function fetchUsers() {
     }
 }
 
+//Fetches all poles from the DB
 export async function fetchPoles() {
     var url = `${server}/getAllPoles`;
     try {
@@ -56,6 +58,7 @@ export async function fetchPoles() {
     }
 }
 
+//Searchs user on the Ranking Forococheros and moves the current position of the table to the found user, whichever page it's found
 export function buscarUsuario(usuario) {
     try {
         var offset = (parseInt(getComputedStyle(document.body).getPropertyValue('--fs-header')) * 16 + 50);

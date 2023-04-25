@@ -1,9 +1,11 @@
+//Imports functions from other scripts
 import { fetchUsers, fetchPoles, buscarUsuario, usuarios } from "./users.js";
 import { createTableRanking, createTablePoles, currentPage, setPagina, rowsPerPage } from "./table.js";
 
-// STARTS
+// starts the logic
 async function start() {
     try {
+        //Fetches all users from the DB and creates the Ranking Forocochero elements
         await fetchUsers()
             .then(() => createTableRanking())
             .then((res) => {
@@ -16,6 +18,7 @@ async function start() {
                 }
             });
 
+        //Fetches all poles from the DB and creates the Ranking de Poles elements
         await fetchPoles()
             .then(() => createTablePoles())
             .then((res) => {
@@ -33,7 +36,7 @@ async function start() {
     }
 }
 
-// SEARCH USER
+//Searchs user on the Ranking Forocochero
 ['click'].forEach(evt => {
     document.getElementById("submit-buscar")
         .addEventListener(evt, function (event) {
@@ -44,6 +47,7 @@ async function start() {
         });
 });
 
+//Pressing enter will search for user on the Ranking Forocochero
 document.getElementById("user-buscar")
     .addEventListener("keyup", function (event) {
         event.preventDefault();
@@ -52,12 +56,12 @@ document.getElementById("user-buscar")
         }
     });
 
-// CHROME STUFF
+//Gets current tab that is active
 export async function getCurrentTab() {
     return await chrome.tabs.query({ active: true, currentWindow: true }).tabs;
 }
 
-// HIDES MAIN CONTENT
+//Hides and shows the different menus on the popup screen
 $(".nav-element-container").click(function (e) {
     $('.main-content:not("visually-hidden")').addClass("visually-hidden")
     if ($(this).hasClass("clicked")) {
@@ -73,7 +77,7 @@ $(".nav-element-container").click(function (e) {
     }
 });
 
-// PAGES
+// Page navigation on the Ranking Forocochero
 $("#pagina-left").click(function () {
     setPagina(currentPage - 1);
 });
@@ -90,6 +94,7 @@ $("#pagina-last").click(function () {
     setPagina(Math.floor(usuarios.length / rowsPerPage));
 });
 
+//Hiddes/shows the text from each of the sections on the main page on the popup
 $(".topDiv").each(function () {
     $(this).on("click", function (e) {
         e.preventDefault();
@@ -101,16 +106,19 @@ $(".topDiv").each(function () {
     });
 });
 
+//Adds link to paypal
 document.getElementById("footer-donate")
     .addEventListener("click", function () {
         openInNewTab("https://www.paypal.com/donate/?hosted_button_id=G8DCS8GX6METS");
     });
 
+//Adds link to the chrome store reviews
 document.getElementById("footer-rate")
     .addEventListener("click", function () {
         openInNewTab("https://chrome.google.com/webstore/detail/forocoches-premium/hdiegimcikljdcgohlcnilgephloaiaa/reviews");
     });
 
+//Opens link in new tab
 const openInNewTab = (url) => {
     window.open(url, "_blank");
 }

@@ -1,3 +1,4 @@
+//Updates current ignored users
 function submitTemasIgnorados(thread) {
   if (thread != "") {
     createIgnorado(thread, "tema");
@@ -7,6 +8,7 @@ function submitTemasIgnorados(thread) {
   }
 }
 
+//Updates current ignored threads
 function submitUsariosIgnorados(user) {
   if (user != "") {
     createIgnorado(user, "usuario");
@@ -16,6 +18,7 @@ function submitUsariosIgnorados(user) {
   }
 }
 
+//When enter is pressed, add current user to ignored list
 document.getElementById("usuarios-ignorados-input")
   .addEventListener("keyup", function (event) {
     event.preventDefault();
@@ -24,6 +27,7 @@ document.getElementById("usuarios-ignorados-input")
     }
   });
 
+//When enter is pressed, add current thread to ignored list
 document.getElementById("temas-ignorados-input")
   .addEventListener("keyup", function (event) {
     event.preventDefault();
@@ -32,14 +36,17 @@ document.getElementById("temas-ignorados-input")
     }
   });
 
+//Add user to ignored list
 $("#submit-usuarios-ignorados").click(function () {
   submitUsariosIgnorados($("#usuarios-ignorados-input").val().trim());
 });
 
+//Add thread to ignored list
 $("#submit-temas-ignorados").click(function () {
   submitTemasIgnorados($("#temas-ignorados-input").val().trim());
 });
 
+//Creates HTML elemtents for the ignored lists
 function createIgnorado(id, loc) {
   var divWrapper = $("<div>")
     .addClass(`${loc}-ignorado-wrapper`);
@@ -57,6 +64,7 @@ function createIgnorado(id, loc) {
   $(`.list-wrapper.${loc}s-ignorados`).append(divWrapper);
 }
 
+//Loads ignored list from chrome local storage
 function loadIgnoradosLists() {
   chrome.storage.sync.get(function (items) {
     if (Object.keys(items).length > 0 && items.temas_ignorados) {
@@ -72,11 +80,12 @@ function loadIgnoradosLists() {
   });
 }
 
+//Listens for changes on the extension related to ignored users. This happens when user clicks on the skull emoji close to the username
 chrome.runtime.onMessage.addListener((obj) => {
   if (obj.sender == "contentScript" && obj.type == "ignore_usuario") {
     submitUsariosIgnorados(obj.content);
   }
 });
 
-
+//Loads list of ignored users and threads
 loadIgnoradosLists();

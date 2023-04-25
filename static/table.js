@@ -4,6 +4,7 @@ import { getCurrentTab } from "./popup.js";
 export let currentPage = 0;
 export const rowsPerPage = 20;
 
+//Creates the Ranking Forocochero table
 export async function createTableRanking() {
     try {
         var theader = document.createElement("div");
@@ -31,6 +32,7 @@ export async function createTableRanking() {
     }
 }
 
+//Populates the Ranking Forocochero table 
 export async function updateTableRanking() {
     try {
         var desde = currentPage * rowsPerPage;
@@ -90,6 +92,7 @@ export async function updateTableRanking() {
     }
 }
 
+//Creates the Ranking de Poles table
 export async function createTablePoles() {
     try {
         var theader = document.createElement("div");
@@ -115,6 +118,7 @@ export async function createTablePoles() {
     }
 }
 
+//Populates the Ranking de Poles table 
 export async function updateTablePoles() {
     try {
         var userTable = $(".content-table-poles")[0];
@@ -188,6 +192,7 @@ export async function updateTablePoles() {
     }
 }
 
+//Hides/shows icon for next/previopus page depending on wether we are in the first, second, last,etc page
 export function setPagina(numero) {
     currentPage = numero;
     if (currentPage == 0) {

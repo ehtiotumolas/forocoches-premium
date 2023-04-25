@@ -6,6 +6,8 @@ let toListen = [];
 let savedNotas;
 let darkMode;
 let forocochero;
+
+//Gets info from Chrome local storage where ignored users, ignored threads, options, and notes are stored
 async function retrieveStorage(key) {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.get(key, resolve);
@@ -18,6 +20,7 @@ async function retrieveStorage(key) {
         })
 }
 
+//Listens for messages from other scripts
 chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     console.log("Listening")
     const { type, value } = obj;
@@ -52,11 +55,13 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     }
 });
 
+//Listens the current tab, only on forocoches.com, so the HTML can be read and the extension can do its magic
 const listenThread = () => {
     onMutation([{ addedNodes: [document.documentElement] }]);
     observe();
     retrieveStorage()
         .then(() => {
+            //Iterates from the current settings of the extension and listens to only the options enabled by the user shurmanito
             $.each(opciones, function (opcion) {
                 if (opciones[opcion].checked) {
                     if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
@@ -71,11 +76,13 @@ const listenThread = () => {
         })
 };
 
+//Listens to the HTML when loading in order to do all the magic
 function onMutation(mutations) {
     let stopped;
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
+                //Finds if the user is using the old design or new design of the forum
                 if (darkMode == undefined && ((n.tagName == 'MAIN') || (n.tagName == 'A' && n.id == 'poststop'))) {
                     if (n.tagName == 'MAIN') {
                         darkMode = true;
@@ -86,6 +93,7 @@ function onMutation(mutations) {
                         forocochero = $('.smallfont > strong > a')[0].innerText;
                     }
                 }
+                //Removes ignored threads from the forum
                 if (toListen.includes("temas-ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
                         var papa = $(n).parent().parent().parent();
@@ -94,6 +102,8 @@ function onMutation(mutations) {
                         $(papa).remove();
                     }
                 }
+                //Remove messages from ignored users, but also threads created by ignored users 
+                //Also adds skull besides the username in order to allow the user to ignore users
                 if (toListen.includes("usuarios-ignorados")) {
                     if (n.tagName == 'DIV') {
                         if (n.id.includes('edit')) {
@@ -164,6 +174,7 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Adds funcionality to write notes for each user
                 if (toListen.includes("notas-usuario")) {
                     if (n.tagName == 'DIV') {
                         if (n.id.includes('postmenu_') && !n.id.includes('_menu')) {
@@ -316,6 +327,7 @@ function onMutation(mutations) {
                         $(id).remove();
                     }
                 }
+                //Changes OP messages background colour
                 if (toListen.includes("op-color")) {
                     if (darkMode) {
                         if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px var(--coral)') {
@@ -336,6 +348,7 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Changes threads with 0 messages background colour
                 if (toListen.includes("hilos-color")) {
                     if (n.tagName == 'A' && n.href.includes("misc.php?do=whoposted")) {
                         if (n.innerText == "0") {
@@ -351,6 +364,7 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Hides ads
                 if (toListen.includes("ocultar-publicidad")) {
                     if (n.tagName == 'DIV') {
                         if (darkMode != undefined && darkMode) {
@@ -397,6 +411,7 @@ function onMutation(mutations) {
                         //$(n).remove();
                     }
                 }
+                //Hides trending sidebar
                 if (toListen.includes("ocultar-trending")) {
                     if (n.tagName == 'H2' && n.innerText === "Trending") {
                         if (darkMode) {
@@ -406,6 +421,7 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Hides foros-relacionados sidebar on the new design
                 if (toListen.includes("ocultar-foros-relacionados-nuevo")) {
                     if (n.tagName == 'H2' && (n.innerText === "Foros Relacionados" || n.innerText === "Foros relacionados")) {
                         if (darkMode) {
@@ -415,6 +431,7 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Hides foros-relacionados sidebar on the old design
                 if (toListen.includes("ocultar-foros-relacionados-viejo")) {
                     if (n.tagName == 'SPAN' && $(n).hasClass("smallfont") && n.innerText == "Foros Relacionados") {
                         if (!darkMode) {
@@ -422,6 +439,7 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Hides messages from forocoches that appear on top of the screen to advertise companies and link to a thread
                 if (toListen.includes("ocultar-avisos")) {
                     if ($(n).hasClass("navbar_notice")) {
                         var papa = $(n).parent().parent();
@@ -433,6 +451,7 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Deals with the side space and how this expands when sidebards and ads are removed
                 if (toListen.includes("espacio-lateral")) {
                     if (darkMode) {
                         if (!toListen.includes("ocultar-foros-relacionados-nuevo") ||
@@ -480,6 +499,7 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Makes avatars squared
                 if (toListen.includes("avatar-cuadrado")) {
                     if (darkMode && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
                         $(n).css({
@@ -487,6 +507,7 @@ function onMutation(mutations) {
                         });
                     }
                 }
+                //Makes avatars bigger
                 if (toListen.includes("avatar-grande")) {
                     if (darkMode && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
                         $(n).css({
@@ -498,6 +519,7 @@ function onMutation(mutations) {
                         });
                     }
                 }
+                //Adds likes funcionality to the forum
                 if (toListen.includes("likes")) {
                     if (n.tagName === 'A' && n.href.indexOf("report.php?p=") != -1) {
                         var likeBtn = $("<a/>")
@@ -570,6 +592,7 @@ function onMutation(mutations) {
     }
 }
 
+//Starts observing the thread being loaded
 function observe() {
     mo.observe(document, {
         subtree: true,
@@ -579,10 +602,12 @@ function observe() {
 
 listenThread();
 
+//Updates likes on the DB
 const updateLikes = (postId, user, action) => {
     chrome.runtime.sendMessage({ sender: "contentScript", type: "update-likes", content: { id: postId, usuario: user, action: action } });
 }
 
+//Changes colour of the liks heart to red when a message is liked
 const updateAllLikes = (likedPosts) => {
     for (var liked of likedPosts) {
         var likedPost = $($(`#edit${liked.post}`)[0]);
@@ -595,6 +620,7 @@ const updateAllLikes = (likedPosts) => {
     }
 }
 
+//Gets current thread's messages id in order to find likes for each of the messages on the DB
 const getAllPostsId = () => {
     let posts = [];
     $.each($('div[id*=edit]'), function (i, obj) {
@@ -603,6 +629,7 @@ const getAllPostsId = () => {
     return { "status": 200, "message": { "posts": posts, "usuario": forocochero } };
 }
 
+//If thread is invalid, pole is removed from the DB
 const hiloInfo = (id) => {
     var usuario, usuario_id;
     if ($('center:contains("Tema especificado inválido")')[0] != null) {
@@ -632,6 +659,7 @@ const hiloInfo = (id) => {
     return { "status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id } }
 }
 
+//Gets total number of messages and threads created by a user, and the forum DoB
 const userInfo = (id) => {
     var usuario, mensajes, hilos, registro;
     usuario = $(document).attr('title').replace("Forocoches - Ver Perfil: ", "");
@@ -654,6 +682,7 @@ const userInfo = (id) => {
     }
 }
 
+//Gets total number threads created by a user when using the search funtion
 const userInfoHilosOld = () => {
     if ($('span:contains("Modo noche")').length == 0) {
         var url = ($("a[href^='search.php?']:contains('Buscar')")[0]).href;
@@ -668,6 +697,7 @@ const userInfoHilosOld = () => {
     return { "status": 400 }
 }
 
+//Gets total number of messages and threads created by a user, and the forum DoB, for all the users in the current thread
 const usersInfo = (id) => {
     var usuarios = []
     var elements = $('*[id*=postmenu_]:visible')
@@ -699,6 +729,7 @@ const usersInfo = (id) => {
     return { "status": 200, "message": usuarios }
 }
 
+//Gets forocoches' total number of threads and messages
 const findEstadisticas = () => {
     try {
         var mensajes_totales, hilos_totales;
@@ -718,6 +749,7 @@ const findEstadisticas = () => {
     }
 }
 
+//Gets a shade higher or lower from given colour
 const shadeColor = (color, percent) => {
     var R = parseInt(color.substring(1, 3), 16);
     var G = parseInt(color.substring(3, 5), 16);
@@ -737,6 +769,7 @@ const shadeColor = (color, percent) => {
     return "#" + RR + GG + BB;
 }
 
+//Opens notes pop-up element
 document.onmousedown = function (e) {
     if ((e.target.id !== 'notas-popup-div' && e.target.id !== 'notas-usuarios-div' &&
         e.target.id !== 'notas-popup-title' && e.target.id !== 'notas-popup-edit' &&

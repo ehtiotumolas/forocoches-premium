@@ -1,19 +1,23 @@
+
+//Sets value of the op-color setting (all messages from OP) to the local chrome storage without activating the option
 document.getElementById("op-color").addEventListener("input", function () {
   setValueNoCheck("op-color")
 });
-
+//When color is selected, reload tab to display newer selection
 document.getElementById("op-color").addEventListener("blur", function () {
   sendReload();
 });
-
+//Sets value of the hilos-color setting (threads without any message) to the local chrome storage without activating the option
 document.getElementById("hilos-color").addEventListener("input", function () {
   setValueNoCheck("hilos-color")
 });
 
+//When color is selected, reload tab to display newer selection
 document.getElementById("hilos-color").addEventListener("blur", function () {
   sendReload();
 });
 
+//When a checkbox changes status on the options screen, reload tab to reflect changes
 $('.checkbox-label').each(function(){
   $(this).children('input').click(function () {
     var name = this.id.split('checkbox-')[1];
@@ -28,6 +32,7 @@ $('.checkbox-label').each(function(){
   });
 });
 
+//Loads options from the local Chrome storage and displays the values on the options screen
 const loadOptions = () => {
   chrome.storage.sync.get(function (items) {
     if (Object.keys(items).length > 0 && items.opciones) {
@@ -41,6 +46,7 @@ const loadOptions = () => {
         }
       };
     }
+    //If local Chrome storage is empty, initialize each options to false
     else {
       if (!items.opciones) {
         var opciones = {};
@@ -66,18 +72,22 @@ const loadOptions = () => {
   });
 };
 
+//Reloads current tab
 const sendReload = () => {
   chrome.runtime.sendMessage({ sender: "opciones", type: "reload" });
 }
 
+//Sets value of the checkbox and sets the current value (colour) in the local Chrome storage
 const setValueAndCheck = (id) => {
   chrome.runtime.sendMessage({ from: "opciones", type: "chrome-storage", content: { loc: "opciones", message: { "id": id, "value": $(`#${id}`)[0].value, "checked": $(`#checkbox-${id}`)[0].checked } } });
 }
 
+//Sets the current value (colour) in the local Chrome storage
 const setValueNoCheck = (id) => {
   chrome.runtime.sendMessage({ from: "opciones", type: "chrome-storage", content: { loc: "opciones", message: { "id": id, "value": $(`#${id}`)[0].value, "checked": $(`#checkbox-${id}`)[0].checked } } });
 }
 
+//Sets value of the checkbox in the local Chrome storage
 const setCheck = (id) => {
   chrome.runtime.sendMessage({ from: "opciones", type: "chrome-storage", content: { loc: "opciones", message: { "id": id, "checked": $(`#checkbox-${id}`)[0].checked } } });
 }
