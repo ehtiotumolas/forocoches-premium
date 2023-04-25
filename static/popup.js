@@ -118,6 +118,12 @@ document.getElementById("footer-rate")
         openInNewTab("https://chrome.google.com/webstore/detail/forocoches-premium/hdiegimcikljdcgohlcnilgephloaiaa/reviews");
     });
 
+//Adds link to the github repository
+document.getElementById("footer-github")
+.addEventListener("click", function () {
+    openInNewTab("https://github.com/ehtiotumolas/forocoches-premium");
+});
+
 //Opens link in new tab
 const openInNewTab = (url) => {
     window.open(url, "_blank");

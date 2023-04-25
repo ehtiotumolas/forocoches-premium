@@ -89,6 +89,14 @@ body {
   background-image: url(images/rate_over.png);
 }
 
+#footer-github-img {
+  background-image: url(images/github.png);
+}
+
+#footer-github:hover #footer-github-img {
+  background-image: url(images/github_over.png);
+}
+
 /* NAVEGACION */
 .nav-wrapper a {
   vertical-align: middle;
