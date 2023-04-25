@@ -4,7 +4,7 @@
 <p align="center">Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras puede ser añadidas al foro. </p>
 <br>
 
-#### ¿Qué nuevas funcionalidades añade la extensión Forocoches Premium a forocoches?
+### ¿Qué nuevas funcionalidades añade la extensión Forocoches Premium a forocoches?
 
 <table style="width:1000px">
   <tr style="width:1000px">
@@ -196,3 +196,28 @@
     </td>
   </tr>
 </table>
+
+<br>
+
+### Secciones explicadas
+
+🏅 Ranking<br>
+Cada vez que entras en un hilo o un perfíl de usuario, información sobre los mensajes e hilos creados por los usuarios es usada para crear un ranking forocochero donde los hilos y mensajes de cada usuarios son usados para ganar puntos.
+
+🥇 Poles<br>
+Usando la extensión forocoches premium, cada vez que entres en un hilo la pole será automaticamente guardada. El ranking de poles muestra los top 20 foreros con más poles. Cuando entras en un tema inválido, la pole para ese hilo se borarrá. Todas las hilos de los usuarios en el ranking donde las poles han sido hechas se pueden visitar desde el ranking.
+
+🚫 Ignorados<br>
+La sección de ignorados ofrece una versión mejorada para ignorar usuarios, donde los mensajes de usuarios ignorados son completamente borrados del foro. De la misma forma, los hilos creados por usuarios ignorados serán borrados. Ahora hilos que incluyan ciertas palabras en el título podrán ser ignorados, así que, si no quieres ver hilos hablando de política o fútbol, puedes añadir esas palabras en el filtro para que esos hilos no aparezcan en el foro.
+
+⚙️ Opciones<br>
+Esta sección permite activar o desactivar las diferentes opciones que ofrece esta extensión. Entre otras, las nuevas funcionalidades que ofrece esta extensión son:
+Notas para usuarios donde escribir lo que piensas de cada usuario.
+Activar "Me gusta" para mensajes, donde podrás ver los likes de cada mensaje en el hilo.
+Colorear el fondo de los mensajes del OP, haciendo el seguimiento del hilo más ameno y sencillo.
+Colorear títulos de hilos con 0 mensajes, haciendo más fácil polear en hilos sin mensajes.
+Ocultar publicidad y avisos del foro.
+Ocultar secciones laterales como "Trending" y "Foros relacionados".
+Hacer avatares más grandes y/o cuadrados.
+Incrementar el ancho del foro en el nuevo diseño para eliminar parte del espacio sin usar de los laterales.
+Activar ignorados mejorados para usuarios e hilos.
