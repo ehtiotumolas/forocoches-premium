@@ -1,4 +1,4 @@
-<p align="center">$\color{#e74a4a}\Huge{\textsf{FOROCOCHES PREMIUM}}$ </p>
+<p align="center"><img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/icon38.png" width="25"/>&nbsp;&nbsp;&nbsp; $\color{#e74a4a}\Huge{\textsf{FOROCOCHES PREMIUM}}$ </p>
 <p align="center"> $\huge{\textsf{Disfruta de extra funcionalidades mientras foreas en forocoches}}$ </p>
 
 <p align="center">Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras puede ser añadidas al foro. </p>
@@ -9,7 +9,7 @@
 <table style="width:1000px">
   <tr style="width:1000px">
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-ignore-user.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-ignore-user.png" width="50"/>
     </td>
     <td>
       <b>Ignora usuarios completamente</b>
@@ -25,7 +25,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-ignore-thread.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-ignore-thread.png" width="50"/>
     </td>
     <td>
       <b>Ignora temas</b>
@@ -41,7 +41,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-notes.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-notes.png" width="50"/>
     </td>
     <td>
       <b>Añade notas a usuarios</b>
@@ -57,7 +57,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-likes.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-likes.png" width="50"/>
     </td>
     <td>
       <b>Sistema "me gusta" para mensajes</b>
@@ -72,7 +72,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-ignore-user.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-ignore-user.png" width="50"/>
     </td>
     <td>
       <b>Oculta la publicidad</b>
@@ -88,7 +88,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-hide-sidebar.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-hide-sidebar.png" width="50"/>
     </td>
     <td>
       <b>Oculta los menus laterales</b>
@@ -104,7 +104,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-ancho-pantalla.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-ancho-pantalla.png" width="50"/>
     </td>
     <td>
       <b>Usa más espacio lateral</b>
@@ -120,7 +120,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-color.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-color.png" width="50"/>
     </td>
     <td>
       <b>Identifica los mensajes del OP</b>
@@ -136,7 +136,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-thread-no-message.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-thread-no-message.png" width="50"/>
     </td>
     <td>
       <b>Identifica hilos sin mensajes</b>
@@ -152,7 +152,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-ranking.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-ranking.png" width="50"/>
     </td>
     <td>
       <b>Ranking forocochero</b>
@@ -168,7 +168,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-pole.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-pole.png" width="50"/>
     </td>
     <td>
       <b>Ranking de poles</b>
@@ -184,7 +184,7 @@
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main//static/images/features/feature-settings.png" width="50"/>
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-settings.png" width="50"/>
     </td>
     <td>
       <b>Opciones personalizadas</b>
