@@ -3,7 +3,7 @@
   
  ### Disfruta de extra funcionalidades mientras foreas en forocoches </div>
 
-<p align="center">Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras puede ser añadidas al foro. </p>
+<p align="center">Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras pueden ser añadidas al foro. </p>
 <br>
 
 ### Instalación 
