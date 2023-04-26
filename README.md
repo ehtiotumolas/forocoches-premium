@@ -87,7 +87,7 @@ Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "
   </tr>
   <tr>
     <td>
-       Oculta la publicidad del foro y deja más espacio para los hilos y mensajes.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       Oculta la publicidad del foro y deja más espacio para lo que realmente importa: los hilos y mensajes.&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;
     </td>
   </tr>
 </table>
@@ -103,7 +103,8 @@ Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "
   </tr>
   <tr>
     <td>
-      Oculta los menus Trending y Foros Relacionados del nuevo diseño.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;
+      Oculta los menus Trending y Foros Relacionados del nuevo diseño y deja más espacio para el foro.
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;
     </td>
   </tr>
 </table>
