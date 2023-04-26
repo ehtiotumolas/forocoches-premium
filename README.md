@@ -233,3 +233,15 @@ Ocultar secciones laterales como "Trending" y "Foros relacionados".
 Hacer avatares más grandes y/o cuadrados.
 Incrementar el ancho del foro en el nuevo diseño para eliminar parte del espacio sin usar de los laterales.
 Activar ignorados mejorados para usuarios e hilos.
+
+<br>
+
+### TODO
+<ul>
+  <li>Añadir registro de cambios</li>
+  <li>Añadir sección con links a github discussions y issues, para que los usuarios puedan dejar sus comentarios ahí</li>
+  <li>Importar usuarios y temas ignorados desde documento de texto.</li>
+  <li>Exportar usuarios y temas ignorados a documento de texto.</li>
+  <li>Añadir opción para colorear los mensajes propios en los hilos</li>
+</ul>  
+
