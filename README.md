@@ -10,8 +10,8 @@ Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "
 
 ### ¿Qué nuevas funcionalidades añade la extensión Forocoches Premium a forocoches?
 
-<table style="width:1000px">
-  <tr style="width:1000px">
+<table>
+  <tr>
     <td rowspan="2">
       <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-ignore-user.png" width="50"/>
     </td>
@@ -73,6 +73,7 @@ Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "
     </td>
   </tr>
 </table>
+
 <table>
   <tr>
     <td rowspan="2">
