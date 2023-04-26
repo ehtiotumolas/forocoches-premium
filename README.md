@@ -7,8 +7,7 @@
   
  ### Disfruta de extra funcionalidades mientras foreas en forocoches </div>
 
-<p align="center">Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras pueden ser añadidas al foro. </p>
-<br>
+<p align="center">Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras pueden ser añadidas al foro. </p><br>
 
 ### Instalación 
 Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "Forocoches Premium" o <a href="https://chrome.google.com/webstore/detail/forocoches-premium/hdiegimcikljdcgohlcnilgephloaiaa">sigue este link</a>
@@ -236,12 +235,24 @@ Activar ignorados mejorados para usuarios e hilos.
 
 <br>
 
+### Registro de cambios
+#### Versión 1.5.5
+* Añadido "Registro de cambios" para incluir los cambios de cada versión.</dd>
+
+#### Versión 1.5.4
+* Arreglado bug que ponía la cantidad de hilos del usuario a 0 en el ranking cuando se visitaba su perfíl usando el diseño antiguo.</dd>
+* Añadido link al repositorio de GitHub.</dd>
+
+#### Versión 1.5.2
+* Arreglado bug que, al activar la opción de eliminar publicidad, ocultaba el botón "Responder" y la selección de páginas al entrar en un hilo usando el diseño antiguo.</dd>
+* La opción "Activar likes" ahora se encuentra bajo la sección "General" en las opciones.</dd>
+<br>
+
 ### TODO
-<ul>
-  <li>Añadir registro de cambios</li>
-  <li>Añadir sección con links a github discussions y issues, para que los usuarios puedan dejar sus comentarios ahí</li>
-  <li>Importar usuarios y temas ignorados desde documento de texto.</li>
-  <li>Exportar usuarios y temas ignorados a documento de texto.</li>
-  <li>Añadir opción para colorear los mensajes propios en los hilos</li>
-</ul>  
+- [x] Añadir registro de cambios
+- [ ] Añadir sección con links a github discussions y issues, para que los usuarios puedan dejar sus comentarios ahí
+- [ ] Importar usuarios y temas ignorados desde documento de texto
+- [ ] Exportar usuarios y temas ignorados a documento de texto
+- [ ] Añadir opción para colorear los mensajes propios en los hilos
+
 
