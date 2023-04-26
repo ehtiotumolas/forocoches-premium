@@ -1,5 +1,5 @@
 ******************************************************************
-AVISO: Esta extensión no es oficial y no tiene relación contractual con el foro. No te van a banear por usarla, pero no abras hilos en forocoches hablando sobre ella.
+###### AVISO: Esta extensión no es oficial y no tiene relación contractual con el foro. No te van a banear por usarla, pero no abras hilos en forocoches hablando sobre ella.
 ******************************************************************
 
 <p align="center"><img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/icon38.png" width="25"/>&nbsp;&nbsp;&nbsp; $\color{#e74a4a}\Huge{\textsf{FOROCOCHES PREMIUM}}$ </p>
