@@ -1,13 +1,22 @@
-<p align="center"><img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/icon38.png" width="25"/>&nbsp;&nbsp;&nbsp; $\color{#e74a4a}\Huge{\textsf{FOROCOCHES PREMIUM}}$ </p>
-<p align="center"> $\huge{\textsf{Disfruta de extra funcionalidades mientras foreas en forocoches}}$ </p>
+******************************************************************
+###### AVISO: Esta extensión no es oficial y no tiene relación contractual con el foro. No te van a banear por usarla, pero no abras hilos en forocoches hablando sobre ella.
+******************************************************************
 
-<p align="center">Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras puede ser añadidas al foro. </p>
-<br>
+<p align="center"><img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/icon38.png" width="25"/>&nbsp;&nbsp;&nbsp; $\color{#e74a4a}\Huge{\textsf{FOROCOCHES PREMIUM}}$ </p>
+<div align="center" style="font-size:18px"> 
+  
+ ### Disfruta de extra funcionalidades mientras foreas en forocoches </div>
+
+<p align="center">Forocoches Premium es una extensión para Chrome creada con la intención de añadir interesantes e interesantes funcionalidades a forocoches. En 2010 me convertí en forocochero y desde entonces he encontrado muchas cosas en forocoches que se podrían mejorar. Gracias a esta extensión, muchas de esas mejoras pueden ser añadidas al foro. </p><br>
+
+### Instalación 
+Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "Forocoches Premium" o <a href="https://chrome.google.com/webstore/detail/forocoches-premium/hdiegimcikljdcgohlcnilgephloaiaa">sigue este link</a>
+<br><br>
 
 ### ¿Qué nuevas funcionalidades añade la extensión Forocoches Premium a forocoches?
 
-<table style="width:1000px">
-  <tr style="width:1000px">
+<table>
+  <tr>
     <td rowspan="2">
       <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-ignore-user.png" width="50"/>
     </td>
@@ -69,6 +78,7 @@
     </td>
   </tr>
 </table>
+
 <table>
   <tr>
     <td rowspan="2">
@@ -80,7 +90,7 @@
   </tr>
   <tr>
     <td>
-       Oculta la publicidad del foro y deja más espacio para los hilos y mensajes.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       Oculta la publicidad del foro y deja más espacio para lo que realmente importa: los hilos y mensajes.&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;
     </td>
   </tr>
 </table>
@@ -96,7 +106,8 @@
   </tr>
   <tr>
     <td>
-      Oculta los menus Trending y Foros Relacionados del nuevo diseño.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;
+      Oculta los menus Trending y Foros Relacionados del nuevo diseño y deja más espacio para el foro.
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;
     </td>
   </tr>
 </table>
@@ -221,3 +232,27 @@ Ocultar secciones laterales como "Trending" y "Foros relacionados".
 Hacer avatares más grandes y/o cuadrados.
 Incrementar el ancho del foro en el nuevo diseño para eliminar parte del espacio sin usar de los laterales.
 Activar ignorados mejorados para usuarios e hilos.
+
+<br>
+
+### Registro de cambios
+#### Versión 1.5.5
+* Añadido "Registro de cambios" para incluir los cambios de cada versión.</dd>
+
+#### Versión 1.5.4
+* Arreglado bug que ponía la cantidad de hilos del usuario a 0 en el ranking cuando se visitaba su perfíl usando el diseño antiguo.</dd>
+* Añadido link al repositorio de GitHub.</dd>
+
+#### Versión 1.5.2
+* Arreglado bug que, al activar la opción de eliminar publicidad, ocultaba el botón "Responder" y la selección de páginas al entrar en un hilo usando el diseño antiguo.</dd>
+* La opción "Activar likes" ahora se encuentra bajo la sección "General" en las opciones.</dd>
+<br>
+
+### TODO
+- [x] Añadir registro de cambios
+- [ ] Añadir sección con links a github discussions y issues, para que los usuarios puedan dejar sus comentarios ahí
+- [ ] Importar usuarios y temas ignorados desde documento de texto
+- [ ] Exportar usuarios y temas ignorados a documento de texto
+- [ ] Añadir opción para colorear los mensajes propios en los hilos
+
+
