@@ -10,11 +10,7 @@ async function start() {
             .then(() => createTableRanking())
             .then((res) => {
                 if (res.status != 200) {
-                    $(".container-error, .container-default, .section-nav, .main-content").each(function () {
-                        if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
-                        $(".container-error").toggleClass("visually-hidden");
-                    });
-                    throw `Cannot connect with the server: ${res.status}`;
+                    errorConnection();
                 }
             });
 
@@ -23,11 +19,7 @@ async function start() {
             .then(() => createTablePoles())
             .then((res) => {
                 if (res.status != 200) {
-                    $(".container-error, .container-default, .section-nav, .main-content").each(function () {
-                        if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
-                        $(".container-error").toggleClass("visually-hidden");
-                    });
-                    throw `Cannot connect with the server: ${res.status}`;
+                    errorConnection();
                 }
             });
     }
@@ -127,6 +119,14 @@ document.getElementById("footer-github")
 //Opens link in new tab
 const openInNewTab = (url) => {
     window.open(url, "_blank");
+}
+
+const errorConnection = () => {
+    // $(".container-error, .container-default, .section-nav, .main-content").each(function () {
+    //     if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
+    //     $(".container-error").toggleClass("visually-hidden");
+    // });
+    // throw `Cannot connect with the server: ${res.status}`;
 }
 
 start();

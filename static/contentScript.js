@@ -675,7 +675,7 @@ const userInfo = (id) => {
             registro = registro.split("Registro: ")[1];
             mensajes = mensajes.split("Mensajes: ")[1].replaceAll('.', '')
         }
-        return { "status": 200, "message": { "usuario": usuario, "id": id, "mensajes": mensajes ? mensajes : 0, "hilos": hilos ? hilos : 0, "registro": registro } }
+        return { "status": 200, "message": { "usuario": usuario, "id": id, "mensajes": mensajes ? mensajes : 0, "hilos": hilos ? hilos : -1, "registro": registro } }
     }
     catch {
         return { "status": 400 }
