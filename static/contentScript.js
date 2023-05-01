@@ -87,10 +87,11 @@ function onMutation(mutations) {
                 if (newDesign == undefined && ((n.tagName == 'MAIN') || (n.tagName == 'A' && n.id == 'poststop'))) {
                     if (n.tagName == 'MAIN') {
                         newDesign = true;
-                        if ($('BODY').hasClass("dark_theme")) { darkMode = true;}
-                        if ( $('.username')[0] !== undefined) {
+                        if ($('BODY').hasClass("dark_theme")) { darkMode = true; }
+                        if ($('.username')[0] !== undefined) {
                             forocochero = $('.username')[0].innerHTML;
-                        }                    }
+                        }
+                    }
                     else {
                         newDesign = false;
                         forocochero = $('.smallfont > strong > a')[0].innerText;
@@ -404,10 +405,9 @@ function onMutation(mutations) {
                                     papa = papa.parents("table:first");
                                 }
                                 papa.prev().remove();
-                                if (n.id.indexOf("optidigital-adslot-Billboard_") == -1)
-                                {
+                                if (n.id.indexOf("optidigital-adslot-Billboard_") == -1) {
                                     papa.next().remove();
-                                }                                
+                                }
                                 papa.remove();
                             }
                             if (n.id.indexOf("opd_bottomstickyad") > -1) {
@@ -539,7 +539,7 @@ function onMutation(mutations) {
                                 fontWeight: "700",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                color: "#009879",
+                                color: darkMode ? "rgb(243, 234, 234)" : "#43445c",
                                 textDecoration: "none",
                                 position: "relative"
                             })
@@ -586,7 +586,7 @@ function onMutation(mutations) {
                                 }
                                 else {
                                     $(this)
-                                        .css({ color: "#f3c586" })
+                                        .css({ color: darkMode ? "rgb(243, 234, 234)" : "#43445c" })
                                         .toggleClass("liked");
                                     likes.innerText = Number(likes.innerText) - 1
                                     updateLikes(postId, forocochero, "remove")
