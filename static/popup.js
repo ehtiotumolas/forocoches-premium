@@ -5,6 +5,15 @@ import { createTableRanking, createTablePoles, currentPage, setPagina, rowsPerPa
 // starts the logic
 async function start() {
     try {
+        /*
+        ################################
+        COMMENT SECTION ONLY FOR TESTING
+        REMEMBER TO UNCOMMENT IT AFTER!!
+        ################################
+        */
+        //Sets version
+        setAndCompareVersions();
+
         //Fetches all users from the DB and creates the Ranking Forocochero elements
         await fetchUsers()
             .then(() => createTableRanking())
@@ -22,6 +31,7 @@ async function start() {
                     errorConnection();
                 }
             });
+
     }
     catch (error) {
         console.error(error);
@@ -98,7 +108,6 @@ $(".topDiv").each(function () {
     });
 });
 
-
 //Adds link to paypal
 document.getElementById("footer-donate")
     .addEventListener("click", function () {
@@ -123,11 +132,67 @@ const openInNewTab = (url) => {
 }
 
 const errorConnection = () => {
-    // $(".container-error, .container-default, .section-nav, .main-content").each(function () {
-    //     if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
-    //     $(".container-error").toggleClass("visually-hidden");
-    // });
-    // throw `Cannot connect with the server: ${res.status}`;
+    /*
+    ################################
+    COMMENT SECTION ONLY FOR TESTING
+    REMEMBER TO UNCOMMENT IT AFTER!!
+    ################################
+    */
+
+    $(".container-error, .container-default, .section-nav, .main-content").each(function () {
+        if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
+        $(".container-error").toggleClass("visually-hidden");
+    });
+    throw `Cannot connect with the server: ${res.status}`;
+}
+
+async function setAndCompareVersions() {
+    const manifestData = chrome.runtime.getManifest();
+    //Sets current version 
+
+    $(".version-num").text(`versión ${manifestData.version}`);
+    chrome.storage.sync.get(function (items) {
+        if (Object.keys(items).length > 0 && items.version) {
+            if (items.version != manifestData.version) {
+                items.version = manifestData.version;
+                chrome.storage.sync.set(items);
+                //TODO create new section in the popup.html to display new changes
+            };
+        }
+        //If local Chrome storage is empty, initialize version to current version
+        else {
+            if (!items.version) {
+                items.version = manifestData.version;
+                chrome.storage.sync.set(items);
+                //TODO create new section in the popup.html to display new changes
+            }
+        }
+    });
+};
+
+//Sets functionality for the load/save buttons on the ignored section
+$("#usuarios-ignorados-load").click(function (e) {
+    loadIgnoradosList("usuarios")
+});
+
+$("#temas-ignorados-load").click(function (e) {
+    loadIgnoradosList("temas")
+});
+
+$("#usuarios-ignorados-save").click(function (e) {
+    saveIgnoradosList("usuarios")
+});
+
+$("#temas-ignorados-save").click(function (e) {
+    saveIgnoradosList("temas")
+});
+
+const loadIgnoradosList = (type) => {
+    alert(`loading ${type}`)
+}
+
+const saveIgnoradosList = (type) => {
+    alert(`saving ${type}`)
 }
 
 start();

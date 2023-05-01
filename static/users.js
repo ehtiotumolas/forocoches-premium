@@ -62,10 +62,11 @@ export async function fetchPoles() {
 export function buscarUsuario(usuario) {
     try {
         let offset = (parseInt(getComputedStyle(document.body).getPropertyValue('--fs-header')) * 16 + 50);
+        let element;
         let usuarioEncontrado = Object.keys(usuarios).find(key => usuarios[key].usuario === usuario);
         if (usuarioEncontrado != null) {
             setPagina(Math.floor(usuarioEncontrado / rowsPerPage));
-            let element = document.getElementById(usuario.trim())
+            element = document.getElementById(usuario.trim())
         }
         let pos = element.getBoundingClientRect();
         let total = (pos.top - offset);

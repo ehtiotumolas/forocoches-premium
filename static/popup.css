@@ -31,6 +31,16 @@ body {
   width: 100%;
 }
 
+.version-num {
+  margin-left: auto;
+  margin-top: auto;
+  padding-right: .4rem;
+  padding-bottom: .2rem;
+  color: var(--clr-primary-400);
+  font-size: var(--fs-200);
+
+}
+
 /* FOOTER */
 .section-footer {
   margin-bottom: 0;
@@ -222,9 +232,16 @@ button:disabled {
   width: 50%;
 }
 
+.load-unload-ignored-list {
+  display: flex;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
 .button-small {
+  font-size: var(--fs-300);
   height: 1.5rem;
-  width: 7rem;
+  width: 5rem;
 }
 
 .bar {
@@ -338,9 +355,16 @@ button:disabled {
 .tema-ignorado-eliminar {
   margin-left: auto;
   padding-right: 2rem;
-  ;
   cursor: pointer;
 }
+
+.usuario-ignorado-id,
+.tema-ignorado-id {
+  margin-right: auto;
+  padding-right: 2rem;
+  cursor: pointer;
+}
+
 
 /* OPCIONES */
 .container-opciones {
@@ -349,8 +373,6 @@ button:disabled {
   margin: 2%;
   padding: .6rem;
 }
-
-.opciones-generales {}
 
 .opciones-ignorar {
   padding-top: 1rem;
@@ -531,6 +553,14 @@ hr {
 
 li {
   margin-left: .5rem;
+}
+
+ul {
+  padding-left: 1rem;
+}
+
+.li-links {
+  padding-bottom: .4rem;
 }
 
 dd {

@@ -27,6 +27,7 @@
                 <a href="#"><img src="../static/images/icon128.png" alt="forocoches-premium-logo"
                         class="header-img"></a>
                 <div class="fs-primary-heading text-primary-400 fw-semi-bold">Forocoches Premium</div>
+                <div class="version-num"></div>
             </div>
         </div>
         <div class="section-nav">
@@ -116,11 +117,13 @@
                         <dd>Añadido "Registro de cambios" para incluir los cambios de cada versión.</dd>
                         <br>
                         <dt>Versión 1.5.4</dt>
-                        <dd>Arreglado bug que ponía la cantidad de hilos del usuario a 0 en el ranking cuando se visitaba su perfíl usando el diseño antiguo.</dd>
+                        <dd>Arreglado bug que ponía la cantidad de hilos del usuario a 0 en el ranking cuando se
+                            visitaba su perfíl usando el diseño antiguo.</dd>
                         <dd>Añadido link al repositorio de GitHub.</dd>
                         <br>
                         <dt>Versión 1.5.2</dt>
-                        <dd>Arreglado bug que, al activar la opción de eliminar publicidad, ocultaba el botón "Responder" y la selección de páginas al entrar en un hilo usando el diseño antiguo.</dd>
+                        <dd>Arreglado bug que, al activar la opción de eliminar publicidad, ocultaba el botón
+                            "Responder" y la selección de páginas al entrar en un hilo usando el diseño antiguo.</dd>
                         <dd>La opción "Activar likes" ahora se encuentra bajo la sección "General" en las opciones.</dd>
                     </dl>
                 </div>
@@ -159,7 +162,10 @@
                 <div class="content-ignorados">
                     <div class="container-usuarios-ignorados dashed">
                         <div class="poles-title usuarios-ignorados">Usuarios Ignorados</div>
-                        <button class="button input-button button-small" id="usuarios-ignorados-upoad">Cargar lista 📁</button>
+                        <div class="load-unload-ignored-list">
+                            <button class="button input-button button-small" id="usuarios-ignorados-load">Cargar 📁</button>
+                            <button class="button input-button button-small" id="usuarios-ignorados-save">Guardar 💾</button>
+                        </div>
                         <div class="grupo-input usuarios-ignorados">
                             <input type="input" placeholder=" " class="input-box" id="usuarios-ignorados-input">
                             <span class="bar"></span>
@@ -171,8 +177,10 @@
                     </div>
                     <div class="container-temas-ignorados dashed">
                         <div class="poles-title temas-ignorados">Temas Ignorados</div>
-                        <button class="button input-button button-small" id="usuarios-ignorados-upoad">Cargar lista 📁</button>
-                        <div class="grupo-input temas-ignorados">
+                        <div class="load-unload-ignored-list">
+                            <button class="button input-button button-small" id="temas-ignorados-load">Cargar 📁</button>
+                            <button class="button input-button button-small" id="temas-ignorados-save">Guardar 💾</button>
+                        </div>                        <div class="grupo-input temas-ignorados">
                             <input type="input" placeholder=" " class="input-box" id="temas-ignorados-input">
                             <span class="bar"></span>
                             <label class="input-label temas-ignorados">Palabra(s) clave</label>
@@ -283,11 +291,43 @@
             <div class="container-info main-content visually-hidden dashed">
                 <div>
                     <ul>
-                        <li>
-                            Web:&nbsp;&emsp;&emsp;&emsp;<a href="http://www.forocochero.com">www.forocochero.com</a>
+                        <li class="li-links">
+                            Web:&nbsp;&emsp;&emsp;&emsp;<a target="_blank" href="http://www.forocochero.com">
+                                <br>www.forocochero.com</a>
                         </li>
-                        <li>
-                            GitHub:&emsp;&emsp;<a href="https://github.com/ehtiotumolas/forocoches-premium">https://github.com/ehtiotumolas/forocoches-premium</a>
+                        <li class="li-links">
+                            Twitter:&emsp;&emsp;<a target="_blank"
+                                href="https://twitter.com/ehtiotumolas">
+                                <br>https://twitter.com/ehtiotumolas</a>
+                        </li>
+                        <li class="li-links">
+                            Contacto:&emsp;&emsp;<a target="_blank"
+                                href="mailto:ehtiotumolas@gmail.com">
+                                <br>ehtiotumolas@gmail.com</a>
+                        </li>
+                        <li class="li-links">
+                            GitHub:&emsp;&emsp;<a target="_blank"
+                                href="https://github.com/ehtiotumolas/forocoches-premium">
+                                <br>https://github.com/ehtiotumolas/forocoches-premium</a>
+                        </li>
+                        <li class="li-links">
+                            Chrome Web Store:&emsp;&emsp;<a target="_blank" href="https://chrome.google.com/webstore/detail/forocoches-premium/hdiegimcikljdcgohlcnilgephloaiaa
+                            "><br>https://chrome.google.com/webstore/detail/forocoches-premium/</a>
+                        </li>
+                    </ul>
+                    <br><br>
+                    ¿Has tenido una idea y quieres compartirla? ¿Tienes alguna sugerencia? ¿Has encotrado un bug o algo que no funciona bien?
+                    <br><br>
+                    <ul>
+                        <li class="li-links">
+                            Problemas:&emsp;&emsp;<a target="_blank"
+                                href="https://github.com/ehtiotumolas/forocoches-premium/issues">
+                                <br>https://github.com/ehtiotumolas/forocoches-premium/issues</a>
+                        </li>
+                        <li class="li-links">
+                            Preguntas e Ideas:&emsp;&emsp;<a target="_blank"
+                                href="https://github.com/ehtiotumolas/forocoches-premium/discussions">
+                                <br>https://github.com/ehtiotumolas/forocoches-premium/discussions</a>
                         </li>
                     </ul>
                 </div>

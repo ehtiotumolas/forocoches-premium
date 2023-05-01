@@ -52,7 +52,7 @@ function createIgnorado(id, loc) {
     .addClass(`${loc}-ignorado-wrapper`);
   let divUsuario = $(`<div>${id}</div>`)
     .addClass(`${loc}-ignorado-id`);
-  let divEliminar = $(`<div>-</div>`)
+  let divEliminar = $(`<div>❌</div>`)
     .addClass(`${loc}-ignorado-eliminar`);
   $(divEliminar).click(async function (e) {
     e.preventDefault();
