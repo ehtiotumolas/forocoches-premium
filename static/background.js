@@ -164,6 +164,15 @@ const addToChromeStorage = (loc, message, action) => {
             }
             else { items.temas_ignorados = [message]; }
         }
+        if (loc == "temas") {
+            if (Object.keys(items).length > 0 && items.temas_ignorados) {
+                if (action == "add") {
+                    message.forEach(tema => {
+                        items.temas_ignorados.push(tema);
+                    });
+                }
+            }
+        }
         if (loc == "usuario") {
             if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
                 if (action == "add") {
@@ -174,6 +183,15 @@ const addToChromeStorage = (loc, message, action) => {
                 }
             }
             else { items.usuarios_ignorados = [message]; }
+        }
+        if (loc == "usuarios") {
+            if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
+                if (action == "add") {
+                    message.forEach(usuario => {
+                        items.usuarios_ignorados.push(usuario);
+                    });
+                }
+            }
         }
         if (loc.includes("opciones")) {
             if (message.value) {

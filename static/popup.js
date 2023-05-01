@@ -170,29 +170,4 @@ async function setAndCompareVersions() {
     });
 };
 
-//Sets functionality for the load/save buttons on the ignored section
-$("#usuarios-ignorados-load").click(function (e) {
-    loadIgnoradosList("usuarios")
-});
-
-$("#temas-ignorados-load").click(function (e) {
-    loadIgnoradosList("temas")
-});
-
-$("#usuarios-ignorados-save").click(function (e) {
-    saveIgnoradosList("usuarios")
-});
-
-$("#temas-ignorados-save").click(function (e) {
-    saveIgnoradosList("temas")
-});
-
-const loadIgnoradosList = (type) => {
-    alert(`loading ${type}`)
-}
-
-const saveIgnoradosList = (type) => {
-    alert(`saving ${type}`)
-}
-
 start();
