@@ -159,16 +159,18 @@ function onMutation(mutations) {
                             }
                         }
                     }
-                    if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
-                        let id = "#edit" + $(n).parent()[0].id.split("_")[1];
-                        $(id).remove();
-                    }
-                    if (n.tagName == 'A' && n.href.includes('profile.php?do=ignorelist') && usuarios_ignorados) {
-                        $.each($("a[href^='profile.php?do=ignorelist']"), function (i, obj) {
-                            let papa = $(obj).parent().parent().parent();
-                            papa.next("separator").remove();
+                    if (n.tagName == 'A' && usuarios_ignorados) {
+                        if (usuarios_ignorados.some(substring => n.innerText.includes(substring)) && n.href.includes('member.php?u=')) {
+                            let id = "#edit" + $(n).parent()[0].id.split("_")[1];
+                            $(id).remove();
+                        }
+                        if (n.href.includes('profile.php?do=ignorelist')) {
+                            let papa = $(n).parent().parent().closest('div')[0];
+                            if (newDesign) {
+                                papa = $(papa).parent().closest('div');
+                            }
                             papa.remove();
-                        });
+                        }
                     }
                     if (n.tagName == 'SPAN') {
                         if (newDesign && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`@${substring}`))) {
@@ -176,12 +178,10 @@ function onMutation(mutations) {
                             papa.next("separator").remove();
                             papa.remove();
                         }
-                        else {
-                            if (usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`${substring}`)) && $(n).parent().hasClass("smallfont")) {
-                                let papa = $(n).parent().parent().parent();
-                                papa.next("separator").remove();
-                                papa.remove();
-                            }
+                        if (usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`${substring}`)) && $(n).parent().hasClass("smallfont")) {
+                            let papa = $(n).parent().parent().parent();
+                            papa.next("separator").remove();
+                            papa.remove();
                         }
                     }
                 }
@@ -333,10 +333,6 @@ function onMutation(mutations) {
                             }
                         }
                     }
-                    if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
-                        let id = "#edit" + $(n).parent()[0].id.split("_")[1];
-                        $(id).remove();
-                    }
                 }
                 //Changes OP messages background colour
                 if (toListen.includes("op-color")) {
@@ -370,7 +366,6 @@ function onMutation(mutations) {
                             else {
                                 $(papa).find('.alt1').css('background-color', opciones["hilos-color"].value)
                                 $(papa).find('.alt2').css('background-color', shadeColor(opciones["hilos-color"].value, -10));
-
                             }
                         }
                     }
