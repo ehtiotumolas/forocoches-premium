@@ -141,7 +141,7 @@ function onMutation(mutations) {
                                 calaveraBtn.css({ marginLeft: "0px", position: "relative" }).height("auto").appendTo($(postDiv).parent());
                             }
                         }
-                        if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
+                        if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(`cita de ${substring.toLowerCase()}`))) {
                             if (toListen.includes("ocultar-usuarios-ignorados")) {
                                 let papa = $(n).parent().parent().parent();
                                 if (newDesign) {
@@ -160,7 +160,7 @@ function onMutation(mutations) {
                         }
                     }
                     if (n.tagName == 'A' && usuarios_ignorados) {
-                        if (usuarios_ignorados.some(substring => n.innerText.includes(substring)) && n.href.includes('member.php?u=')) {
+                        if (usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(substring.toLowerCase())) && n.href.includes('member.php?u=')) {
                             let id = "#edit" + $(n).parent()[0].id.split("_")[1];
                             $(id).remove();
                         }
@@ -173,12 +173,12 @@ function onMutation(mutations) {
                         }
                     }
                     if (n.tagName == 'SPAN') {
-                        if (newDesign && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`@${substring}`))) {
+                        if (newDesign && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(`@${substring.toLowerCase()}`))) {
                             let papa = $(n).parent().parent().parent().parent().parent();
                             papa.next("separator").remove();
                             papa.remove();
                         }
-                        if (usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`${substring}`)) && $(n).parent().hasClass("smallfont")) {
+                        if (usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(`${substring.toLowerCase()}`)) && $(n).parent().hasClass("smallfont")) {
                             let papa = $(n).parent().parent().parent();
                             papa.next("separator").remove();
                             papa.remove();
