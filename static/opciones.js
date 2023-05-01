@@ -20,7 +20,7 @@ document.getElementById("hilos-color").addEventListener("blur", function () {
 //When a checkbox changes status on the options screen, reload tab to reflect changes
 $('.checkbox-label').each(function(){
   $(this).children('input').click(function () {
-    var name = this.id.split('checkbox-')[1];
+    let name = this.id.split('checkbox-')[1];
     if (name === "op-color" || name === "hilos-color")
     {
       setValueNoCheck(name);
@@ -36,7 +36,7 @@ $('.checkbox-label').each(function(){
 const loadOptions = () => {
   chrome.storage.sync.get(function (items) {
     if (Object.keys(items).length > 0 && items.opciones) {
-      for (var item in items.opciones) {
+      for (let item in items.opciones) {
         $(`#checkbox-${item}`)[0].checked = items.opciones[item].checked;
         if (item === "op-color") {
           $("#op-color")[0].value = items.opciones[item].value;
@@ -49,7 +49,7 @@ const loadOptions = () => {
     //If local Chrome storage is empty, initialize each options to false
     else {
       if (!items.opciones) {
-        var opciones = {};
+        let opciones = {};
         opciones["op-color"] = { "value": $("#op-color")[0].value, "checked": false }
         opciones["hilos-color"] = { "value": $("#hilos-color")[0].value, "checked": false }
         opciones["ocultar-publicidad"] = { "checked": false }

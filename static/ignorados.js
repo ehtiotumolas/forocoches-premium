@@ -48,11 +48,11 @@ $("#submit-temas-ignorados").click(function () {
 
 //Creates HTML elemtents for the ignored lists
 function createIgnorado(id, loc) {
-  var divWrapper = $("<div>")
+  let divWrapper = $("<div>")
     .addClass(`${loc}-ignorado-wrapper`);
-  var divUsuario = $(`<div>${id}</div>`)
+  let divUsuario = $(`<div>${id}</div>`)
     .addClass(`${loc}-ignorado-id`);
-  var divEliminar = $(`<div>-</div>`)
+  let divEliminar = $(`<div>-</div>`)
     .addClass(`${loc}-ignorado-eliminar`);
   $(divEliminar).click(async function (e) {
     e.preventDefault();

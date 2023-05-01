@@ -4,7 +4,8 @@ let usuarios_ignorados;
 let opciones;
 let toListen = [];
 let savedNotas;
-let darkMode;
+let newDesign;
+let darkMode = false;
 let forocochero;
 
 //Gets info from Chrome local storage where ignored users, ignored threads, options, and notes are stored
@@ -83,21 +84,23 @@ function onMutation(mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
                 //Finds if the user is using the old design or new design of the forum
-                if (darkMode == undefined && ((n.tagName == 'MAIN') || (n.tagName == 'A' && n.id == 'poststop'))) {
+                if (newDesign == undefined && ((n.tagName == 'MAIN') || (n.tagName == 'A' && n.id == 'poststop'))) {
                     if (n.tagName == 'MAIN') {
-                        darkMode = true;
-                        forocochero = $('.username')[0].innerHTML;
-                    }
+                        newDesign = true;
+                        if ($('BODY').hasClass("dark_theme")) { darkMode = true;}
+                        if ( $('.username')[0] !== undefined) {
+                            forocochero = $('.username')[0].innerHTML;
+                        }                    }
                     else {
-                        darkMode = false;
+                        newDesign = false;
                         forocochero = $('.smallfont > strong > a')[0].innerText;
                     }
                 }
                 //Removes ignored threads from the forum
                 if (toListen.includes("temas-ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
-                        var papa = $(n).parent().parent().parent();
-                        if ((darkMode)) papa = $(papa).parent();
+                        let papa = $(n).parent().parent().parent();
+                        if ((newDesign)) papa = $(papa).parent();
                         $(papa).next("separator").remove();
                         $(papa).remove();
                     }
@@ -107,9 +110,9 @@ function onMutation(mutations) {
                 if (toListen.includes("usuarios-ignorados")) {
                     if (n.tagName == 'DIV') {
                         if (n.id.includes('edit')) {
-                            var postId = "postmenu_" + n.id.split('edit')[1];
-                            var postDiv = $(`div[id=${postId}]`)[0];
-                            var calaveraBtn = $("<a/>")
+                            let postId = "postmenu_" + n.id.split('edit')[1];
+                            let postDiv = $(`div[id=${postId}]`)[0];
+                            let calaveraBtn = $("<a/>")
                                 .attr('id', 'ignorar-usuario-div')
                                 .css({
                                     position: "absolute",
@@ -120,14 +123,14 @@ function onMutation(mutations) {
                                 .text("💀")
                                 .click(function (e) {
                                     e.preventDefault();
-                                    var usuario = postDiv.children[0].innerText;
+                                    let usuario = postDiv.children[0].innerText;
                                     if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: { loc: "usuario", message: usuario, action: "add" } });
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "reload" });
                                         chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
                                     };
                                 });
-                            if (darkMode) {
+                            if (newDesign) {
                                 if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
                                     $("<div/>").attr('id', 'container-opciones').css({ paddingLeft: "5px" }).insertAfter($(postDiv).parent().parent().children()[0]);;
                                 }
@@ -139,8 +142,8 @@ function onMutation(mutations) {
                         }
                         if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`Cita de ${substring}`))) {
                             if (toListen.includes("ocultar-usuarios-ignorados")) {
-                                var papa = $(n).parent().parent().parent();
-                                if (darkMode) {
+                                let papa = $(n).parent().parent().parent();
+                                if (newDesign) {
                                     papa.remove();
                                 }
                                 else {
@@ -148,26 +151,33 @@ function onMutation(mutations) {
                                 }
                             }
                             else {
-                                var usuario = $(n);
+                                let usuario = $(n);
                                 $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
-                                if ((darkMode)) usuario = $(usuario).parent('div')[0];
+                                if ((newDesign)) usuario = $(usuario).parent('div')[0];
                                 $(usuario).next('div')[0].innerText = "(Texto ignorado)";
                             }
                         }
                     }
                     if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
-                        var id = "#edit" + $(n).parent()[0].id.split("_")[1];
+                        let id = "#edit" + $(n).parent()[0].id.split("_")[1];
                         $(id).remove();
                     }
+                    if (n.tagName == 'A' && n.href.includes('profile.php?do=ignorelist') && usuarios_ignorados) {
+                        $.each($("a[href^='profile.php?do=ignorelist']"), function (i, obj) {
+                            let papa = $(obj).parent().parent().parent();
+                            papa.next("separator").remove();
+                            papa.remove();
+                        });
+                    }
                     if (n.tagName == 'SPAN') {
-                        if (darkMode && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`@${substring}`))) {
-                            var papa = $(n).parent().parent().parent().parent().parent();
+                        if (newDesign && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`@${substring}`))) {
+                            let papa = $(n).parent().parent().parent().parent().parent();
                             papa.next("separator").remove();
                             papa.remove();
                         }
                         else {
                             if (usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(`${substring}`)) && $(n).parent().hasClass("smallfont")) {
-                                var papa = $(n).parent().parent().parent();
+                                let papa = $(n).parent().parent().parent();
                                 papa.next("separator").remove();
                                 papa.remove();
                             }
@@ -178,9 +188,9 @@ function onMutation(mutations) {
                 if (toListen.includes("notas-usuario")) {
                     if (n.tagName == 'DIV') {
                         if (n.id.includes('postmenu_') && !n.id.includes('_menu')) {
-                            var postDiv = $(n)[0];
-                            var usuario = "";
-                            if (darkMode) {
+                            let postDiv = $(n)[0];
+                            let usuario = "";
+                            if (newDesign) {
                                 usuario = $(postDiv)[0].innerText;
                             }
                             else {
@@ -191,7 +201,7 @@ function onMutation(mutations) {
                                     console.log(err)
                                 }
                             }
-                            var notasBtn = $("<a/>")
+                            let notasBtn = $("<a/>")
                                 .attr('id', 'notas-usuarios-div')
                                 .css({
                                     position: "absolute",
@@ -203,7 +213,7 @@ function onMutation(mutations) {
                                     e.preventDefault();
                                     $("#notas-popup-div").remove();
                                     if ($(this).children("#notas-popup-div").length == 0) {
-                                        var notas = $("<div/>")
+                                        let notas = $("<div/>")
                                             .attr('id', 'notas-popup-div')
                                             .css({
                                                 position: "absolute",
@@ -216,7 +226,7 @@ function onMutation(mutations) {
                                                 borderRadius: "1.5rem",
                                                 filter: "drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2))",
                                             })
-                                        if (darkMode) {
+                                        if (newDesign) {
                                             $(notas).css({ marginLeft: "-20px", marginTop: "0px" })
                                         }
                                         else {
@@ -241,7 +251,7 @@ function onMutation(mutations) {
                                             .text(`NOTAS de ${usuario}`)
                                             .appendTo(notas);
 
-                                        var textContainer = $("<div/>")
+                                        let textContainer = $("<div/>")
                                             .attr('id', 'notas-popup-text-container')
                                             .css({
                                                 height: "220px",
@@ -258,7 +268,7 @@ function onMutation(mutations) {
                                                 outline: "0px solid transparent"
                                             }).appendTo(notas);
 
-                                        var textEditable = $("<p/>")
+                                        let textEditable = $("<p/>")
                                             .attr('id', 'notas-popup-text-editable')
                                             .attr('contenteditable', true)
                                             .css({
@@ -287,7 +297,7 @@ function onMutation(mutations) {
                                             .text("Guardar")
                                             .click(function (e) {
                                                 e.preventDefault();
-                                                var textToSave = `${$("#notas-popup-text-editable")[0].innerText}`;
+                                                let textToSave = `${$("#notas-popup-text-editable")[0].innerText}`;
                                                 if (savedNotas == undefined) savedNotas = {}
                                                 savedNotas[usuario] = { "text": textToSave };
                                                 if (textToSave == "") {
@@ -311,7 +321,7 @@ function onMutation(mutations) {
                                 notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
                             }
 
-                            if (darkMode) {
+                            if (newDesign) {
                                 if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
                                     $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
                                 }
@@ -323,20 +333,20 @@ function onMutation(mutations) {
                         }
                     }
                     if (n.tagName == 'A' && n.href.includes('member.php?u=') && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.includes(substring))) {
-                        var id = "#edit" + $(n).parent()[0].id.split("_")[1];
+                        let id = "#edit" + $(n).parent()[0].id.split("_")[1];
                         $(id).remove();
                     }
                 }
                 //Changes OP messages background colour
                 if (toListen.includes("op-color")) {
-                    if (darkMode) {
-                        if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px var(--coral)') {
+                    if (newDesign) {
+                        if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px let(--coral)') {
                             n.style.backgroundColor = opciones["op-color"].value;
                         }
                     }
                     else {
                         if (n.tagName == 'IMG' && n.alt == "Respuesta rapida a este mensaje" && $(n).parent().parent().parent().parent().parent().hasClass("tborder-author")) {
-                            var papa = $(n).parent().parent().parent().parent();
+                            let papa = $(n).parent().parent().parent().parent();
                             //Removes border
                             $(papa).parent().removeClass();
                             $(papa).children().children().css('border', 'none');
@@ -352,8 +362,8 @@ function onMutation(mutations) {
                 if (toListen.includes("hilos-color")) {
                     if (n.tagName == 'A' && n.href.includes("misc.php?do=whoposted")) {
                         if (n.innerText == "0") {
-                            var papa = $(n).parent().parent().parent();
-                            if (darkMode) {
+                            let papa = $(n).parent().parent().parent();
+                            if (newDesign) {
                                 $(papa).css("background-color", opciones["hilos-color"].value);
                             }
                             else {
@@ -367,7 +377,7 @@ function onMutation(mutations) {
                 //Hides ads
                 if (toListen.includes("ocultar-publicidad")) {
                     if (n.tagName == 'DIV') {
-                        if (darkMode != undefined && darkMode) {
+                        if (newDesign != undefined && newDesign) {
                             if ($(n).hasClass("fixed_adslot")) {
                                 $(n).parent().remove();
                             }
@@ -389,7 +399,7 @@ function onMutation(mutations) {
                                 n.id.indexOf("optidigital-adslot-Rectangle_") > -1 ||
                                 n.id.indexOf("optidigital-adslot-Skyscraper_") > -1 ||
                                 n.id == 'fcs') {
-                                var papa = $(n).parents("table:first");
+                                let papa = $(n).parents("table:first");
                                 if (n.id.indexOf("optidigital-adslot-Skyscraper_") > -1) {
                                     papa = papa.parents("table:first");
                                 }
@@ -414,7 +424,7 @@ function onMutation(mutations) {
                 //Hides trending sidebar
                 if (toListen.includes("ocultar-trending")) {
                     if (n.tagName == 'H2' && n.innerText === "Trending") {
-                        if (darkMode) {
+                        if (newDesign) {
                             if ($(n).parent().parent().parent()[0].id === "sidebar") {
                                 $(n).parent().parent().remove();
                             }
@@ -424,7 +434,7 @@ function onMutation(mutations) {
                 //Hides foros-relacionados sidebar on the new design
                 if (toListen.includes("ocultar-foros-relacionados-nuevo")) {
                     if (n.tagName == 'H2' && (n.innerText === "Foros Relacionados" || n.innerText === "Foros relacionados")) {
-                        if (darkMode) {
+                        if (newDesign) {
                             if ($(n).parent().parent()[0].id === "sidebar") {
                                 $(n).parent().remove();
                             }
@@ -434,7 +444,7 @@ function onMutation(mutations) {
                 //Hides foros-relacionados sidebar on the old design
                 if (toListen.includes("ocultar-foros-relacionados-viejo")) {
                     if (n.tagName == 'SPAN' && $(n).hasClass("smallfont") && n.innerText == "Foros Relacionados") {
-                        if (!darkMode) {
+                        if (!newDesign) {
                             $($($(".smallfont")[0]).closest(".tborder")[0]).parent()[0].remove()
                         }
                     }
@@ -442,8 +452,8 @@ function onMutation(mutations) {
                 //Hides messages from forocoches that appear on top of the screen to advertise companies and link to a thread
                 if (toListen.includes("ocultar-avisos")) {
                     if ($(n).hasClass("navbar_notice")) {
-                        var papa = $(n).parent().parent();
-                        if (darkMode) {
+                        let papa = $(n).parent().parent();
+                        if (newDesign) {
                             papa.remove();
                         }
                         else {
@@ -453,7 +463,7 @@ function onMutation(mutations) {
                 }
                 //Deals with the side space and how this expands when sidebards and ads are removed
                 if (toListen.includes("espacio-lateral")) {
-                    if (darkMode) {
+                    if (newDesign) {
                         if (!toListen.includes("ocultar-foros-relacionados-nuevo") ||
                             !toListen.includes("ocultar-trending") ||
                             !toListen.includes("ocultar-publicidad")) {
@@ -501,7 +511,7 @@ function onMutation(mutations) {
                 }
                 //Makes avatars squared
                 if (toListen.includes("avatar-cuadrado")) {
-                    if (darkMode && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
+                    if (newDesign && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
                         $(n).css({
                             borderRadius: "0"
                         });
@@ -509,7 +519,7 @@ function onMutation(mutations) {
                 }
                 //Makes avatars bigger
                 if (toListen.includes("avatar-grande")) {
-                    if (darkMode && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
+                    if (newDesign && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
                         $(n).css({
                             width: "70px",
                             height: "70px"
@@ -522,18 +532,18 @@ function onMutation(mutations) {
                 //Adds likes funcionality to the forum
                 if (toListen.includes("likes")) {
                     if (n.tagName === 'A' && n.href.indexOf("report.php?p=") != -1) {
-                        var likeBtn = $("<a/>")
+                        let likeBtn = $("<a/>")
                             .css({
                                 display: "flex",
                                 alignItems: "center",
                                 fontWeight: "700",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                color: "white",
+                                color: "#009879",
                                 textDecoration: "none",
                                 position: "relative"
                             })
-                        if (!darkMode) {
+                        if (!newDesign) {
                             likeBtn.css({ justifyContent: "right" })
                         }
                         $("<span/>")
@@ -559,13 +569,13 @@ function onMutation(mutations) {
                             .text("❤")
                             .click(function (e) {
                                 var postId, likes
-                                if (darkMode) {
+                                if (newDesign) {
                                     postId = $($($(this)).parent()[0].closest('section')).parent()[0].id.split('edit')[1];
                                 }
                                 else {
                                     postId = $($(this)).parent()[0].closest('div').id.split('edit')[1];
                                 }
-                                var likes = $(this).prev('span')[0];
+                                likes = $(this).prev('span')[0];
 
                                 if (!$(this).hasClass("liked")) {
                                     $(this)
@@ -576,7 +586,7 @@ function onMutation(mutations) {
                                 }
                                 else {
                                     $(this)
-                                        .css({ color: "white" })
+                                        .css({ color: "#f3c586" })
                                         .toggleClass("liked");
                                     likes.innerText = Number(likes.innerText) - 1
                                     updateLikes(postId, forocochero, "remove")
@@ -609,8 +619,8 @@ const updateLikes = (postId, user, action) => {
 
 //Changes colour of the liks heart to red when a message is liked
 const updateAllLikes = (likedPosts) => {
-    for (var liked of likedPosts) {
-        var likedPost = $($(`#edit${liked.post}`)[0]);
+    for (let liked of likedPosts) {
+        let likedPost = $($(`#edit${liked.post}`)[0]);
         likedPost.find('#like-text')[0].innerText = liked.likes;
         if (liked.liked == 1) {
             $(likedPost.find('#like-button')[0])
@@ -631,18 +641,18 @@ const getAllPostsId = () => {
 
 //If thread is invalid, pole is removed from the DB
 const hiloInfo = (id) => {
-    var usuario, usuario_id;
+    let usuario, usuario_id;
     if ($('center:contains("Tema especificado inválido")')[0] != null) {
         console.log("Tema especificado inválido");
         return { "status": 400, "message": { "hilo_id": id } }
     };
 
-    if (darkMode) {
+    if (newDesign) {
         try {
-            var postFound = $(".date-and-time-gray").filter(function () {
+            let postFound = $(".date-and-time-gray").filter(function () {
                 return this.innerText === "#2";
             }).parent().parent().parent().parent()[0].id.split('post')[1]
-            var divFound = $(`div[id='postmenu_${postFound}'] > a`)[0];
+            let divFound = $(`div[id='postmenu_${postFound}'] > a`)[0];
             usuario = divFound.innerText
             usuario_id = divFound.href.split("php?u=")[1];
         }
@@ -651,8 +661,8 @@ const hiloInfo = (id) => {
         }
     }
     else {
-        var postFound = $('a[name="2"]')[0].href.split('#post')[1]
-        var aFound = $(`div[id=postmenu_${postFound}] > a`)[0];
+        let postFound = $('a[name="2"]')[0].href.split('#post')[1]
+        let aFound = $(`div[id=postmenu_${postFound}] > a`)[0];
         usuario = aFound.innerText;
         usuario_id = aFound.href.split("php?u=")[1];
     }
@@ -661,17 +671,16 @@ const hiloInfo = (id) => {
 
 //Gets total number of messages and threads created by a user, and the forum DoB
 const userInfo = (id) => {
-    var usuario, mensajes, hilos, registro;
+    let usuario, mensajes, hilos, registro;
     usuario = $(document).attr('title').replace("Forocoches - Ver Perfil: ", "");
     try {
-        if (darkMode) {
-            var usuario, mensajes, hilos, registro;
+        if (newDesign) {
             mensajes = $($('span:contains("Mensajes"):not(:contains("privados"))')[0]).prev("span")[0].innerText.replace(".", "");
             hilos = $($('span:contains("Hilos")')[2]).prev("span")[0].innerText.replace(".", "")
             registro = $($('span:contains("Desde")')[0]).next("span")[0].innerText
         }
         else {
-            var [registro, mensajes] = $('span:contains("Registro: "):contains("Mensajes")')[0].innerText.split('\n')
+            registro, mensajes = $('span:contains("Registro: "):contains("Mensajes")')[0].innerText.split('\n')
             registro = registro.split("Registro: ")[1];
             mensajes = mensajes.split("Mensajes: ")[1].replaceAll('.', '')
         }
@@ -685,8 +694,8 @@ const userInfo = (id) => {
 //Gets total number threads created by a user when using the search funtion
 const userInfoHilosOld = () => {
     if ($('span:contains("Modo noche")').length == 0) {
-        var url = ($("a[href^='search.php?']:contains('Buscar')")[0]).href;
-        var matches = url.match(/(exactname=1|starteronly=1|forumchoice[[]]=0|showposts=0|replyless=0|replylimit=0|searchuser)/g).length;
+        let url = ($("a[href^='search.php?']:contains('Buscar')")[0]).href;
+        let matches = url.match(/(exactname=1|starteronly=1|forumchoice[[]]=0|showposts=0|replyless=0|replylimit=0|searchuser)/g).length;
         if (matches == 7 || (matches == 6 && !url.match("forumchoice[[]]="))
             || (!url.match("userid=0")) && !url.match("showposts=1")) {
             hilos = $('span:contains("Mostrando resultado")')[0].innerText.split('\n')[0].split("de ")[1];
@@ -699,16 +708,16 @@ const userInfoHilosOld = () => {
 
 //Gets total number of messages and threads created by a user, and the forum DoB, for all the users in the current thread
 const usersInfo = (id) => {
-    var usuarios = []
-    var elements = $('*[id*=postmenu_]:visible')
-    for (var element of elements) {
-        if (darkMode) {
-            var id = element.id;
+    let usuarios = []
+    let elements = $('*[id*=postmenu_]:visible')
+    for (let element of elements) {
+        if (newDesign) {
+            let id = element.id;
             try {
-                var usuario = $(`*[id*=${id}_menu] > div > div > h2`)[0].innerText.replaceAll('\n', '').trim();
-                var usuario_id = $(`*[id*=${id}_menu] > div > div > h2 > a`)[0].href.split('php?u=')[1].trim();
-                var registro = $(`*[id*=${id}_menu] > div > div > div > div:contains("Registro")`)[0].innerText.split('Registro: ')[1].replaceAll('\n', '').trim();
-                var mensajes = $(`*[id*=${id}_menu] > div > div > div > div:contains("Mensajes")`)[0].innerText.split('Mensajes: ')[1].replaceAll('.', '').trim();
+                let usuario = $(`*[id*=${id}_menu] > div > div > h2`)[0].innerText.replaceAll('\n', '').trim();
+                let usuario_id = $(`*[id*=${id}_menu] > div > div > h2 > a`)[0].href.split('php?u=')[1].trim();
+                let registro = $(`*[id*=${id}_menu] > div > div > div > div:contains("Registro")`)[0].innerText.split('Registro: ')[1].replaceAll('\n', '').trim();
+                let mensajes = $(`*[id*=${id}_menu] > div > div > div > div:contains("Mensajes")`)[0].innerText.split('Mensajes: ')[1].replaceAll('.', '').trim();
                 usuarios.push({ "usuario": usuario, "id": usuario_id, "registro": registro, "mensajes": mensajes ? mensajes : 0 })
             }
             catch {
@@ -716,13 +725,13 @@ const usersInfo = (id) => {
             }
         }
         else {
-            var id = element.id;
-            var usuario = ($(`*[id*=${id}] > a`)[0]).innerText;
-            var usuario_id = ($(`*[id*=${id}] > a`)[0]).href.split('php?u=')[1].trim();
-            var info = $($($(`*[id*=${id}]:visible`)[0]).parent()[0]).find('div:contains("Mens.")')[1].innerText;
-            var [registro, mensajes] = info.split('|')
+            let id = element.id;
+            let usuario = ($(`*[id*=${id}] > a`)[0]).innerText;
+            let usuario_id = ($(`*[id*=${id}] > a`)[0]).href.split('php?u=')[1].trim();
+            let info = $($($(`*[id*=${id}]:visible`)[0]).parent()[0]).find('div:contains("Mens.")')[1].innerText;
+            let [registro, mensajes] = info.split('|')
             registro = registro.trim()
-            var mensajes = mensajes.trim().split(' ')[0].replace(".", "");
+            mensajes = mensajes.trim().split(' ')[0].replace(".", "");
             usuarios.push({ "usuario": usuario, "id": usuario_id, "registro": registro, "mensajes": mensajes ? mensajes : 0 })
         }
     }
@@ -732,13 +741,13 @@ const usersInfo = (id) => {
 //Gets forocoches' total number of threads and messages
 const findEstadisticas = () => {
     try {
-        var mensajes_totales, hilos_totales;
-        if (darkMode) {
+        let mensajes_totales, hilos_totales;
+        if (newDesign) {
             mensajes_totales = $('span:contains("Mensajes totales:")')[0].innerText.split('Mensajes totales: ')[1].replaceAll('.', '');
             hilos_totales = $('span:contains("Temas:")')[0].innerText.split('Temas: ')[1].replaceAll('.', '');
         }
         else {
-            var info = $('#collapseobj_forumhome_stats div')[0].innerText.split('Temas: ')[1].split(',');
+            let info = $('#collapseobj_forumhome_stats div')[0].innerText.split('Temas: ')[1].split(',');
             mensajes_totales = info[1].split("Mensajes: ")[1].replaceAll(".", "");
             hilos_totales = info[0].replaceAll(".", "");
         }
@@ -751,9 +760,9 @@ const findEstadisticas = () => {
 
 //Gets a shade higher or lower from given colour
 const shadeColor = (color, percent) => {
-    var R = parseInt(color.substring(1, 3), 16);
-    var G = parseInt(color.substring(3, 5), 16);
-    var B = parseInt(color.substring(5, 7), 16);
+    let R = parseInt(color.substring(1, 3), 16);
+    let G = parseInt(color.substring(3, 5), 16);
+    let B = parseInt(color.substring(5, 7), 16);
     R = parseInt(R * (100 + percent) / 100);
     G = parseInt(G * (100 + percent) / 100);
     B = parseInt(B * (100 + percent) / 100);
@@ -763,9 +772,9 @@ const shadeColor = (color, percent) => {
     R = Math.round(R)
     G = Math.round(G)
     B = Math.round(B)
-    var RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
-    var GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
-    var BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
+    let RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+    let GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+    let BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
     return "#" + RR + GG + BB;
 }
 

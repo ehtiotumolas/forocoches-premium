@@ -1,12 +1,12 @@
 import { setPagina, rowsPerPage } from "./table.js";
 
-export var usuarios;
-export var poles;
+export let usuarios;
+export let poles;
 const server = "https://www.forocochero.com"
 
 //Fetches all users from the DB
 export async function fetchUsers() {
-    var url = `${server}/getAllUsers`;
+    let url = `${server}/getAllUsers`;
     try {
         await fetch(url, {
             method: 'GET',
@@ -33,7 +33,7 @@ export async function fetchUsers() {
 
 //Fetches all poles from the DB
 export async function fetchPoles() {
-    var url = `${server}/getAllPoles`;
+    let url = `${server}/getAllPoles`;
     try {
         await fetch(url, {
             method: 'GET',
@@ -61,14 +61,14 @@ export async function fetchPoles() {
 //Searchs user on the Ranking Forococheros and moves the current position of the table to the found user, whichever page it's found
 export function buscarUsuario(usuario) {
     try {
-        var offset = (parseInt(getComputedStyle(document.body).getPropertyValue('--fs-header')) * 16 + 50);
-        var usuarioEncontrado = Object.keys(usuarios).find(key => usuarios[key].usuario === usuario);
+        let offset = (parseInt(getComputedStyle(document.body).getPropertyValue('--fs-header')) * 16 + 50);
+        let usuarioEncontrado = Object.keys(usuarios).find(key => usuarios[key].usuario === usuario);
         if (usuarioEncontrado != null) {
             setPagina(Math.floor(usuarioEncontrado / rowsPerPage));
-            var element = document.getElementById(usuario.trim())
+            let element = document.getElementById(usuario.trim())
         }
-        var pos = element.getBoundingClientRect();
-        var total = (pos.top - offset);
+        let pos = element.getBoundingClientRect();
+        let total = (pos.top - offset);
         if (element.classList != "selRow") element.click();
         window.scrollTo({ top: total, behavior: 'smooth' });
         document.getElementById("add-user-message").innerText = "Usuario encontrado!";
