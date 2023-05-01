@@ -1,6 +1,6 @@
 const mo = new MutationObserver(onMutation);
-export let temas_ignorados;
-export let usuarios_ignorados;
+let temas_ignorados;
+let usuarios_ignorados;
 let opciones;
 let toListen = [];
 let savedNotas;
