@@ -179,7 +179,7 @@ button:disabled {
   display: block;
   font-size: var(--fs-button);
   width: 13em;
-  height: 2.5rem;
+  height: 1.8rem;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
@@ -220,6 +220,11 @@ button:disabled {
 .input-box:focus~.bar:before,
 .input-box:focus~.bar:after {
   width: 50%;
+}
+
+.button-small {
+  height: 1.5rem;
+  width: 7rem;
 }
 
 .bar {

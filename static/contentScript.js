@@ -160,16 +160,25 @@ function onMutation(mutations) {
                         }
                     }
                     if (n.tagName == 'A' && usuarios_ignorados) {
-                        if (usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(substring.toLowerCase())) && n.href.includes('member.php?u=')) {
-                            let id = "#edit" + $(n).parent()[0].id.split("_")[1];
-                            $(id).remove();
-                        }
-                        if (n.href.includes('profile.php?do=ignorelist')) {
-                            let papa = $(n).parent().parent().closest('div')[0];
-                            if (newDesign) {
-                                papa = $(papa).parent().closest('div');
-                            }
+                        if (n.href.includes('profile.php?userlist=ignore&do=removelist')) {
+                            papa = $(n).parent().parent().parent().parent().closest('div')[0];
                             papa.remove();
+                        }
+                        if (usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(substring.toLowerCase()))) {
+                            let papa;
+          
+                            if (n.href.includes('member.php?u='))
+                            {
+                                if (!newDesign)
+                                {
+                                    papa = $(n).closest('.page');
+                                } 
+                                else {
+                                    papa = "#edit" + $(n).parent()[0].id.split("_")[1];
+                                }
+                            }
+
+                            $(papa).remove();
                         }
                     }
                     if (n.tagName == 'SPAN') {
@@ -413,7 +422,7 @@ function onMutation(mutations) {
                     if (n.tagName == 'TABLE' && $(n).hasClass("cajasprin")) {
                         $(n).next('br').remove();
                         $(n).prev('br').remove();
-                        //$(n).remove();
+                        $(n).remove();
                     }
                 }
                 //Hides trending sidebar
