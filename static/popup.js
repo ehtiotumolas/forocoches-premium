@@ -98,6 +98,7 @@ $(".topDiv").each(function () {
     });
 });
 
+
 //Adds link to paypal
 document.getElementById("footer-donate")
     .addEventListener("click", function () {
@@ -112,9 +113,9 @@ document.getElementById("footer-rate")
 
 //Adds link to the github repository
 document.getElementById("footer-github")
-.addEventListener("click", function () {
-    openInNewTab("https://github.com/ehtiotumolas/forocoches-premium");
-});
+    .addEventListener("click", function () {
+        openInNewTab("https://github.com/ehtiotumolas/forocoches-premium");
+    });
 
 //Opens link in new tab
 const openInNewTab = (url) => {

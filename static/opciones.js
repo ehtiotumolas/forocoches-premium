@@ -18,11 +18,10 @@ document.getElementById("hilos-color").addEventListener("blur", function () {
 });
 
 //When a checkbox changes status on the options screen, reload tab to reflect changes
-$('.checkbox-label').each(function(){
+$('.checkbox-label').each(function () {
   $(this).children('input').click(function () {
     let name = this.id.split('checkbox-')[1];
-    if (name === "op-color" || name === "hilos-color")
-    {
+    if (name === "op-color" || name === "hilos-color") {
       setValueNoCheck(name);
     }
     else {
@@ -45,6 +44,9 @@ const loadOptions = () => {
           $("#hilos-color")[0].value = items.opciones[item].value;
         }
       };
+      if (!$("#checkbox-usuarios-ignorados")[0].checked) {
+        $('#checkbox-ocultar-usuarios-ignorados').attr("disabled", true);
+      }
     }
     //If local Chrome storage is empty, initialize each options to false
     else {
@@ -91,5 +93,16 @@ const setValueNoCheck = (id) => {
 const setCheck = (id) => {
   chrome.runtime.sendMessage({ from: "opciones", type: "chrome-storage", content: { loc: "opciones", message: { "id": id, "checked": $(`#checkbox-${id}`)[0].checked } } });
 }
+
+//Checks whether checkbox-usuarios-ignorados is ticked or not, and then enables/disables checkbox-ocultar-usuarios-ignorados
+document.getElementById("checkbox-usuarios-ignorados")
+  .addEventListener("click", function () {
+    if (!this.checked) {
+      $('#checkbox-ocultar-usuarios-ignorados').attr("disabled", true);
+    }
+    else {
+      $('#checkbox-ocultar-usuarios-ignorados').attr("disabled", false);
+    }
+  })
 
 loadOptions();
