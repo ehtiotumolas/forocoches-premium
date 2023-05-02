@@ -344,7 +344,7 @@ function onMutation(mutations) {
                 //Changes OP messages background colour
                 if (toListen.includes("op-color")) {
                     if (newDesign) {
-                        if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px let(--coral)') {
+                        if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px var(--coral)') {
                             n.style.backgroundColor = opciones["op-color"].value;
                         }
                     }
