@@ -260,10 +260,9 @@ Activar ignorados mejorados para usuarios e hilos.
 <br>
 
 ### TODO
+- [ ] Añadir opción para colorear los mensajes propios en los hilos
+- [ ] Implementar que las palabras para ignorar temas sean insensibles a mayúsculas/minúsculas y las vocales con tilde y sin tilde.
 - [x] Añadir registro de cambios
 - [x] Añadir sección con links a github discussions y issues, para que los usuarios puedan dejar sus comentarios ahí
 - [x] Importar usuarios y temas ignorados desde documento de texto
 - [x] Exportar usuarios y temas ignorados a documento de texto
-- [ ] Añadir opción para colorear los mensajes propios en los hilos
-
-
