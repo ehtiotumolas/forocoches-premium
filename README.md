@@ -236,23 +236,34 @@ Activar ignorados mejorados para usuarios e hilos.
 <br>
 
 ### Registro de cambios
+#### Versión 1.6.0
+* Añadido el número de versión en el cabezal de la extensión.
+* Añadida sección "+Info" donde se incluyen liks a la web forocochero.com, twitter, contacto, github repositorio, Chrome Web Store. También añadidos links para discutir acerca de problemas con la extensión, nuevas ideas, o preguntas.
+* Añadida la posibilidad de cargar o guardar tu lista de ignorados en un documento de texto, tanto para usuarios como para temas ignorados.
+* En la sección ignorados, el símbolo "-" usado para eliminar un usuar/tema de la lista ha sido reemplazado con ❌.
+* Arreglado bug que hacía que la opción de ignorar no funcionase correctamente cuando un usuario estaba ignorado usando forocoches y la extensión a la vez.
+* El icono y texto que aparece para darle a "me gusta" ahora tiene diferente color, dependiendo de si se usa el modo oscuro, modo light, o versión antigua.
+* La opción "Ocultar usuarios ignorados del todo, incluso sus hilos" ahora solo se puede activar si la opción "Activar usuarios ignorados" está activada.
+* Arreglado bug que no ocultaba citas de usuarios ignorados correctamente cuando el nick del usuario ignorado estaba en minúsculas en vez de mayúsculas, o viceversa.
+* Arreglado bug que no ocultaba al usuario ignorado si este era el primer mensaje de un hilo.
+
 #### Versión 1.5.5
-* Añadido "Registro de cambios" para incluir los cambios de cada versión.</dd>
+* Añadido "Registro de cambios" para incluir los cambios de cada versión.
 
 #### Versión 1.5.4
-* Arreglado bug que ponía la cantidad de hilos del usuario a 0 en el ranking cuando se visitaba su perfíl usando el diseño antiguo.</dd>
-* Añadido link al repositorio de GitHub.</dd>
+* Arreglado bug que ponía la cantidad de hilos del usuario a 0 en el ranking cuando se visitaba su perfíl usando el diseño antiguo.
+* Añadido link al repositorio de GitHub.
 
 #### Versión 1.5.2
-* Arreglado bug que, al activar la opción de eliminar publicidad, ocultaba el botón "Responder" y la selección de páginas al entrar en un hilo usando el diseño antiguo.</dd>
-* La opción "Activar likes" ahora se encuentra bajo la sección "General" en las opciones.</dd>
+* Arreglado bug que, al activar la opción de eliminar publicidad, ocultaba el botón "Responder" y la selección de páginas al entrar en un hilo usando el diseño antiguo.
+* La opción "Activar likes" ahora se encuentra bajo la sección "General" en las opciones.
 <br>
 
 ### TODO
 - [x] Añadir registro de cambios
-- [ ] Añadir sección con links a github discussions y issues, para que los usuarios puedan dejar sus comentarios ahí
-- [ ] Importar usuarios y temas ignorados desde documento de texto
-- [ ] Exportar usuarios y temas ignorados a documento de texto
+- [x] Añadir sección con links a github discussions y issues, para que los usuarios puedan dejar sus comentarios ahí
+- [x] Importar usuarios y temas ignorados desde documento de texto
+- [x] Exportar usuarios y temas ignorados a documento de texto
 - [ ] Añadir opción para colorear los mensajes propios en los hilos
 
 
