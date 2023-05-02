@@ -417,7 +417,7 @@ function onMutation(mutations) {
                             }
                         }
                     }
-                    if (n.tagName == 'TABLE' && $(n).hasClass("cajasprin")) {
+                    if (n.tagName == 'TABLE' && $(n).hasClass("cajasprin") && $(n).find(".Billboard_1").length !== 0) {
                         $(n).next('br').remove();
                         $(n).prev('br').remove();
                         $(n).remove();
