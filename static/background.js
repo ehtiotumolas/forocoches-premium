@@ -69,12 +69,12 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
 });
 
 //Reloads the extensions and tab
-chrome.commands.onCommand.addListener((shortcut) => {
-    console.log('reload bitch');
-    if (shortcut.includes("+Z")) {
-        chrome.runtime.reload();
-        chrome.tabs.reload();
-    }})
+// chrome.commands.onCommand.addListener((shortcut) => {
+//     console.log('reload bitch');
+//     if (shortcut.includes("+Z")) {
+//         chrome.runtime.reload();
+//         chrome.tabs.reload();
+//     }})
 
 //Listen to messages from other scripts
 chrome.runtime.onMessage.addListener((obj) => {

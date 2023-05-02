@@ -545,10 +545,19 @@ input[type="color"]::-webkit-color-swatch {
   line-height: 1.4rem;
 }
 
+.botVersion {
+  background-color: var(--clr-primary-150);
+}
+
+
 hr {
   border: 1px solid;
   border-color: var(--clr-neutral-900);
   margin-bottom: 1rem;
+}
+
+.botDivhr {
+  border-color: var(--clr-accent-300);
 }
 
 li {
@@ -566,7 +575,6 @@ ul {
 dd {
   display: list-item;
   list-style-type: disc;
-  margin-left: 2.5rem;
 }
 
 dt {

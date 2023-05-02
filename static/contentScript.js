@@ -165,8 +165,7 @@ function onMutation(mutations) {
                             papa.remove();
                         }
                         if (usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(substring.toLowerCase()))) {
-                            let papa;
-          
+                            let papa;          
                             if (n.href.includes('member.php?u='))
                             {
                                 if (!newDesign)
@@ -177,7 +176,6 @@ function onMutation(mutations) {
                                     papa = "#edit" + $(n).parent()[0].id.split("_")[1];
                                 }
                             }
-
                             $(papa).remove();
                         }
                     }

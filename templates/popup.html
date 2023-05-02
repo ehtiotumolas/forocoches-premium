@@ -113,18 +113,46 @@
                 <div class="topDiv">📄 Registro de cambios </div>
                 <div class="botDiv">
                     <dl>
-                        <dt>Versión 1.5.5</dt>
-                        <dd>Añadido "Registro de cambios" para incluir los cambios de cada versión.</dd>
-                        <br>
-                        <dt>Versión 1.5.4</dt>
-                        <dd>Arreglado bug que ponía la cantidad de hilos del usuario a 0 en el ranking cuando se
-                            visitaba su perfíl usando el diseño antiguo.</dd>
-                        <dd>Añadido link al repositorio de GitHub.</dd>
-                        <br>
-                        <dt>Versión 1.5.2</dt>
-                        <dd>Arreglado bug que, al activar la opción de eliminar publicidad, ocultaba el botón
-                            "Responder" y la selección de páginas al entrar en un hilo usando el diseño antiguo.</dd>
-                        <dd>La opción "Activar likes" ahora se encuentra bajo la sección "General" en las opciones.</dd>
+                        <dt class="topDiv">Versión 1.6.0</dt>
+                        <div class="botDiv botVersion">
+                            <dd>Añadido el número de versión en la extensión.</dd>
+                            <dd>Añadida sección "+Info".</dd>
+                            <dd>Añadida la opción de exportar/importar ignorados.</dd>
+                            <dd>En la sección ignorados, "-" ahora aparece como ❌.</dd>
+                            <dd>Arreglado bug que hacía que la opción de ignorar no funcionase correctamente cuando un
+                                usuario estaba ignorado usando forocoches y la extensión a la vez.</dd>
+                            <dd>Dependiendo del tema del foro (dark, light), el texto usado para dar "me gusta" tiene
+                                diferente color.</dd>
+                            <dd>La opción "Ocultar usuarios ignorados del todo, incluso sus hilos" solo se puede
+                                activar si la opción "Activar usuarios ignorados" está activada.</dd>
+                            <dd>Arreglado bug que no ocultaba citas de usuarios ignorados correctamente cuando la
+                                capitalización del nick
+                                no coincidia exactamente.</dd>
+                            <dd>Arreglado bug que no ocultaba al usuario ignorado si este era el primer mensaje del
+                                hilo.</dd>
+                        </div>
+                        <hr class="botDivhr">
+                        <dt class="topDiv">Versión 1.5.5</dt>
+                        <div class="botDiv botVersion">
+                            <dd>Añadido "Registro de cambios" para incluir los cambios de cada versión.</dd>
+                        </div>
+                        <hr class="botDivhr">
+                        <dt class="topDiv">Versión 1.5.4</dt>
+                        <div class="botDiv botVersion">
+                            <dd>Arreglado bug que ponía la cantidad de hilos del usuario a 0 en el ranking cuando se
+                                visitaba su perfíl usando el diseño antiguo.</dd>
+                            <dd>Añadido link al repositorio de GitHub.</dd>
+                        </div>
+                        <hr class="botDivhr">
+                        <dt class="topDiv">Versión 1.5.2</dt>
+                        <div class="botDiv botVersion">
+                            <dd>Arreglado bug que, al activar la opción de eliminar publicidad, ocultaba el botón
+                                "Responder" y la selección de páginas al entrar en un hilo usando el diseño antiguo.
+                            </dd>
+                            <dd>La opción "Activar likes" ahora se encuentra bajo la sección "General" en las opciones.
+                            </dd>
+                        </div>
+                        <hr class="botDivhr">
                     </dl>
                 </div>
                 <hr>
@@ -163,8 +191,11 @@
                     <div class="container-usuarios-ignorados dashed">
                         <div class="poles-title usuarios-ignorados">Usuarios Ignorados</div>
                         <div class="load-unload-ignored-list">
-                            <button class="button input-button button-small" title="Los usuarios ignorados deben de estar separados por comma ( , )" id="usuarios-ignorados-load">Cargar 📁</button>
-                            <button class="button input-button button-small" id="usuarios-ignorados-save">Guardar 💾</button>
+                            <button class="button input-button button-small"
+                                title="Los usuarios ignorados deben de estar separados por comma ( , )"
+                                id="usuarios-ignorados-load">Cargar 📁</button>
+                            <button class="button input-button button-small" id="usuarios-ignorados-save">Guardar
+                                💾</button>
                         </div>
                         <div class="grupo-input usuarios-ignorados">
                             <input type="input" placeholder=" " class="input-box" id="usuarios-ignorados-input">
@@ -178,9 +209,12 @@
                     <div class="container-temas-ignorados dashed">
                         <div class="poles-title temas-ignorados">Temas Ignorados</div>
                         <div class="load-unload-ignored-list">
-                            <button class="button input-button button-small" title="Los temas ignorados deben de estar separados por comma ( , )" id="temas-ignorados-load">Cargar 📁</button>
-                            <button class="button input-button button-small" title="" id="temas-ignorados-save">Guardar 💾</button>
-                        </div>                        
+                            <button class="button input-button button-small"
+                                title="Los temas ignorados deben de estar separados por comma ( , )"
+                                id="temas-ignorados-load">Cargar 📁</button>
+                            <button class="button input-button button-small" title="" id="temas-ignorados-save">Guardar
+                                💾</button>
+                        </div>
                         <div class="grupo-input temas-ignorados">
                             <input type="input" placeholder=" " class="input-box" id="temas-ignorados-input">
                             <span class="bar"></span>
@@ -297,13 +331,11 @@
                                 <br>www.forocochero.com</a>
                         </li>
                         <li class="li-links">
-                            Twitter:&emsp;&emsp;<a target="_blank"
-                                href="https://twitter.com/ehtiotumolas">
+                            Twitter:&emsp;&emsp;<a target="_blank" href="https://twitter.com/ehtiotumolas">
                                 <br>https://twitter.com/ehtiotumolas</a>
                         </li>
                         <li class="li-links">
-                            Contacto:&emsp;&emsp;<a target="_blank"
-                                href="mailto:ehtiotumolas@gmail.com">
+                            Contacto:&emsp;&emsp;<a target="_blank" href="mailto:ehtiotumolas@gmail.com">
                                 <br>ehtiotumolas@gmail.com</a>
                         </li>
                         <li class="li-links">
@@ -317,7 +349,8 @@
                         </li>
                     </ul>
                     <br><br>
-                    ¿Has tenido una idea y quieres compartirla? ¿Tienes alguna sugerencia? ¿Has encotrado un bug o algo que no funciona bien?
+                    ¿Has tenido una idea y quieres compartirla? ¿Tienes alguna sugerencia? ¿Has encotrado un bug o algo
+                    que no funciona bien?
                     <br><br>
                     <ul>
                         <li class="li-links">
