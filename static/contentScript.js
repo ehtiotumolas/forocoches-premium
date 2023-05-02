@@ -99,14 +99,14 @@ function onMutation(mutations) {
                 }
                 //Removes ignored threads from the forum
                 if (toListen.includes("temas-ignorados")) {
-                    if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => n.innerText.includes(substring))) {
+                    if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => normalizeText(n.innerText).includes(normalizeText(substring)))) {
                         let papa = $(n).parent().parent().parent();
                         if ((newDesign)) papa = $(papa).parent();
                         $(papa).next("separator").remove();
                         $(papa).remove();
                     }
                 }
-                //Remove messages from ignored users, but also threads created by ignored users 
+                //Removes messages from ignored users, but also threads created by ignored users 
                 //Also adds skull besides the username in order to allow the user to ignore users
                 if (toListen.includes("usuarios-ignorados")) {
                     if (n.tagName == 'DIV') {
@@ -165,13 +165,11 @@ function onMutation(mutations) {
                             papa.remove();
                         }
                         if (usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(substring.toLowerCase()))) {
-                            let papa;          
-                            if (n.href.includes('member.php?u='))
-                            {
-                                if (!newDesign)
-                                {
+                            let papa;
+                            if (n.href.includes('member.php?u=')) {
+                                if (!newDesign) {
                                     papa = $(n).closest('.page');
-                                } 
+                                }
                                 else {
                                     papa = "#edit" + $(n).parent()[0].id.split("_")[1];
                                 }
@@ -779,6 +777,15 @@ const shadeColor = (color, percent) => {
     let BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
     return "#" + RR + GG + BB;
 }
+
+//Removes accents and diaeresis
+const accentsMap = new Map([
+    ["A", "Á|À|Ä"], ["a", "á|à|ä"], ["E", "É|È|Ë"], ["e", "é|è|ë"], ["I", "Í|Ì|Ï"], ["i", "í|ì|ï"], 
+    ["O", "Ó|Ò|Ö"], ["o", "ó|ò|ö"], ["U", "Ú|Ù|Ü"], ["u", "ú|ù|ü"], ["C", "Ç"], ["c", "ç"]
+  ]);
+  
+const plainText = (str, [key]) => str.replace(new RegExp(accentsMap.get(key), "g"), key);  
+const normalizeText = (text) => [...accentsMap].reduce(plainText, text.toLowerCase());
 
 //Opens notes pop-up element
 document.onmousedown = function (e) {
