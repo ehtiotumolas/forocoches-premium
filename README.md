@@ -245,7 +245,7 @@ Activar ignorados mejorados para usuarios e hilos.
 * El icono y texto que aparece para darle a "me gusta" ahora tiene diferente color, dependiendo de si se usa el modo oscuro, modo light, o versión antigua.
 * La opción "Ocultar usuarios ignorados del todo, incluso sus hilos" ahora solo se puede activar si la opción "Activar usuarios ignorados" está activada.
 * Arreglado bug que no ocultaba citas de usuarios ignorados correctamente cuando el nick del usuario ignorado estaba en minúsculas en vez de mayúsculas, o viceversa.
-* Arreglado bug que no ocultaba al usuario ignorado si este era el primer mensaje de un hilo.
+* Arreglado bug que no ocultaba al usuario ignorado si este era el primer mensaje del hilo.
 
 #### Versión 1.5.5
 * Añadido "Registro de cambios" para incluir los cambios de cada versión.
