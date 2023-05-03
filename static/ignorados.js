@@ -76,8 +76,14 @@ async function loadIgnoradosLists(createUsuarios, createTemas) {
       if (Object.keys(result).length > 0 && result.temas_ignorados) {
         temas_ignorados = result.temas_ignorados;
       }
+      else {
+        temas_ignorados = [];
+      }
       if (Object.keys(result).length > 0 && result.usuarios_ignorados) {
         usuarios_ignorados = result.usuarios_ignorados;
+      }
+      else {
+        usuarios_ignorados = [];
       }
       if (createUsuarios) {
         createUsuariosIgnorados();
@@ -140,13 +146,15 @@ async function openIgnoradosList(type) {
       const fileText = await fileData.text();
       if (type == "usuarios_ignorados") {
         usuarios_ignorados = fileText.split(',');
-        chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "usuarios", message: usuarios_ignorados, action: "add" } });
         createUsuariosIgnorados();
+        chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "usuarios", message: usuarios_ignorados, action: "add" } });
+        chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
       }
       else {
         temas_ignorados = fileText.split(',');
-        chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "temas", message: temas_ignorados, action: "add" } });
         createTemasIgnorados();
+        chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "temas", message: temas_ignorados, action: "add" } });
+        chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
       }
       return;
     }

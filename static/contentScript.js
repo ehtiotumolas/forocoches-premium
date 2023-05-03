@@ -2,8 +2,8 @@ const mo = new MutationObserver(onMutation);
 let temas_ignorados;
 let usuarios_ignorados;
 let opciones;
-let toListen = [];
 let savedNotas;
+let toListen = [];
 let newDesign;
 let darkMode = false;
 let forocochero;
@@ -105,6 +105,15 @@ function onMutation(mutations) {
                         $(papa).next("separator").remove();
                         $(papa).remove();
                     }
+                }
+                if (!newDesign && n.tagName == 'TD' && $(n).hasClass("alt1-user")) {
+                    let papa = $(n);
+                    //Removes border
+                    $(papa).closest('.tborder-user').removeClass();
+                    $(papa).children().css('border', 'none');
+                    //Changes background color
+                    $(papa).css('background-color', opciones["op-color"].value);
+                    $(papa).prev().css('background-color', shadeColor(opciones["op-color"].value, -5));
                 }
                 //Removes messages from ignored users, but also threads created by ignored users 
                 //Also adds skull besides the username in order to allow the user to ignore users
@@ -347,11 +356,11 @@ function onMutation(mutations) {
                         }
                     }
                     else {
-                        if (n.tagName == 'IMG' && n.alt == "Respuesta rapida a este mensaje" && $(n).parent().parent().parent().parent().parent().hasClass("tborder-author")) {
-                            let papa = $(n).parent().parent().parent().parent();
+                        if (n.tagName == 'TD' && $(n).hasClass("alt1-author") && n.id.includes("td_post_")) {
+                            let papa = $(n).closest(".tborder-author");
                             //Removes border
-                            $(papa).parent().removeClass();
-                            $(papa).children().children().css('border', 'none');
+                            $(papa).removeClass();
+                            $(papa).children().css('border', 'none');
                             //Changes background color
                             $(papa).find('.alt1-author').css('background-color', opciones["op-color"].value);
                             $(papa).find('.alt2').css('background-color', shadeColor(opciones["op-color"].value, -5));
@@ -780,11 +789,11 @@ const shadeColor = (color, percent) => {
 
 //Removes accents and diaeresis
 const accentsMap = new Map([
-    ["A", "Á|À|Ä"], ["a", "á|à|ä"], ["E", "É|È|Ë"], ["e", "é|è|ë"], ["I", "Í|Ì|Ï"], ["i", "í|ì|ï"], 
+    ["A", "Á|À|Ä"], ["a", "á|à|ä"], ["E", "É|È|Ë"], ["e", "é|è|ë"], ["I", "Í|Ì|Ï"], ["i", "í|ì|ï"],
     ["O", "Ó|Ò|Ö"], ["o", "ó|ò|ö"], ["U", "Ú|Ù|Ü"], ["u", "ú|ù|ü"], ["C", "Ç"], ["c", "ç"]
-  ]);
-  
-const plainText = (str, [key]) => str.replace(new RegExp(accentsMap.get(key), "g"), key);  
+]);
+
+const plainText = (str, [key]) => str.replace(new RegExp(accentsMap.get(key), "g"), key);
 const normalizeText = (text) => [...accentsMap].reduce(plainText, text.toLowerCase());
 
 //Opens notes pop-up element

@@ -69,12 +69,12 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
 });
 
 //Reloads the extensions and tab
-// chrome.commands.onCommand.addListener((shortcut) => {
-//     console.log('reload bitch');
-//     if (shortcut.includes("+Z")) {
-//         chrome.runtime.reload();
-//         chrome.tabs.reload();
-//     }})
+chrome.commands.onCommand.addListener((shortcut) => {
+    console.log('reload bitch');
+    if (shortcut.includes("+Z")) {
+        chrome.runtime.reload();
+        chrome.tabs.reload();
+    }})
 
 //Listen to messages from other scripts
 chrome.runtime.onMessage.addListener((obj) => {
@@ -165,6 +165,9 @@ const addToChromeStorage = (loc, message, action) => {
             else { items.temas_ignorados = [message]; }
         }
         if (loc == "temas") {
+            if (Object.keys(items).length > 0 && !items.temas_ignorados) {
+                items.temas_ignorados = []
+            }
             if (Object.keys(items).length > 0 && items.temas_ignorados) {
                 if (action == "add") {
                     message.forEach(tema => {
@@ -185,6 +188,9 @@ const addToChromeStorage = (loc, message, action) => {
             else { items.usuarios_ignorados = [message]; }
         }
         if (loc == "usuarios") {
+            if (Object.keys(items).length > 0 && !items.usuarios_ignorados) {
+                items.usuarios_ignorados = []
+            }
             if (Object.keys(items).length > 0 && items.usuarios_ignorados) {
                 if (action == "add") {
                     message.forEach(usuario => {
