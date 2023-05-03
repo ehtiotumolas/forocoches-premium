@@ -1,4 +1,4 @@
-const mo = new MutationObserver(onMutation);
+let mo = new MutationObserver(onMutation);
 let temas_ignorados;
 let usuarios_ignorados;
 let opciones;
@@ -13,12 +13,6 @@ async function retrieveStorage(key) {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.get(key, resolve);
     })
-        .then(result => {
-            temas_ignorados = result.temas_ignorados;
-            usuarios_ignorados = result.usuarios_ignorados;
-            opciones = result.opciones;
-            savedNotas = result.notas;
-        })
 }
 
 //Listens for messages from other scripts
@@ -56,30 +50,8 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     }
 });
 
-//Listens the current tab, only on forocoches.com, so the HTML can be read and the extension can do its magic
-const listenThread = () => {
-    onMutation([{ addedNodes: [document.documentElement] }]);
-    observe();
-    retrieveStorage()
-        .then(() => {
-            //Iterates from the current settings of the extension and listens to only the options enabled by the user shurmanito
-            $.each(opciones, function (opcion) {
-                if (opciones[opcion].checked) {
-                    if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
-                        return;
-                    }
-                    if ((opcion == "op-color") && !location.href.includes("showthread.php?")) {
-                        return;
-                    }
-                    toListen.push(opcion);
-                }
-            })
-        })
-};
-
 //Listens to the HTML when loading in order to do all the magic
 function onMutation(mutations) {
-    let stopped;
     for (const { addedNodes } of mutations) {
         for (const n of addedNodes) {
             if (n.tagName) {
@@ -92,9 +64,11 @@ function onMutation(mutations) {
                             forocochero = $('.username')[0].innerHTML;
                         }
                     }
-                    else {
+                }
+                if (newDesign == undefined && ((n.tagName == 'DIV') && $(n).hasClass("smallfont"))) {
+                    if ($(n).has("strong")) {
                         newDesign = false;
-                        forocochero = $('.smallfont > strong > a')[0].innerText;
+                        forocochero = $(n).find('a')[0].innerText;
                     }
                 }
                 //Removes ignored threads from the forum
@@ -105,15 +79,6 @@ function onMutation(mutations) {
                         $(papa).next("separator").remove();
                         $(papa).remove();
                     }
-                }
-                if (!newDesign && n.tagName == 'TD' && $(n).hasClass("alt1-user")) {
-                    let papa = $(n);
-                    //Removes border
-                    $(papa).closest('.tborder-user').removeClass();
-                    $(papa).children().css('border', 'none');
-                    //Changes background color
-                    $(papa).css('background-color', opciones["usuario-color"].value);
-                    $(papa).prev().css('background-color', shadeColor(opciones["usuario-color"].value, -5));
                 }
                 //Removes messages from ignored users, but also threads created by ignored users 
                 //Also adds skull besides the username in order to allow the user to ignore users
@@ -348,6 +313,18 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Changes user messages background colour
+                if (toListen.includes("usuario-color")) {
+                    if (!newDesign && n.tagName == 'TD' && $(n).hasClass("alt1-user")) {
+                        let papa = $(n);
+                        //Removes border
+                        $(papa).closest('.tborder-user').removeClass();
+                        $(papa).children().css('border', 'none');
+                        //Changes background color
+                        $(papa).css('background-color', opciones["usuario-color"].value);
+                        $(papa).prev().css('background-color', shadeColor(opciones["usuario-color"].value, -5));
+                    }
+                }
                 //Changes OP messages background colour
                 if (toListen.includes("op-color")) {
                     if (newDesign) {
@@ -405,9 +382,9 @@ function onMutation(mutations) {
                             }
                         }
                         else {
-                            if (n.id.indexOf("optidigital-adslot-Billboard_") > -1 ||
-                                n.id.indexOf("optidigital-adslot-Rectangle_") > -1 ||
-                                n.id.indexOf("optidigital-adslot-Skyscraper_") > -1 ||
+                            if (n.id.indexOf("optidigital-adslot") > -1 ||
+                                n.id.indexOf("optidigital-adslot") > -1 ||
+                                n.id.indexOf("optidigital-adslot") > -1 ||
                                 n.id == 'fcs') {
                                 let papa = $(n).parents("table:first");
                                 if (n.id.indexOf("optidigital-adslot-Skyscraper_") > -1) {
@@ -440,6 +417,14 @@ function onMutation(mutations) {
                         }
                     }
                 }
+                //Hides foros-relacionados sidebar on the old design
+                if (toListen.includes("ocultar-foros-relacionados-viejo")) {
+                    if (n.tagName == 'TABLE' && $(n).attr("bgcolor") == "#555576") {
+                        if (!darkMode) {
+                            $(n).parent().hide();
+                        }
+                    }
+                }
                 //Hides foros-relacionados sidebar on the new design
                 if (toListen.includes("ocultar-foros-relacionados-nuevo")) {
                     if (n.tagName == 'H2' && (n.innerText === "Foros Relacionados" || n.innerText === "Foros relacionados")) {
@@ -447,14 +432,6 @@ function onMutation(mutations) {
                             if ($(n).parent().parent()[0].id === "sidebar") {
                                 $(n).parent().remove();
                             }
-                        }
-                    }
-                }
-                //Hides foros-relacionados sidebar on the old design
-                if (toListen.includes("ocultar-foros-relacionados-viejo")) {
-                    if (n.tagName == 'SPAN' && $(n).hasClass("smallfont") && n.innerText == "Foros Relacionados") {
-                        if (!newDesign) {
-                            $($($(".smallfont")[0]).closest(".tborder")[0]).parent()[0].remove()
                         }
                     }
                 }
@@ -607,7 +584,6 @@ function onMutation(mutations) {
                 }
             }
         }
-        if (stopped) observe();
     }
 }
 
@@ -615,11 +591,17 @@ function onMutation(mutations) {
 function observe() {
     mo.observe(document, {
         subtree: true,
-        childList: true,
+        attributes: true,
+        childList: true
     });
 }
 
-listenThread();
+//Listens the current tab, only on forocoches.com, so the HTML can be read and the extension can do its magic
+function listenThread() {
+    onMutation([{ addedNodes: [document.documentElement] }]);
+    observe();
+};
+
 
 //Updates likes on the DB
 const updateLikes = (postId, user, action) => {
@@ -805,3 +787,27 @@ document.onmousedown = function (e) {
         $("#notas-popup-div").remove();
     }
 }
+
+async function start() {
+    await retrieveStorage()
+        .then((result) => {
+            temas_ignorados = result.temas_ignorados;
+            usuarios_ignorados = result.usuarios_ignorados;
+            opciones = result.opciones;
+            savedNotas = result.notas;
+            $.each(result.opciones, function (opcion) {
+                if (result.opciones[opcion].checked) {
+                    if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
+                        return;
+                    }
+                    if ((opcion == "op-color" || opcion == "usuario-color") && !location.href.includes("showthread.php?")) {
+                        return;
+                    }
+                    toListen.push(opcion);
+                }
+            })
+            listenThread();
+        })
+};
+
+start();
