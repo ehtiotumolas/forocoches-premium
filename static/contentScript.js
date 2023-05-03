@@ -112,8 +112,8 @@ function onMutation(mutations) {
                     $(papa).closest('.tborder-user').removeClass();
                     $(papa).children().css('border', 'none');
                     //Changes background color
-                    $(papa).css('background-color', opciones["op-color"].value);
-                    $(papa).prev().css('background-color', shadeColor(opciones["op-color"].value, -5));
+                    $(papa).css('background-color', opciones["usuario-color"].value);
+                    $(papa).prev().css('background-color', shadeColor(opciones["usuario-color"].value, -5));
                 }
                 //Removes messages from ignored users, but also threads created by ignored users 
                 //Also adds skull besides the username in order to allow the user to ignore users
