@@ -68,7 +68,12 @@ function onMutation(mutations) {
                 if (newDesign == undefined && ((n.tagName == 'DIV') && $(n).hasClass("smallfont"))) {
                     if ($(n).has("strong")) {
                         newDesign = false;
-                        forocochero = $(n).find('a')[0].innerText;
+                        if ($(n).find('a').length > 1) {
+                            forocochero = $(n).find('a')[0].innerText;
+                        }
+                        else {
+                            forocochero = $(n).find('a').innerText;
+                        }
                     }
                 }
                 //Removes ignored threads from the forum
@@ -419,9 +424,9 @@ function onMutation(mutations) {
                 }
                 //Hides foros-relacionados sidebar on the old design
                 if (toListen.includes("ocultar-foros-relacionados-viejo")) {
-                    if (n.tagName == 'TABLE' && $(n).attr("bgcolor") == "#555576") {
-                        if (!darkMode) {
-                            $(n).parent().hide();
+                    if (n.tagName == 'SPAN' && $(n).hasClass("smallfont") && n.innerText == "Foros Relacionados") {
+                        if (!newDesign) {
+                            $($($(".smallfont")[0]).closest(".tborder")[0]).parent()[0].remove()
                         }
                     }
                 }
