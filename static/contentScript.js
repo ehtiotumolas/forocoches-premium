@@ -320,6 +320,10 @@ function onMutation(mutations) {
                 }
                 //Changes user messages background colour
                 if (toListen.includes("usuario-color")) {
+                    if (newDesign && n.tagName == 'SECTION' && $(n).find(`a:contains(${forocochero})`)[0]) {
+                        n.style.border = 0;
+                        n.style.backgroundColor = opciones["usuario-color"].value;
+                    }
                     if (!newDesign && n.tagName == 'TD' && $(n).hasClass("alt1-user")) {
                         let papa = $(n);
                         //Removes border
@@ -334,6 +338,7 @@ function onMutation(mutations) {
                 if (toListen.includes("op-color")) {
                     if (newDesign) {
                         if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px var(--coral)') {
+                            n.style.border = 0;
                             n.style.backgroundColor = opciones["op-color"].value;
                         }
                     }
