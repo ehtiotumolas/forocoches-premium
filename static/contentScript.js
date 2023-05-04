@@ -3,51 +3,29 @@ let temas_ignorados;
 let usuarios_ignorados;
 let opciones;
 let savedNotas;
-let toListen = [];
+let toListen = new Set();
 let newDesign;
 let darkMode = false;
 let forocochero;
 
 //Gets info from Chrome local storage where ignored users, ignored threads, options, and notes are stored
-async function retrieveStorage(key) {
-    return new Promise((resolve, reject) => {
-        chrome.storage.sync.get(key, resolve);
-    })
-}
 
-//Listens for messages from other scripts
-chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
-    console.log("Listening")
-    const { type, value } = obj;
-    if (type === "usuario_info") {
-        sendResponse(userInfo(value));
-        return;
-    }
-    if (type === "usuario_info_old_hilos") {
-        sendResponse(userInfoHilosOld());
-        return;
-    }
-    if (type === "hilo_mensaje_likes") {
-        sendResponse(getAllPostsId());
-        return;
-    }
-    if (type === "estadisticas") {
-        sendResponse(findEstadisticas());
-        return;
-    }
-    const id = $("a[href*=searchthreadid]")[0].href.split('=')[1].split('&')[0];
-    if (type === "hilo_info") {
-        sendResponse(hiloInfo(id));
-        return;
-    }
-    if (type === "hilo_usuarios_info") {
-        sendResponse(usersInfo(id));
-        return;
-    }
-    if (type === "likes_info") {
-        updateAllLikes(value);
-        return;
-    }
+chrome.storage.sync.get(function (items) {
+    temas_ignorados = items.temas_ignorados;
+    usuarios_ignorados = items.usuarios_ignorados;
+    savedNotas = items.notas;
+    opciones = items.opciones;
+    $.each(opciones, function (opcion) {
+        if (opciones[opcion].checked) {
+            if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
+                return;
+            }
+            if ((opcion == "op-color" || opcion == "usuario-color") && !location.href.includes("showthread.php?")) {
+                return;
+            }
+            toListen.add(opcion);
+        }
+    })
 });
 
 //Listens to the HTML when loading in order to do all the magic
@@ -77,7 +55,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Removes ignored threads from the forum
-                if (toListen.includes("temas-ignorados")) {
+                if (toListen.has("temas-ignorados")) {
                     if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => normalizeText(n.innerText).includes(normalizeText(substring)))) {
                         let papa = $(n).parent().parent().parent();
                         if ((newDesign)) papa = $(papa).parent();
@@ -87,7 +65,7 @@ function onMutation(mutations) {
                 }
                 //Removes messages from ignored users, but also threads created by ignored users 
                 //Also adds skull besides the username in order to allow the user to ignore users
-                if (toListen.includes("usuarios-ignorados")) {
+                if (toListen.has("usuarios-ignorados")) {
                     if (n.tagName == 'DIV') {
                         if (n.id.includes('edit')) {
                             let postId = "postmenu_" + n.id.split('edit')[1];
@@ -121,7 +99,7 @@ function onMutation(mutations) {
                             }
                         }
                         if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(`cita de ${substring.toLowerCase()}`))) {
-                            if (toListen.includes("ocultar-usuarios-ignorados")) {
+                            if (toListen.has("ocultar-usuarios-ignorados")) {
                                 let papa = $(n).parent().parent().parent();
                                 if (newDesign) {
                                     papa.remove();
@@ -170,7 +148,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Adds funcionality to write notes for each user
-                if (toListen.includes("notas-usuario")) {
+                if (toListen.has("notas-usuario")) {
                     if (n.tagName == 'DIV') {
                         if (n.id.includes('postmenu_') && !n.id.includes('_menu')) {
                             let postDiv = $(n)[0];
@@ -319,7 +297,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Changes user messages background colour
-                if (toListen.includes("usuario-color")) {
+                if (toListen.has("usuario-color")) {
                     if (newDesign && n.tagName == 'SECTION' && $(n).find(`a:contains(${forocochero})`)[0]) {
                         n.style.border = 0;
                         n.style.backgroundColor = opciones["usuario-color"].value;
@@ -335,7 +313,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Changes OP messages background colour
-                if (toListen.includes("op-color")) {
+                if (toListen.has("op-color")) {
                     if (newDesign) {
                         if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px var(--coral)') {
                             n.style.border = 0;
@@ -357,7 +335,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Changes threads with 0 messages background colour
-                if (toListen.includes("hilos-color")) {
+                if (toListen.has("hilos-color")) {
                     if (n.tagName == 'A' && n.href.includes("misc.php?do=whoposted")) {
                         if (n.innerText == "0") {
                             let papa = $(n).parent().parent().parent();
@@ -372,7 +350,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Hides ads
-                if (toListen.includes("ocultar-publicidad")) {
+                if (toListen.has("ocultar-publicidad")) {
                     if (n.tagName == 'DIV') {
                         if (newDesign != undefined && newDesign) {
                             if ($(n).hasClass("fixed_adslot")) {
@@ -418,7 +396,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Hides trending sidebar
-                if (toListen.includes("ocultar-trending")) {
+                if (toListen.has("ocultar-trending")) {
                     if (n.tagName == 'H2' && n.innerText === "Trending") {
                         if (newDesign) {
                             if ($(n).parent().parent().parent()[0].id === "sidebar") {
@@ -428,7 +406,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Hides foros-relacionados sidebar on the old design
-                if (toListen.includes("ocultar-foros-relacionados-viejo")) {
+                if (toListen.has("ocultar-foros-relacionados-viejo")) {
                     if (n.tagName == 'SPAN' && $(n).hasClass("smallfont") && n.innerText == "Foros Relacionados") {
                         if (!newDesign) {
                             $($($(".smallfont")[0]).closest(".tborder")[0]).parent()[0].remove()
@@ -436,7 +414,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Hides foros-relacionados sidebar on the new design
-                if (toListen.includes("ocultar-foros-relacionados-nuevo")) {
+                if (toListen.has("ocultar-foros-relacionados-nuevo")) {
                     if (n.tagName == 'H2' && (n.innerText === "Foros Relacionados" || n.innerText === "Foros relacionados")) {
                         if (newDesign) {
                             if ($(n).parent().parent()[0].id === "sidebar") {
@@ -446,7 +424,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Hides messages from forocoches that appear on top of the screen to advertise companies and link to a thread
-                if (toListen.includes("ocultar-avisos")) {
+                if (toListen.has("ocultar-avisos")) {
                     if ($(n).hasClass("navbar_notice")) {
                         let papa = $(n).parent().parent();
                         if (newDesign) {
@@ -458,19 +436,17 @@ function onMutation(mutations) {
                     }
                 }
                 //Deals with the side space and how this expands when sidebards and ads are removed
-                if (toListen.includes("espacio-lateral")) {
+                if (toListen.has("espacio-lateral")) {
                     if (newDesign) {
-                        if (!toListen.includes("ocultar-foros-relacionados-nuevo") ||
-                            !toListen.includes("ocultar-trending") ||
-                            !toListen.includes("ocultar-publicidad")) {
+                        if (!toListen.has("ocultar-foros-relacionados-nuevo") || !toListen.has("ocultar-trending") || !toListen.has("ocultar-publicidad")) {
                             $($("main")[0]).css({
                                 "grid-template-columns": "24fr 5fr",
                                 "max-width": "90%"
                             });
                         }
-                        else if (toListen.includes("ocultar-foros-relacionados-nuevo") &&
-                            toListen.includes("ocultar-trending") &&
-                            toListen.includes("ocultar-publicidad")) {
+                        else if (toListen.has("ocultar-foros-relacionados-nuevo") &&
+                            toListen.has("ocultar-trending") &&
+                            toListen.has("ocultar-publicidad")) {
                             if ($(window).width() > 1024) {
                                 $($("main")[0]).css({
                                     "grid-template-columns": "24fr",
@@ -503,10 +479,21 @@ function onMutation(mutations) {
                                 "padding-right": "0",
                             });
                         }
+                        $('.text-format').css({ justifyContent: "", gap: "", paddingRight: "3rem"});
+                        $('.bbcode-addons').css({ justifyContent: "", gap: "", paddingLeft: 0})
+                        $('.text-format').find("*").css({ gap: ".3rem"});
+                        $('.bbcode-addons').find("*").css({ gap: ".3rem"});
+
+                        if ($(".container").width() < 900) {
+                            $('.text-format').parent().css({gap: "5vw"});
+                        }
+                        else {
+                            $('.text-format').parent().css({gap: ""});
+                        }
                     }
                 }
                 //Makes avatars squared
-                if (toListen.includes("avatar-cuadrado")) {
+                if (toListen.has("avatar-cuadrado")) {
                     if (newDesign && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
                         $(n).css({
                             borderRadius: "0"
@@ -514,7 +501,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Makes avatars bigger
-                if (toListen.includes("avatar-grande")) {
+                if (toListen.has("avatar-grande")) {
                     if (newDesign && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
                         $(n).css({
                             width: "70px",
@@ -526,7 +513,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Adds likes funcionality to the forum
-                if (toListen.includes("likes")) {
+                if (toListen.has("likes")) {
                     if (n.tagName === 'A' && n.href.indexOf("report.php?p=") != -1) {
                         let likeBtn = $("<a/>")
                             .css({
@@ -601,8 +588,7 @@ function onMutation(mutations) {
 function observe() {
     mo.observe(document, {
         subtree: true,
-        attributes: true,
-        childList: true
+        childList: true,
     });
 }
 
@@ -611,7 +597,7 @@ function listenThread() {
     onMutation([{ addedNodes: [document.documentElement] }]);
     observe();
 };
-
+listenThread();
 
 //Updates likes on the DB
 const updateLikes = (postId, user, action) => {
@@ -798,26 +784,37 @@ document.onmousedown = function (e) {
     }
 }
 
-async function start() {
-    await retrieveStorage()
-        .then((result) => {
-            temas_ignorados = result.temas_ignorados;
-            usuarios_ignorados = result.usuarios_ignorados;
-            opciones = result.opciones;
-            savedNotas = result.notas;
-            $.each(result.opciones, function (opcion) {
-                if (result.opciones[opcion].checked) {
-                    if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
-                        return;
-                    }
-                    if ((opcion == "op-color" || opcion == "usuario-color") && !location.href.includes("showthread.php?")) {
-                        return;
-                    }
-                    toListen.push(opcion);
-                }
-            })
-            listenThread();
-        })
-};
-
-start();
+//Listens for messages from other scripts
+chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
+    console.log("Listening")
+    const { type, value } = obj;
+    if (type === "usuario_info") {
+        sendResponse(userInfo(value));
+        return;
+    }
+    if (type === "usuario_info_old_hilos") {
+        sendResponse(userInfoHilosOld());
+        return;
+    }
+    if (type === "hilo_mensaje_likes") {
+        sendResponse(getAllPostsId());
+        return;
+    }
+    if (type === "estadisticas") {
+        sendResponse(findEstadisticas());
+        return;
+    }
+    const id = $("a[href*=searchthreadid]")[0].href.split('=')[1].split('&')[0];
+    if (type === "hilo_info") {
+        sendResponse(hiloInfo(id));
+        return;
+    }
+    if (type === "hilo_usuarios_info") {
+        sendResponse(usersInfo(id));
+        return;
+    }
+    if (type === "likes_info") {
+        updateAllLikes(value);
+        return;
+    }
+});

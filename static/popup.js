@@ -143,7 +143,7 @@ const errorConnection = () => {
         if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
         $(".container-error").toggleClass("visually-hidden");
     });
-    throw `Cannot connect with the server: ${res.status}`;
+    throw `Cannot connect with the server`;
 }
 
 async function setAndCompareVersions() {

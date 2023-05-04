@@ -11,7 +11,7 @@
     {
       "matches": ["https://*.forocoches.com/*"],
       "run_at": "document_start",
-      "all_frames": true,
+      "all_frames": false,
       "js": ["/static/thirdParty/jquery-3.6.3.min.js", "/static/contentScript.js"]
     }
   ],
