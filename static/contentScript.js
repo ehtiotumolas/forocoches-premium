@@ -26,6 +26,11 @@ chrome.storage.sync.get(function (items) {
             toListen.add(opcion);
         }
     })
+    //Hides foros-relacionados sidebar on the old design if it hasn't been removed before
+    if (toListen.has("ocultar-foros-relacionados-viejo")) {
+        console.log("ol")
+        $("table.tborder[bgcolor='#555576']")[0].remove();
+    }
 });
 
 //Listens to the HTML when loading in order to do all the magic
@@ -582,10 +587,6 @@ function onMutation(mutations) {
             }
         }
     }
-    //Hides foros-relacionados sidebar on the old design if it hasn't been removed before
-    if (toListen.has("ocultar-foros-relacionados-viejo")) {
-        $("table.tborder[bgcolor='#555576']")[0].remove();
-    }    
 }
 
 //Starts observing the thread being loaded
@@ -835,7 +836,7 @@ function compareVersions() {
         const manifestData = chrome.runtime.getManifest();
         if (Object.keys(items).length > 0 && items.version) {
             if (items.version !== manifestData.version) {
-                items.version = manifestData.version;                
+                items.version = manifestData.version;
                 openInNewTab(`https://www.forocochero.com/version?version=${manifestData.version.replaceAll('.', '')}`)
             };
         }
