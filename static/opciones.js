@@ -58,8 +58,9 @@ const loadOptions = () => {
         }
       }
       items.opciones = opciones;
-      chrome.storage.sync.set(items);
     }
+    console.log(items)
+    chrome.storage.sync.set(items);
 
     if (Object.keys(items).length > 0 && items.opciones) {
       for (let item in items.opciones) {

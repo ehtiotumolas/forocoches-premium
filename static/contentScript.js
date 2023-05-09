@@ -479,16 +479,16 @@ function onMutation(mutations) {
                                 "padding-right": "0",
                             });
                         }
-                        $('.text-format').css({ justifyContent: "", gap: "", paddingRight: "3rem"});
-                        $('.bbcode-addons').css({ justifyContent: "", gap: "", paddingLeft: 0})
-                        $('.text-format').find("*").css({ gap: ".3rem"});
-                        $('.bbcode-addons').find("*").css({ gap: ".3rem"});
+                        $('.text-format').css({ justifyContent: "", gap: "", paddingRight: "3rem" });
+                        $('.bbcode-addons').css({ justifyContent: "", gap: "", paddingLeft: 0 })
+                        $('.text-format').find("*").css({ gap: ".3rem" });
+                        $('.bbcode-addons').find("*").css({ gap: ".3rem" });
 
                         if ($(".container").width() < 900) {
-                            $('.text-format').parent().css({gap: "5vw"});
+                            $('.text-format').parent().css({ gap: "5vw" });
                         }
                         else {
-                            $('.text-format').parent().css({gap: ""});
+                            $('.text-format').parent().css({ gap: "" });
                         }
                     }
                 }
@@ -582,6 +582,10 @@ function onMutation(mutations) {
             }
         }
     }
+    //Hides foros-relacionados sidebar on the old design if it hasn't been removed before
+    if (toListen.has("ocultar-foros-relacionados-viejo")) {
+        $("table.tborder[bgcolor='#555576']")[0].remove();
+    }    
 }
 
 //Starts observing the thread being loaded
@@ -784,6 +788,11 @@ document.onmousedown = function (e) {
     }
 }
 
+//Opens link in new tab
+const openInNewTab = (url) => {
+    window.open(url, "_blank");
+}
+
 //Listens for messages from other scripts
 chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     console.log("Listening")
@@ -818,3 +827,25 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
         return;
     }
 });
+
+function compareVersions() {
+    const manifestData = chrome.runtime.getManifest();
+    //Checks current version matches the one stored
+    chrome.storage.sync.get(function (items) {
+        const manifestData = chrome.runtime.getManifest();
+        if (Object.keys(items).length > 0 && items.version) {
+            if (items.version !== manifestData.version) {
+                items.version = manifestData.version;                
+                openInNewTab(`https://www.forocochero.com/version?version=${manifestData.version.replaceAll('.', '')}`)
+            };
+        }
+        //If local Chrome storage is empty, initialize version to current version
+        else {
+            items.version = manifestData.version;
+            //TODO create new section in the popup.html to display new changes
+        }
+        chrome.storage.sync.set(items);
+    });
+};
+
+compareVersions();

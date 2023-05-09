@@ -12,7 +12,8 @@ async function start() {
         ################################
         */
         //Sets version
-        setAndCompareVersions();
+        const manifestData = chrome.runtime.getManifest();
+        $(".version-num").text(`versión ${manifestData.version}`);
 
         //Fetches all users from the DB and creates the Ranking Forocochero elements
         await fetchUsers()
@@ -145,29 +146,5 @@ const errorConnection = () => {
     });
     throw `Cannot connect with the server`;
 }
-
-async function setAndCompareVersions() {
-    const manifestData = chrome.runtime.getManifest();
-    //Sets current version 
-
-    $(".version-num").text(`versión ${manifestData.version}`);
-    chrome.storage.sync.get(function (items) {
-        if (Object.keys(items).length > 0 && items.version) {
-            if (items.version != manifestData.version) {
-                items.version = manifestData.version;
-                chrome.storage.sync.set(items);
-                //TODO create new section in the popup.html to display new changes
-            };
-        }
-        //If local Chrome storage is empty, initialize version to current version
-        else {
-            if (!items.version) {
-                items.version = manifestData.version;
-                chrome.storage.sync.set(items);
-                //TODO create new section in the popup.html to display new changes
-            }
-        }
-    });
-};
 
 start();
