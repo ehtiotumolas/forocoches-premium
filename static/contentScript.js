@@ -28,7 +28,6 @@ chrome.storage.sync.get(function (items) {
     })
     //Hides foros-relacionados sidebar on the old design if it hasn't been removed before
     if (toListen.has("ocultar-foros-relacionados-viejo")) {
-        console.log("ol")
         $("table.tborder[bgcolor='#555576']")[0].remove();
     }
 });
@@ -638,7 +637,6 @@ const hiloInfo = (id) => {
         console.log("Tema especificado inválido");
         return { "status": 400, "message": { "hilo_id": id } }
     };
-
     if (newDesign) {
         try {
             let postFound = $(".date-and-time-gray").filter(function () {
@@ -812,6 +810,11 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     }
     if (type === "estadisticas") {
         sendResponse(findEstadisticas());
+        return;
+    }
+
+    if (!$("a[href*=searchthreadid]")[0]) {
+        sendResponse({ "status": 400, "message": "Hilo inválido" });
         return;
     }
     const id = $("a[href*=searchthreadid]")[0].href.split('=')[1].split('&')[0];

@@ -59,7 +59,7 @@ const loadOptions = () => {
       }
       items.opciones = opciones;
     }
-    console.log(items)
+    //console.log(items)
     chrome.storage.sync.set(items);
 
     if (Object.keys(items).length > 0 && items.opciones) {
