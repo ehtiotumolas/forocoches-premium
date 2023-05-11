@@ -7,6 +7,7 @@ let toListen = new Set();
 let newDesign;
 let darkMode = false;
 let forocochero;
+let printed = false;
 
 //Gets info from Chrome local storage where ignored users, ignored threads, options, and notes are stored
 
@@ -854,7 +855,8 @@ function compareVersions() {
 };
 
 function printRoto2() {
-    console.log(`    
+    if (printed == false) {
+        console.log(`    
     ▒█▀▀▀ █▀▀█ █▀▀█ █▀▀█ █▀▀ █▀▀█ █▀▀ █░░█ █▀▀ █▀▀ 　 ▒█▀▀█ █▀▀█ █▀▀ █▀▄▀█ ░▀░ █░░█ █▀▄▀█ 
     ▒█▀▀▀ █░░█ █▄▄▀ █░░█ █░░ █░░█ █░░ █▀▀█ █▀▀ ▀▀█ 　 ▒█▄▄█ █▄▄▀ █▀▀ █░▀░█ ▀█▀ █░░█ █░▀░█ 
     ▒█░░░ ▀▀▀▀ ▀░▀▀ ▀▀▀▀ ▀▀▀ ▀▀▀▀ ▀▀▀ ▀░░▀ ▀▀▀ ▀▀▀ 　 ▒█░░░ ▀░▀▀ ▀▀▀ ▀░░░▀ ▀▀▀ ░▀▀▀ ▀░░░▀                  
@@ -887,6 +889,9 @@ function printRoto2() {
                            -#@@%*=--=@@-            .@@#===+#@@#.           
                              .=#@@@%#@@*==++++**##%@@@@+++*@@%-             
                                  :=*%@@@@@@###**##%@@@@@@@@%=     `)
+        printed = true;
+    }
+
 }
 
 compareVersions();
