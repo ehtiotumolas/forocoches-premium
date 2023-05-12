@@ -583,7 +583,7 @@ function onMutation(mutations) {
                     }
                 }
                 //Adds drag and drop image feature
-                if (document.URL.includes('/showthread') || document.URL.includes('/newreply')) {
+                if (document.URL.includes('/showthread.php') || document.URL.includes('/newreply.php') || document.URL.includes('/newthread.php')) {
                     let imgDrop = $("<div/>")
                         .attr('id', 'dropArea')
                         .css({
@@ -596,13 +596,21 @@ function onMutation(mutations) {
                             color: "gray",
                             justifyContent: "center",
                             alignItems: "center",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            marginTop: ".5rem",
                         })
                         .text("Arrastra imágenes aquí")
-                    if (n.id == "qr_submit" && newDesign && document.URL.includes('/showthread')) {
-                        imgDrop.insertBefore($('#qr_submit'));
+                    if (n.id == "qr_submit" && document.URL.includes('/showthread.php')) {
+                        if (newDesign) {
+                            imgDrop.insertBefore($('#qr_submit'));
+                        }
+                        else {
+                            imgDrop.insertAfter($('#vB_Editor_QR'));
+                        }
                         setdropArea();
                     }
-                    if (n.id == "vB_Editor_001_textarea" && newDesign && document.URL.includes('/newreply')) {
+                    if (n.id == "vB_Editor_001_textarea" && (document.URL.includes('/newreply.php') || document.URL.includes('/newthread.php'))) {
                         let parent = $(n).parent().parent();
                         imgDrop.css({ left: "0", right: "0", marginLeft: "auto", marginRight: "auto", position: "relative", marginTop: "1rem" })
                         parent.append(imgDrop);
