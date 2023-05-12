@@ -34,7 +34,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                     }
                     //If thread is now deleted, remove pole from DB
                     if (response.status == 400) {
-                        removePole({"hilo_id" : id});
+                        removePole({ "hilo_id": id });
                     }
                     if (response.status == 404) console.log(response.message);
                 });
@@ -67,6 +67,14 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             }, async (response) => {
                 console.log("Response estadisticas: ", await response.status);
                 if (response.status == 200) addEstadisticas(response.message);
+            });
+        }
+        if (tab.url && tab.url.includes("forocoches.com/foro")) {
+            chrome.tabs.sendMessage(tabId, {
+                type: "DOM loaded",
+                value: tab.url
+            }, async (response) => {
+                console.log("DOM loaded: ", await response.status);
             });
         }
     }

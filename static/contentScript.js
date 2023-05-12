@@ -8,6 +8,8 @@ let newDesign;
 let darkMode = false;
 let forocochero;
 let printed = false;
+const clients = ["fea6fcd61bc05c5", "4dc3ae00f7ddb78"]
+let currentClient = clients[0]
 
 //Gets info from Chrome local storage where ignored users, ignored threads, options, and notes are stored
 
@@ -27,10 +29,6 @@ chrome.storage.sync.get(function (items) {
             toListen.add(opcion);
         }
     })
-    //Hides foros-relacionados sidebar on the old design if it hasn't been removed before
-    if (toListen.has("ocultar-foros-relacionados-viejo")) {
-        $("table.tborder[bgcolor='#555576']")[0].remove();
-    }
 });
 
 //Listens to the HTML when loading in order to do all the magic
@@ -584,6 +582,33 @@ function onMutation(mutations) {
                         likeBtn.appendTo($(n).parent());
                     }
                 }
+                //Adds drag and drop image feature
+                if (document.URL.includes('/showthread') || document.URL.includes('/newreply')) {
+                    let imgDrop = $("<div/>")
+                        .attr('id', 'dropArea')
+                        .css({
+                            display: "flex",
+                            width: "200px",
+                            height: "38px",
+                            backgroundColor: "white",
+                            border: "1px solid",
+                            borderRadius: "4px",
+                            color: "gray",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        })
+                        .text("Arrastra imágenes aquí")
+                    if (n.id == "qr_submit" && newDesign && document.URL.includes('/showthread')) {
+                        imgDrop.insertBefore($('#qr_submit'));
+                        setdropArea();
+                    }
+                    if (n.id == "vB_Editor_001_textarea" && newDesign && document.URL.includes('/newreply')) {
+                        let parent = $(n).parent().parent();
+                        imgDrop.css({ left: "0", right: "0", marginLeft: "auto", marginRight: "auto", position: "relative", marginTop: "1rem" })
+                        parent.append(imgDrop);
+                        setdropArea();
+                    }
+                }
             }
         }
     }
@@ -814,7 +839,10 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
         sendResponse(findEstadisticas());
         return;
     }
-
+    if (type === "DOM loaded") {
+        sendResponse({ "status": 200, "message": "OK" });
+        afterDOMLoaded(value);
+    }
     if (!$("a[href*=searchthreadid]")[0]) {
         sendResponse({ "status": 400, "message": "Hilo inválido" });
         return;
@@ -892,6 +920,113 @@ function printRoto2() {
         printed = true;
     }
 
+}
+
+function afterDOMLoaded(url) {
+    //Hides foros-relacionados sidebar on the old design if it hasn't been removed before
+    if (url.includes('/index.php') || url.includes('/foro/forumdisplay')) {
+        if (!newDesign && toListen.has("ocultar-foros-relacionados-viejo")) {
+            $("table.tborder[bgcolor='#555576']")[0].remove();
+        }
+    }
+}
+
+function handleDrop(e) {
+    let dt = e.dataTransfer
+    let files = dt.files
+
+    handleFiles(files)
+}
+
+function handleFiles(files) {
+    ([...files]).forEach(uploadFile)
+}
+
+const uploadFile = async (file) => {
+    try {
+        var apiUrl = 'https://api.imgur.com/3/image';
+        var settings = {
+            async: false,
+            crossDomain: true,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            url: apiUrl,
+            headers: {
+                Authorization: 'Client-ID ' + currentClient,
+            },
+        };
+        const myForm = new FormData();
+        myForm.append("image", file);
+        settings.data = myForm;
+
+        $.ajax(settings).done(function (data, textStatus, request) {
+            if (textStatus == "success") {
+                if ($('#vB_Editor_001_textarea').css('display') == 'none' || $('#vB_Editor_QR_textarea').css('display') == 'none') {
+                    doc = $('.iframe_vB_Editor')[0].contentWindow.document;
+                    body = $('body', doc)
+                    if (document.URL.includes('postreply')) {
+                        body[0].innerHTML += "<br />" + `\n[IMG]${data.data.link}[/IMG]`;
+                    }
+                    else {
+                        body[0].innerHTML += `[IMG]${data.data.link}[/IMG]` + "<br />";
+                    }
+                }
+                else {
+                    $('#vB_Editor_001_textarea')[0].value += `\n[IMG]${data.data.link}[/IMG]`;
+                }
+                console.log(request.getResponseHeader("x-ratelimit-clientremaining"))
+            }
+            else {
+                if (currentClient == clients[0]) {
+                    currentClient = clients[1];
+                    uploadFile(file);
+                    return
+                }
+                else {
+                    alert("Se ha encontrado un problema al intentar subir la imagen a imgur")
+                    console.log("Se ha encontrado un problema al intentar subir la imagen a imgur");
+                    if (err.response.data.error) {
+                        console.log(err.response.data.error);
+                        //When trouble shooting, simple informations about the error can be found in err.response.data.error so it's good to display it
+                    }
+                }
+            }
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+function setdropArea() {
+    function preventDefaults(e) {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+
+    ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        document.getElementById('dropArea').addEventListener(eventName, preventDefaults, false)
+    })
+
+        ;['dragenter', 'dragover'].forEach(eventName => {
+
+            document.getElementById('dropArea').addEventListener(eventName, highlight, false)
+        })
+
+        ;['dragleave', 'drop'].forEach(eventName => {
+            document.getElementById('dropArea').addEventListener(eventName, unhighlight, false)
+        })
+
+    function highlight(e) {
+        document.getElementById('dropArea').classList.add('highlight')
+    }
+
+    function unhighlight(e) {
+        document.getElementById('dropArea').classList.remove('highlight')
+    }
+
+    document.getElementById('dropArea').addEventListener('drop', handleDrop, false)
 }
 
 compareVersions();
