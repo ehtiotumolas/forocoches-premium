@@ -590,41 +590,43 @@ function checkElement(n) {
         }
     }
     //Adds drag and drop image feature
-    if (document.URL.includes('/showthread.php') || document.URL.includes('/newreply.php') || document.URL.includes('/newthread.php')) {
-        let imgDrop = $("<div/>")
-            .attr('id', 'dropArea')
-            .css({
-                display: "flex",
-                width: "200px",
-                height: "38px",
-                backgroundColor: "white",
-                border: "1px solid",
-                borderRadius: "4px",
-                color: "gray",
-                justifyContent: "center",
-                alignItems: "center",
-                marginLeft: "auto",
-                marginRight: "auto",
-                marginTop: ".5rem",
-            })
-            .text("Arrastra imágenes aquí")
-        if (n.id == "qr_submit" && document.URL.includes('/showthread.php')) {
-            if (newDesign) {
-                imgDrop.insertBefore($('#qr_submit'));
+    if (toListen.has("auto-subir-imagenes")) {
+        if (document.URL.includes('/showthread.php') || document.URL.includes('/newreply.php') || document.URL.includes('/newthread.php')) {
+            let imgDrop = $("<div/>")
+                .attr('id', 'dropArea')
+                .css({
+                    display: "flex",
+                    width: "200px",
+                    height: "38px",
+                    backgroundColor: "white",
+                    border: "1px solid",
+                    borderRadius: "4px",
+                    color: "gray",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    marginTop: ".5rem",
+                })
+                .text("Arrastra imágenes aquí")
+            if (n.id == "qr_submit" && document.URL.includes('/showthread.php')) {
+                if (newDesign) {
+                    imgDrop.insertBefore($('#qr_submit'));
+                }
+                else {
+                    imgDrop.insertAfter($('#vB_Editor_QR'));
+                }
+                setdropArea();
             }
-            else {
-                imgDrop.insertAfter($('#vB_Editor_QR'));
+            if (n.id == "vB_Editor_001_textarea" && (document.URL.includes('/newreply.php') || document.URL.includes('/newthread.php'))) {
+                if (!newDesign) {
+                    $(n).parent().css({ display: 'block' });
+                }
+                let parent = $(n).parent().parent();
+                imgDrop.css({ left: "0", right: "0", marginLeft: "auto", marginRight: "auto", position: "relative", marginTop: ".5rem" })
+                parent.append(imgDrop);
+                setdropArea();
             }
-            setdropArea();
-        }
-        if (n.id == "vB_Editor_001_textarea" && (document.URL.includes('/newreply.php') || document.URL.includes('/newthread.php'))) {
-            if (!newDesign) {
-                $(n).parent().css({display: 'block'});
-            }
-            let parent = $(n).parent().parent();
-            imgDrop.css({ left: "0", right: "0", marginLeft: "auto", marginRight: "auto", position: "relative", marginTop: ".5rem" })
-            parent.append(imgDrop);
-            setdropArea();
         }
     }
 }
@@ -700,7 +702,7 @@ const hiloInfo = (id) => {
             return { "status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id } }
         }
     }
-    return { "status": 200, "message": ""}
+    return { "status": 200, "message": "" }
 
 }
 

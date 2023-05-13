@@ -1,7 +1,7 @@
 
 const listOpciones = ["op-color", "hilos-color", "ocultar-publicidad", "espacio-lateral", "ocultar-avisos", "usuarios-ignorados", "temas-ignorados"
   , "notas-usuario", "ocultar-usuarios-ignorados", "ocultar-foros-relacionados-nuevo", "ocultar-foros-relacionados-viejo", "ocultar-trending"
-  , "avatar-cuadrado", "avatar-grande", "likes", "usuario-color"]
+  , "avatar-cuadrado", "avatar-grande", "likes", "usuario-color", "auto-subir-imagenes"]
 
 //Sets value of the op-color setting (all messages from OP) to the local chrome storage without activating the option
 document.getElementById("op-color").addEventListener("input", function () {
@@ -51,10 +51,13 @@ const loadOptions = () => {
       let opciones = items.opciones;
       if (!(opcion in items.opciones)) {
         if (opcion === "op-color" || opcion === "hilos-color" || opcion === "usuario-color") {
-          opciones[opcion] = { "value": $(`#${opcion}`)[0].value, "checked": false }
+          opciones[opcion] = { "value": $(`#${opcion}`)[0].value, "checked": false };
+        }
+        if (opcion === "auto-subir-imagenes") {
+          opciones[opcion] = { "checked": true };
         }
         else {
-          opciones[opcion] = { "checked": false }
+          opciones[opcion] = { "checked": false };
         }
       }
       items.opciones = opciones;
