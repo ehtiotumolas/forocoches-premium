@@ -619,8 +619,7 @@ function checkElement(n) {
         }
         if (n.id == "vB_Editor_001_textarea" && (document.URL.includes('/newreply.php') || document.URL.includes('/newthread.php'))) {
             if (!newDesign) {
-                //$(n).parent().css({display: 'block'});
-
+                $(n).parent().css({display: 'block'});
             }
             let parent = $(n).parent().parent();
             imgDrop.css({ left: "0", right: "0", marginLeft: "auto", marginRight: "auto", position: "relative", marginTop: ".5rem" })
@@ -991,6 +990,9 @@ const uploadFile = async (file) => {
                     else {
                         body[0].innerHTML += `[IMG]${data.data.link}[/IMG]` + "<br />";
                     }
+                }
+                if ($('#vB_Editor_QR_textarea').length != 0) {
+                    $('#vB_Editor_QR_textarea')[0].value += `\n[IMG]${data.data.link}[/IMG]`;
                 }
                 else {
                     $('#vB_Editor_001_textarea')[0].value += `\n[IMG]${data.data.link}[/IMG]`;
