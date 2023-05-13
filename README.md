@@ -236,11 +236,11 @@ Activar ignorados mejorados para usuarios e hilos.
 <br>
 
 ### Registro de cambios
+
+#### Versión 1.8.0
 * Añadida la opción de añadir imágenes en las respuesta simplemente arrastrando la imagen (o imágenes). Automáticamente se subirán a imgur y se añadirá el link (o links) en el texto de la respuesta.
 * Arreglado un bug que hacía que, al encontrar un hilo sin pole, el resto del código no se ejecutara.
 * Añadido ASCII roto2 en la consola (F12 en Chrome).
-
-#### Versión 1.8.0
 
 #### Versión 1.7.0
 * Añadida opción para colorear el fondo de los mensajes propios en los hilos.
