@@ -15,7 +15,9 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                     console.log("Response hilo_info: ", await response.status);
                     //If thread exists, add Pole
                     if (response.status == 200) {
-                        addPole(response.message);
+                        if (response.message != "") {
+                            addPole(response.message);
+                        }
                         //Finds out the number of messages created by each user in the thread
                         chrome.tabs.sendMessage(tabId, {
                             type: "hilo_usuarios_info",
