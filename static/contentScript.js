@@ -891,7 +891,7 @@ function compareVersions() {
     chrome.storage.sync.get(function (items) {
         const manifestData = chrome.runtime.getManifest();
         if (Object.keys(items).length > 0 && items.version) {
-            if (items.version !== manifestData.version) {
+            if (items.version.slice('.', items.version.lastIndexOf('.')) !== manifestData.version.slice('.', items.version.lastIndexOf('.'))) {
                 items.version = manifestData.version;
                 openInNewTab(`https://www.forocochero.com/version?version=${manifestData.version.replaceAll('.', '')}`)
             };
