@@ -528,7 +528,7 @@ input[type="color"]::-webkit-color-swatch {
   padding-bottom: 1.5rem;
 }
 
-.topDiv {
+.topDiv,.version-link {
   cursor: pointer;
   font-size: var(--fs-400);
   padding-left: .5rem;
