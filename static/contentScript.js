@@ -688,22 +688,24 @@ const hiloInfo = (id) => {
             let divFound = $(`div[id='postmenu_${postFound}'] > a`)[0];
             usuario = divFound.innerText
             usuario_id = divFound.href.split("php?u=")[1];
+            return { "status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id } }
         }
         catch (err) {
-            return { "status": 404, "message": err }
+            return { "status": 200, "message": "" }
         }
     }
     else {
-        if ($('a[name="2"]').length != 0) {
+        try {
             let postFound = $('a[name="2"]')[0].href.split('#post')[1]
             let aFound = $(`div[id=postmenu_${postFound}] > a`)[0];
             usuario = aFound.innerText;
             usuario_id = aFound.href.split("php?u=")[1];
             return { "status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id } }
         }
+        catch (err) {
+            return { "status": 200, "message": "" }
+        }
     }
-    return { "status": 200, "message": "" }
-
 }
 
 //Gets total number of messages and threads created by a user, and the forum DoB
