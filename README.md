@@ -236,6 +236,23 @@ Activar ignorados mejorados para usuarios e hilos.
 <br>
 
 ### Registro de cambios
+
+#### Versión 1.8.0
+* Añadida la opción de añadir imágenes en las respuesta simplemente arrastrando la imagen (o imágenes). Automáticamente se subirán a imgur y se añadirá el link (o links) en el texto de la respuesta.
+* Arreglado un bug que hacía que, al encontrar un hilo sin pole, el resto del código no se ejecutara.
+* Añadido ASCII roto2 en la consola (F12 en Chrome).
+* Ahora, cuando el servidor falle, la extensión seguirá funcionando. Las únicas secciones que no funcionarán serán los rankings y los likes. Lo demás seguirá totalmente funcional.
+
+#### Versión 1.7.0
+* Añadida opción para colorear el fondo de los mensajes propios en los hilos.
+* Los usuarios ignorados ahora no son sensibles a minúsculas ni mayúsculas.
+* Los hilos ignorados ahora no son sensibles a minúsculas ni mayúsculas, ni tíldes, ni diéresis.
+* Arreglado bug al usar el nuevo diseño que hacía que el nombre de usuario no se guardase correctamente.
+* Arreglado bug que sucedia al cargar usuarios o hilos ignorados desde un documento vacio.
+* Arreglado bug que hacía que los iconos para dar formato al texto estuviesen demasiado espaciados al activar la opción "Incrementar ancho del foro".
+* Arreglado bug que hacía que la barra lateral no despareciera en el diseño antiguo cuando la opción 'Ocultar sección "Foros Relacionados"' estaba activa.
+* Añadida página con cambios que aparece cuando Forocoches Premium se actualiza a una nueva versión.
+
 #### Versión 1.6.0
 * Añadido el número de versión en el cabezal de la extensión.
 * Añadida sección "+Info" donde se incluyen liks a la web forocochero.com, twitter, contacto, github repositorio, Chrome Web Store. También añadidos links para discutir acerca de problemas con la extensión, nuevas ideas, o preguntas.

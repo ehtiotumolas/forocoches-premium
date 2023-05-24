@@ -14,27 +14,33 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 }, async (response) => {
                     console.log("Response hilo_info: ", await response.status);
                     //If thread exists, add Pole
-                    if (response.status == 200) addPole(response.message);
+                    if (response.status == 200) {
+                        if (response.message != "") {
+                            addPole(response.message);
+                        }
+                        //Finds out the number of messages created by each user in the thread
+                        chrome.tabs.sendMessage(tabId, {
+                            type: "hilo_usuarios_info",
+                        }, async (response) => {
+                            console.log("Response hilo_usuarios_info: ", await response.status);
+                            if (response.status == 200) addUsers(response.message);
+                        });
+                        //Finds out if any of the messages on the current thread have any likes
+                        chrome.tabs.sendMessage(tabId, {
+                            type: "hilo_mensaje_likes",
+                        }, async (response) => {
+                            console.log("hilo_mensaje_likes: ", await response.status);
+                            if (response.status == 200)
+                                findLikedPosts(tabId, response.message);
+                        });
+                    }
                     //If thread is now deleted, remove pole from DB
-                    if (response.status == 400) removePole(response.message);
+                    if (response.status == 400) {
+                        removePole({ "hilo_id": id });
+                    }
                     if (response.status == 404) console.log(response.message);
                 });
             }
-            //Finds out the number of messages created by each user in the thread
-            chrome.tabs.sendMessage(tabId, {
-                type: "hilo_usuarios_info",
-            }, async (response) => {
-                console.log("Response hilo_usuarios_info: ", await response.status);
-                if (response.status == 200) addUsers(response.message);        
-            });
-            //Finds out if any of the messages on the current thread have any likes
-            chrome.tabs.sendMessage(tabId, {
-                type: "hilo_mensaje_likes",
-            }, async (response) => {
-                console.log("hilo_mensaje_likes: ", await response.status);
-                if (response.status == 200)
-                    findLikedPosts(tabId, response.message);            
-            });
         }
         //Gets number of threads created by a particular searched user
         if (tab.url && tab.url.includes("search.php?searchid=")) {
@@ -53,7 +59,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 value: queryParameters
             }, async (response) => {
                 console.log("Response usuario_info: ", await response.status);
-                if (response.status == 200) addUser(response.message); 
+                if (response.status == 200) addUser(response.message);
             });
         }
         //Gets forocoches´ total number of messages
@@ -62,7 +68,15 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                 type: "estadisticas"
             }, async (response) => {
                 console.log("Response estadisticas: ", await response.status);
-                if (response.status == 200) addEstadisticas(response.message); 
+                if (response.status == 200) addEstadisticas(response.message);
+            });
+        }
+        if (tab.url && tab.url.includes("forocoches.com/foro")) {
+            chrome.tabs.sendMessage(tabId, {
+                type: "DOM loaded",
+                value: tab.url
+            }, async (response) => {
+                console.log("DOM loaded: ", await response.status);
             });
         }
     }
@@ -74,7 +88,8 @@ chrome.commands.onCommand.addListener((shortcut) => {
     if (shortcut.includes("+Z")) {
         chrome.runtime.reload();
         chrome.tabs.reload();
-    }})
+    }
+})
 
 //Listen to messages from other scripts
 chrome.runtime.onMessage.addListener((obj) => {
@@ -242,7 +257,7 @@ function findLikedPosts(tabId, json) {
             const content = response.content;
             if (status == 200) {
                 console.log('getAllLikes' + ': ' + status)
-                chrome.tabs.sendMessage(tabId, { type: "likes_info", value: content, id: 0 });        
+                chrome.tabs.sendMessage(tabId, { type: "likes_info", value: content, id: 0 });
             }
             else {
                 console.log(status)

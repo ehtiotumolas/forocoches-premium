@@ -140,11 +140,23 @@ const errorConnection = () => {
     ################################
     */
 
-    $(".container-error, .container-default, .section-nav, .main-content").each(function () {
-        if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
-        $(".container-error").toggleClass("visually-hidden");
-    });
-    throw `Cannot connect with the server`;
+
+    var error = $("<hi/>")
+        .attr('class', 'error-menssage')
+        .text('Algo pasa con el servidor. Contacta ')
+    var mailto = $("<a/>")
+        .attr('href', "mailto:ehtiotumolas@gmail.com")
+        .text('ehtiotumolas@gmail.com')
+    $(mailto).appendTo(error);
+    $(".container-ranking").empty();
+    $(".container-poles").empty();
+    $(error).appendTo($(".container-ranking, .container-poles"));
+
+    // $(".container-error, .container-default, .section-nav, .main-content").each(function () {
+    //     if (!$(this).hasClass("visually-hidden")) $(this).toggleClass("visually-hidden");
+    //     $(".container-error").toggleClass("visually-hidden");
+    // });
+    // throw `Cannot connect with the server`;
 }
 
 start();
