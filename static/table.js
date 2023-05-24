@@ -54,7 +54,7 @@ export async function updateTableRanking() {
                 }
                 userTable.querySelectorAll('.table_row').forEach(tr => tr.classList.remove("selRow"));
                 if (!selected) row.classList.add("selRow");
-                chrome.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + usuarios[i].usuario_id })
+                browser.tabs.update(getCurrentTab().id, { url: 'https://forocoches.com/foro/member.php?u=' + usuarios[i].usuario_id })
             });
 
             row.id = usuario;
@@ -130,7 +130,6 @@ export async function updateTablePoles() {
             const row = document.createElement("div");
             row.classList.add("table_row", "table_body", "table_poles");
             row.addEventListener("click", function () {
-                console.log(poles[i].hilos_id)
                 $(".show-poles").remove();
                 let selected = false;
                 if (row.classList.contains("sel_row_pole")) {
@@ -149,7 +148,7 @@ export async function updateTablePoles() {
                         aLink.classList.add("table_poles_link")
                         aLink.onclick = function(e) { 
                             let urlPole = `https://forocoches.com/foro/showthread.php?t=${this.innerText.split(', ')[0]}`
-                            chrome.tabs.update(getCurrentTab().id, { url: `${urlPole}` }) 
+                            browser.tabs.update(getCurrentTab().id, { url: `${urlPole}` }) 
                         };
                        
                         rowPoles.append(aLink)

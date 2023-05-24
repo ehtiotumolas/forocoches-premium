@@ -1,15 +1,15 @@
 //APIs server
 const server = "https://www.forocochero.com"
 
-//Listens to chrome tabs on forocoches.com
+//Listens to browser tabs on forocoches.com
 //Depending on the content of the URL, different actions are performed
-chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
+browser.tabs.onUpdated.addListener(function async(tabId, info, tab) {
     if (info.status === 'complete') {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const pageInfo = tab.url.split("=")[1];
             const [id, queryParameters] = pageInfo.split(/[.\&#/_]/)
             if (!queryParameters || queryParameters.includes("highlight")) {
-                chrome.tabs.sendMessage(tabId, {
+                browser.tabs.sendMessage(tabId, {
                     type: "hilo_info",
                 }, async (response) => {
                     console.log("Response hilo_info: ", await response.status);
@@ -19,14 +19,14 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
                             addPole(response.message);
                         }
                         //Finds out the number of messages created by each user in the thread
-                        chrome.tabs.sendMessage(tabId, {
+                        browser.tabs.sendMessage(tabId, {
                             type: "hilo_usuarios_info",
                         }, async (response) => {
                             console.log("Response hilo_usuarios_info: ", await response.status);
                             if (response.status == 200) addUsers(response.message);
                         });
                         //Finds out if any of the messages on the current thread have any likes
-                        chrome.tabs.sendMessage(tabId, {
+                        browser.tabs.sendMessage(tabId, {
                             type: "hilo_mensaje_likes",
                         }, async (response) => {
                             console.log("hilo_mensaje_likes: ", await response.status);
@@ -44,7 +44,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
         }
         //Gets number of threads created by a particular searched user
         if (tab.url && tab.url.includes("search.php?searchid=")) {
-            chrome.tabs.sendMessage(tabId, {
+            browser.tabs.sendMessage(tabId, {
                 type: "usuario_info_old_hilos"
             }, async (response) => {
                 console.log("Response usuario_info_old_hilos: ", await response.status);
@@ -54,7 +54,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
         //Gets the number of threads and messages created by a particular user
         if (tab.url && tab.url.includes("member.php")) {
             const queryParameters = tab.url.split("?u=")[1].split("#")[0].split("&")[0];
-            chrome.tabs.sendMessage(tabId, {
+            browser.tabs.sendMessage(tabId, {
                 type: "usuario_info",
                 value: queryParameters
             }, async (response) => {
@@ -64,7 +64,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
         }
         //Gets forocoches´ total number of messages
         if (tab.url && tab.url == "https://forocoches.com/foro/") {
-            chrome.tabs.sendMessage(tabId, {
+            browser.tabs.sendMessage(tabId, {
                 type: "estadisticas"
             }, async (response) => {
                 console.log("Response estadisticas: ", await response.status);
@@ -72,7 +72,7 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
             });
         }
         if (tab.url && tab.url.includes("forocoches.com/foro")) {
-            chrome.tabs.sendMessage(tabId, {
+            browser.tabs.sendMessage(tabId, {
                 type: "DOM loaded",
                 value: tab.url
             }, async (response) => {
@@ -83,23 +83,23 @@ chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
 });
 
 //Reloads the extensions and tab
-chrome.commands.onCommand.addListener((shortcut) => {
+browser.commands.onCommand.addListener((shortcut) => {
     console.log('reload bitch');
     if (shortcut.includes("+Z")) {
-        chrome.runtime.reload();
-        chrome.tabs.reload();
+        browser.runtime.reload();
+        browser.tabs.reload();
     }
 })
 
 //Listen to messages from other scripts
-chrome.runtime.onMessage.addListener((obj) => {
+browser.runtime.onMessage.addListener((obj) => {
     //Reloads current tab
     if (obj.type === "reload") {
-        chrome.tabs.reload();
+        browser.tabs.reload();
     }
-    //Adds to local chrome storage
-    if (obj.type === "chrome-storage") {
-        addToChromeStorage(obj.content.loc, obj.content.message, obj.content.action);
+    //Adds to local browser storage
+    if (obj.type === "browser-storage") {
+        addToBrowserStorage(obj.content.loc, obj.content.message, obj.content.action);
     }
     //Updates message's likes on the DB
     if (obj.type === "update-likes") {
@@ -165,9 +165,9 @@ const addEstadisticas = (json) => {
         });
 }
 
-//Adds info such as ignored users, ignored threads and notes to the local Chrome storage
-const addToChromeStorage = (loc, message, action) => {
-    chrome.storage.sync.get(function (items) {
+//Adds info such as ignored users, ignored threads and notes to the local browser storage
+const addToBrowserStorage = (loc, message, action) => {
+    browser.storage.sync.get(function (items) {
         if (loc == "tema") {
             if (Object.keys(items).length > 0 && items.temas_ignorados) {
                 if (action == "add") {
@@ -231,7 +231,7 @@ const addToChromeStorage = (loc, message, action) => {
                 items.notas[message.usuario] = { "text": message.text };
             }
         }
-        chrome.storage.sync.set(items);
+        browser.storage.sync.set(items);
     });
 }
 
@@ -239,7 +239,9 @@ const addToChromeStorage = (loc, message, action) => {
 function sendRequest(method, url, data, sender) {
     let headers = {
         "Content-Type": "application/json",
-        "Access-Control-Origin": "*"
+        "Access-Control-Origin": "*",
+        "Access-Control-Allow-Origin": "*",
+        "withCredentials": "true"
     }
     return fetch(url, {
         method: method,
@@ -257,10 +259,19 @@ function findLikedPosts(tabId, json) {
             const content = response.content;
             if (status == 200) {
                 console.log('getAllLikes' + ': ' + status)
-                chrome.tabs.sendMessage(tabId, { type: "likes_info", value: content, id: 0 });
+                browser.tabs.sendMessage(tabId, { type: "likes_info", value: content, id: 0 });
             }
             else {
                 console.log(status)
+            }
+        });
+}
+
+async function getPermissions() {
+    await browser.permissions.getAll()
+        .then((permissions) => {
+            if (document.location.href.includes("*://forocoches.com/*") && !permissions.origins.includes("*://forocoches.com/*")) {
+                alert("Forocoches Premium necesita acceso a forocoches para funcionar.")
             }
         });
 }

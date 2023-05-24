@@ -11,25 +11,31 @@ let printed = false;
 const clients = ["fea6fcd61bc05c5", "4dc3ae00f7ddb78"]
 let currentClient = clients[0]
 
-//Gets info from Chrome local storage where ignored users, ignored threads, options, and notes are stored
 
-chrome.storage.sync.get(function (items) {
-    temas_ignorados = items.temas_ignorados;
-    usuarios_ignorados = items.usuarios_ignorados;
-    savedNotas = items.notas;
-    opciones = items.opciones;
-    $.each(opciones, function (opcion) {
-        if (opciones[opcion].checked) {
-            if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
-                return;
-            }
-            if ((opcion == "op-color" || opcion == "usuario-color") && !location.href.includes("showthread.php?")) {
-                return;
-            }
-            toListen.add(opcion);
-        }
-    })
-});
+//Get storage from Firefox
+async function storageLocalGet(keys) {
+    //Gets info from browser local storage where ignored users, ignored threads, options, and notes are stored
+    await browser.storage.sync.get(keys)
+        .then((items) => {
+            temas_ignorados = items.temas_ignorados;
+            usuarios_ignorados = items.usuarios_ignorados;
+            savedNotas = items.notas;
+            opciones = items.opciones;
+            $.each(opciones, function (opcion) {
+                if (opciones[opcion].checked) {
+                    if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
+                        return;
+                    }
+                    if ((opcion == "op-color" || opcion == "usuario-color") && !location.href.includes("showthread.php?")) {
+                        return;
+                    }
+                    toListen.add(opcion);
+                }
+            })
+        });
+}
+
+storageLocalGet();
 
 //Listens to the HTML when loading in order to do all the magic
 function onMutation(mutations) {
@@ -93,9 +99,9 @@ function checkElement(n) {
                         e.preventDefault();
                         let usuario = postDiv.children[0].innerText;
                         if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
-                            chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: { loc: "usuario", message: usuario, action: "add" } });
-                            chrome.runtime.sendMessage({ sender: "contentScript", type: "reload" });
-                            chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
+                            browser.runtime.sendMessage({ sender: "contentScript", type: "browser-storage", content: { loc: "usuario", message: usuario, action: "add" } });
+                            browser.runtime.sendMessage({ sender: "contentScript", type: "reload" });
+                            browser.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
                         };
                     });
                 if (newDesign) {
@@ -279,8 +285,8 @@ function checkElement(n) {
                                     else {
                                         notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
                                     }
-                                    chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: { loc: "notas", message: { "usuario": usuario, "text": textToSave }, action: "add" } });
-                                    chrome.runtime.sendMessage({ sender: "contentScript", type: "reload" });
+                                    browser.runtime.sendMessage({ sender: "contentScript", type: "browser-storage", content: { loc: "notas", message: { "usuario": usuario, "text": textToSave }, action: "add" } });
+                                    browser.runtime.sendMessage({ sender: "contentScript", type: "reload" });
                                 })
                                 .appendTo(notas);
 
@@ -648,7 +654,7 @@ listenThread();
 
 //Updates likes on the DB
 const updateLikes = (postId, user, action) => {
-    chrome.runtime.sendMessage({ sender: "contentScript", type: "update-likes", content: { id: postId, usuario: user, action: action } });
+    browser.runtime.sendMessage({ sender: "contentScript", type: "update-likes", content: { id: postId, usuario: user, action: action } });
 }
 
 //Changes colour of the liks heart to red when a message is liked
@@ -842,8 +848,8 @@ const openInNewTab = (url) => {
 }
 
 //Listens for messages from other scripts
-chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
-    console.log("Listening")
+browser.runtime.onMessage.addListener((obj, sender, sendResponse) => {
+    // console.log("Listening")
     printRoto2();
     const { type, value } = obj;
     if (type === "usuario_info") {
@@ -885,24 +891,24 @@ chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     }
 });
 
-function compareVersions() {
-    const manifestData = chrome.runtime.getManifest();
+async function compareVersions() {
     //Checks current version matches the one stored
-    chrome.storage.sync.get(function (items) {
-        const manifestData = chrome.runtime.getManifest();
-        if (Object.keys(items).length > 0 && items.version) {
-            if (items.version.slice('.', items.version.lastIndexOf('.')) !== manifestData.version.slice('.', items.version.lastIndexOf('.'))) {
+    await browser.storage.sync.get()
+        .then((items) => {
+            const manifestData = browser.runtime.getManifest();
+            if (Object.keys(items).length > 0 && items.version) {
+                if (items.version.slice('.', items.version.lastIndexOf('.')) !== manifestData.version.slice('.', items.version.lastIndexOf('.'))) {
+                    items.version = manifestData.version;
+                    openInNewTab(`https://www.forocochero.com/version?version=${manifestData.version.replaceAll('.', '')}`)
+                };
+            }
+            //If local browser storage is empty, initialize version to current version
+            else {
                 items.version = manifestData.version;
-                openInNewTab(`https://www.forocochero.com/version?version=${manifestData.version.replaceAll('.', '')}`)
-            };
-        }
-        //If local Chrome storage is empty, initialize version to current version
-        else {
-            items.version = manifestData.version;
-            //TODO create new section in the popup.html to display new changes
-        }
-        chrome.storage.sync.set(items);
-    });
+                //TODO create new section in the popup.html to display new changes
+            }
+            browser.storage.sync.set(items);
+        });
 };
 
 function printRoto2() {

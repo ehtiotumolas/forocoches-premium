@@ -334,7 +334,6 @@ svg {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
-
 ::-webkit-scrollbar-corner { background: rgba(0,0,0,0.5); }
 
 * {
@@ -345,7 +344,6 @@ svg {
 /* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
     width: .2rem;
-    height: 12px;
 }
 
 *::-webkit-scrollbar-track {

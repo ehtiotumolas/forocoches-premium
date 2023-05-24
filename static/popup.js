@@ -1,6 +1,52 @@
 //Imports functions from other scripts
 import { fetchUsers, fetchPoles, buscarUsuario, usuarios } from "./users.js";
+import { setValueNoCheck } from "./opciones.js";
 import { createTableRanking, createTablePoles, currentPage, setPagina, rowsPerPage } from "./table.js";
+
+//Gets current tab that is active
+export function getCurrentTab() {
+    return new Promise(function (res, rej) {
+        res(browser.tabs.query({ currentWindow: true, active: true }));
+    })
+}
+
+function getPermissions() {
+    return new Promise(function (res, rej) {
+        res(browser.permissions.getAll())
+    })
+}
+
+function checkIfPermissions() {
+    getCurrentTab()
+        .then(function (result) {
+            if (result[0].url.includes("forocoches.com")) {
+                getPermissions()
+                    .then(function (result) {
+                        if (!result.origins.includes("*://forocoches.com/*")) {
+                            let firefoxContainer = $("<div/>")
+                                .attr('id', 'firefox-container')
+                                .attr('class', 'dashed')
+                            let firefoxPermissions = $("<div/>")
+                                .attr('id', 'firefox-permissions')
+                                .text("Haz click derecho en el icono de la extensión y luego en \"Permitir siempre en forocoches.com\". Despues de esto, actualiza la página para que los cambios se hagan efectivos.")
+                            let firefoxPermissionsAlert = $("<div/>")
+                                .attr('id', 'firefox-permissions-alert')
+                                .text("Acción requerida: dar los permisos necesarios a la extensión.")
+                            let firefoxPermissionsImg = $("<img/>")
+                                .attr('id', 'firefox-permissions-img')
+                                .attr('src', '../static/images/permissions.png')
+                            firefoxContainer.appendTo($(".section-body")[0])
+                            firefoxPermissionsAlert.appendTo($("#firefox-container"));
+                            firefoxPermissions.appendTo($("#firefox-container"));
+                            firefoxPermissionsImg.appendTo($("#firefox-container"));
+                            $('.container-default').addClass('visually-hidden');
+                        }
+                    })
+            }
+        })
+}
+
+checkIfPermissions();
 
 // starts the logic
 async function start() {
@@ -12,9 +58,16 @@ async function start() {
         ################################
         */
         //Sets version
-        const manifestData = chrome.runtime.getManifest();
+        const manifestData = browser.runtime.getManifest();
         $(".version-num").text(`versión ${manifestData.version}`);
-
+        $('.color-selector').minicolors({
+            opacity: false,
+            control: 'hue',
+            textfield: false,
+            change: function() {
+                setValueNoCheck(this.id)
+             }
+        });
         //Fetches all users from the DB and creates the Ranking Forocochero elements
         await fetchUsers()
             .then(() => createTableRanking())
@@ -58,11 +111,6 @@ document.getElementById("user-buscar")
             document.getElementById("submit-buscar").click();
         }
     });
-
-//Gets current tab that is active
-export async function getCurrentTab() {
-    return await chrome.tabs.query({ active: true, currentWindow: true }).tabs;
-}
 
 //Hides and shows the different menus on the popup screen
 $(".nav-element-container").click(function (e) {
@@ -115,7 +163,7 @@ document.getElementById("footer-donate")
         openInNewTab("https://www.paypal.com/donate/?hosted_button_id=G8DCS8GX6METS");
     });
 
-//Adds link to the chrome store reviews
+//Adds link to the browser store reviews
 document.getElementById("footer-rate")
     .addEventListener("click", function () {
         openInNewTab("https://chrome.google.com/webstore/detail/forocoches-premium/hdiegimcikljdcgohlcnilgephloaiaa/reviews");
@@ -158,5 +206,4 @@ const errorConnection = () => {
     // });
     // throw `Cannot connect with the server`;
 }
-
 start();

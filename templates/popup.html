@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400;500;700&display=swap"
         rel="stylesheet">
-    <script src="../static/thirdParty/jquery-3.6.3.min.js" defer></script>
+    <script type="text/javascript" src="../static/thirdParty/jquery-3.6.3.min.js" defer></script>
+    <script type="text/javascript" src="../static/thirdParty/jquery.minicolors.js" defer></script>
+    <script type="text/javascript" src="../static/thirdParty/simplebar.min.js" defer></script>
     <script type="module" src="../static/popup.js" defer></script>
     <script type="module" src="../static/users.js" defer></script>
     <script type="module" src="../static/table.js" defer></script>
@@ -17,6 +19,8 @@
     <link rel=stylesheet type="text/css" href="../static/table.css">
     <link rel=stylesheet type="text/css" href="../static/style.css">
     <link rel=stylesheet type="text/css" href="../static/nav.css">
+    <link rel=stylesheet type="text/css" href="../static/thirdParty/jquery.minicolors.css">
+    <link rel=stylesheet type="text/css" href="../static/thirdParty/simplebar.css">
     <title>Document</title>
 </head>
 
@@ -217,19 +221,19 @@
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-op-color" /> Color los mensajes del creador del hilo
                             </label>
-                            <input type="color" class="color-selector" id="op-color" value="#898AA6">
+                            <input type="minicolors" class="color-selector" id="op-color" value="#898AA6">
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-usuario-color" /> Colorear tus mensajes en los hilos
                             </label>
-                            <input type="color" class="color-selector" id="usuario-color" value="#5EAAA8">
+                            <input type="minicolors" class="color-selector" id="usuario-color" value="#5EAAA8">
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-hilos-color" /> Colorear hilos sin mensajes
                             </label>
-                            <input type="color" class="color-selector" id="hilos-color" value="#DF9191">
+                            <input type="minicolors" class="color-selector" id="hilos-color" value="#DF9191">
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
