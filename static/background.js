@@ -8,7 +8,7 @@ browser.tabs.onUpdated.addListener(function async(tabId, info, tab) {
         if (tab.url && tab.url.includes("foro/showthread.php")) {
             const pageInfo = tab.url.split("=")[1];
             const [id, queryParameters] = pageInfo.split(/[.\&#/_]/)
-            if (!queryParameters || queryParameters.includes("highlight")) {
+            if (!queryParameters || queryParameters.includes("highlight") || queryParameters.includes("page")) {
                 browser.tabs.sendMessage(tabId, {
                     type: "hilo_info",
                 }, async (response) => {

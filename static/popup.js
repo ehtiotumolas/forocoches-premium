@@ -166,7 +166,7 @@ document.getElementById("footer-donate")
 //Adds link to the browser store reviews
 document.getElementById("footer-rate")
     .addEventListener("click", function () {
-        openInNewTab("https://addons.mozilla.org/en-GB/firefox/addon/forocoches-premium/");
+        openInNewTab("https://addons.mozilla.org/es/firefox/addon/forocoches-premium/");
     });
 
 //Adds link to the github repository
