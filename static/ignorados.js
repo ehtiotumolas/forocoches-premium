@@ -134,76 +134,11 @@ $("#temas-ignorados-save").click(function (e) {
 });
 
 async function openIgnoradosList(type) {
-  try {
-    if (window.showOpenFilePicker) {
-      const handles = await showOpenFilePicker({
-        suggestedName: `${type}.txt`,
-        types: [{
-          description: 'Text Files',
-          accept: {
-            'text/plain': ['.txt'],
-          },
-        }],
-      })
-      const fileData = await handles[0].getFile();
-      const fileText = await fileData.text();
-      if (type == "usuarios_ignorados") {
-        usuarios_ignorados = fileText.split(',');
-        createUsuariosIgnorados();
-        browser.runtime.sendMessage({ sender: "ignorados", type: "browser-storage", content: { loc: "usuarios", message: usuarios_ignorados, action: "add" } });
-        browser.runtime.sendMessage({ sender: "ignorados", type: "reload" });
-      }
-      else {
-        temas_ignorados = fileText.split(',');
-        createTemasIgnorados();
-        browser.runtime.sendMessage({ sender: "ignorados", type: "browser-storage", content: { loc: "temas", message: temas_ignorados, action: "add" } });
-        browser.runtime.sendMessage({ sender: "ignorados", type: "reload" });
-      }
-      return;
-    }
-  }
-  catch (err) {
-    if (err.name !== 'AbortError') {
-      console.error(err.name, err.message);
-      return;
-    }
-  }
+  alert("Esta función solo funciona en Chrome, de momento. Estoy trabajando en hacerla funcionar en Firefox también.")
 }
 
 async function saveIgnoradosList(type) {
-  await loadIgnoradosLists(false, false)
-    .then(async () => {
-      try {
-        if (window.showSaveFilePicker) {
-          const handle = await showSaveFilePicker({
-            multiple: false,
-            types: [{
-              description: 'Text Files',
-              accept: {
-                'text/plain': ['.txt'],
-              },
-            }],
-          });
-          const writable = await handle.createWritable();
-          let listIgnorados;
-          if (type == "usuarios_ignorados") {
-            listIgnorados = usuarios_ignorados.toString();
-          }
-          if (type == "temas_ignorados") {
-            listIgnorados = temas_ignorados.toString();
-          }
-          await writable.write(listIgnorados);
-          writable.close();
-          return;
-        }
-      }
-      catch (err) {
-        if (err.name !== 'AbortError') {
-          console.error(err.name, err.message);
-          return;
-        }
-      }
-    })
+  alert("Esta función solo funciona en Chrome, de momento. Estoy trabajando en hacerla funcionar en Firefox también.")
 }
 
 //Loads list of ignored users and threads
