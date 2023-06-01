@@ -1,0 +1,49 @@
+{
+  "name": "Forocoches premium",
+  "version": "1.8.5",
+  "description": "Forocoches en esteroides",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://*.forocoches.com/*"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ehtiotumolas@forocoches.com",
+      "strict_min_version": "42.0"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.forocoches.com/*"],
+      "run_at": "document_start",
+      "all_frames": false,
+      "js": ["/static/thirdParty/jquery-3.6.3.min.js","/static/thirdParty/jquery.minicolors.js","/static/contentScript.js"
+      ]
+    }
+  ],
+  "background": {
+    "scripts": ["static/background.js"]
+  },
+  "commands": {
+    "Ctrl+Z": {
+      "suggested_key": {
+        "default": "Alt+Shift+Z"
+      }
+    }
+  },
+  "action": {
+    "default_icon": {
+      "16": "/static/images/icon16.png",
+      "32": "/static/images/icon32.png"
+    },
+    "default_title": "Forocoches premium",
+    "default_popup": "templates/popup.html"
+  },
+  "icons": {
+    "16": "/static/images/icon16.png",
+    "32": "/static/images/icon32.png",
+    "48": "/static/images/icon48.png",
+    "128": "/static/images/icon128.png"
+  },
+  "manifest_version": 3
+}

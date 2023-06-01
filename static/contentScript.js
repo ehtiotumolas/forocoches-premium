@@ -11,25 +11,42 @@ let printed = false;
 const clients = ["fea6fcd61bc05c5", "4dc3ae00f7ddb78"]
 let currentClient = clients[0]
 
+function getBrowser() {
+    if (typeof browser !== "undefined") {
+        return browser;
+    } else {
+        return chrome;
+    }
+}
+
+const browserInUser = getBrowser();
+
 //Gets info from Chrome local storage where ignored users, ignored threads, options, and notes are stored
 
-chrome.storage.sync.get(function (items) {
-    temas_ignorados = items.temas_ignorados;
-    usuarios_ignorados = items.usuarios_ignorados;
-    savedNotas = items.notas;
-    opciones = items.opciones;
-    $.each(opciones, function (opcion) {
-        if (opciones[opcion].checked) {
-            if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
-                return;
-            }
-            if ((opcion == "op-color" || opcion == "usuario-color") && !location.href.includes("showthread.php?")) {
-                return;
-            }
-            toListen.add(opcion);
-        }
-    })
-});
+//Get storage from Firefox
+async function storageLocalGet(keys) {
+    //Gets info from browser local storage where ignored users, ignored threads, options, and notes are stored
+    await browserInUser.storage.sync.get(keys)
+        .then((items) => {
+            temas_ignorados = items.temas_ignorados;
+            usuarios_ignorados = items.usuarios_ignorados;
+            savedNotas = items.notas;
+            opciones = items.opciones;
+            $.each(opciones, function (opcion) {
+                if (opciones[opcion].checked) {
+                    if ((opcion == "temas-ignorados" || opcion == "hilos-color") && !location.href.includes("forumdisplay.php")) {
+                        return;
+                    }
+                    if ((opcion == "op-color" || opcion == "usuario-color") && !location.href.includes("showthread.php?")) {
+                        return;
+                    }
+                    toListen.add(opcion);
+                }
+            })
+        });
+}
+
+storageLocalGet();
 
 //Listens to the HTML when loading in order to do all the magic
 function onMutation(mutations) {
@@ -93,9 +110,9 @@ function checkElement(n) {
                         e.preventDefault();
                         let usuario = postDiv.children[0].innerText;
                         if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
-                            chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: { loc: "usuario", message: usuario, action: "add" } });
-                            chrome.runtime.sendMessage({ sender: "contentScript", type: "reload" });
-                            chrome.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
+                            browserInUser.runtime.sendMessage({ sender: "contentScript", type: "browserInUser-storage", content: { loc: "usuario", message: usuario, action: "add" } });
+                            browserInUser.runtime.sendMessage({ sender: "contentScript", type: "reload" });
+                            browserInUser.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
                         };
                     });
                 if (newDesign) {
@@ -279,8 +296,8 @@ function checkElement(n) {
                                     else {
                                         notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
                                     }
-                                    chrome.runtime.sendMessage({ sender: "contentScript", type: "chrome-storage", content: { loc: "notas", message: { "usuario": usuario, "text": textToSave }, action: "add" } });
-                                    chrome.runtime.sendMessage({ sender: "contentScript", type: "reload" });
+                                    browserInUser.runtime.sendMessage({ sender: "contentScript", type: "browserInUser-storage", content: { loc: "notas", message: { "usuario": usuario, "text": textToSave }, action: "add" } });
+                                    browserInUser.runtime.sendMessage({ sender: "contentScript", type: "reload" });
                                 })
                                 .appendTo(notas);
 
@@ -522,73 +539,6 @@ function checkElement(n) {
             });
         }
     }
-    //Adds likes funcionality to the forum
-    if (toListen.has("likes")) {
-        if (n.tagName === 'A' && n.href.indexOf("report.php?p=") != -1) {
-            let likeBtn = $("<a/>")
-                .css({
-                    display: "flex",
-                    alignItems: "center",
-                    fontWeight: "700",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: darkMode ? "rgb(243, 234, 234)" : "#43445c",
-                    textDecoration: "none",
-                    position: "relative"
-                })
-            if (!newDesign) {
-                likeBtn.css({ justifyContent: "right" })
-            }
-            $("<span/>")
-                .attr('id', 'like-text')
-                .css({
-                    fontSize: "1.5rem",
-                    height: "26px",
-                    textDecoration: "none",
-                    pointerEvents: "none"
-                })
-                .text(0)
-                .appendTo(likeBtn);
-            $("<span/>")
-                .attr('id', 'like-button')
-                .css({
-                    textDecoration: "none",
-                    cursor: "pointer",
-                    marginLeft: "6px",
-                    marginRight: "6px",
-                    fontSize: "1.625rem",
-                    display: "flex",
-                })
-                .text("❤")
-                .click(function (e) {
-                    var postId, likes
-                    if (newDesign) {
-                        postId = $($($(this)).parent()[0].closest('section')).parent()[0].id.split('edit')[1];
-                    }
-                    else {
-                        postId = $($(this)).parent()[0].closest('div').id.split('edit')[1];
-                    }
-                    likes = $(this).prev('span')[0];
-
-                    if (!$(this).hasClass("liked")) {
-                        $(this)
-                            .css({ color: "red" })
-                            .toggleClass("liked");
-                        likes.innerText = Number(likes.innerText) + 1
-                        updateLikes(postId, forocochero, "add")
-                    }
-                    else {
-                        $(this)
-                            .css({ color: darkMode ? "rgb(243, 234, 234)" : "#43445c" })
-                            .toggleClass("liked");
-                        likes.innerText = Number(likes.innerText) - 1
-                        updateLikes(postId, forocochero, "remove")
-                    }
-                })
-                .appendTo(likeBtn);
-            likeBtn.appendTo($(n).parent());
-        }
-    }
     //Adds drag and drop image feature
     if (toListen.has("auto-subir-imagenes")) {
         if (document.URL.includes('/showthread.php') || document.URL.includes('/newreply.php') || document.URL.includes('/newthread.php')) {
@@ -646,157 +596,6 @@ function listenThread() {
 
 listenThread();
 
-//Updates likes on the DB
-const updateLikes = (postId, user, action) => {
-    chrome.runtime.sendMessage({ sender: "contentScript", type: "update-likes", content: { id: postId, usuario: user, action: action } });
-}
-
-//Changes colour of the liks heart to red when a message is liked
-const updateAllLikes = (likedPosts) => {
-    for (let liked of likedPosts) {
-        let likedPost = $($(`#edit${liked.post}`)[0]);
-        likedPost.find('#like-text')[0].innerText = liked.likes;
-        if (liked.liked == 1) {
-            $(likedPost.find('#like-button')[0])
-                .toggleClass("liked")
-                .css({ color: "red" });
-        }
-    }
-}
-
-//Gets current thread's messages id in order to find likes for each of the messages on the DB
-const getAllPostsId = () => {
-    let posts = [];
-    $.each($('div[id*=edit]'), function (i, obj) {
-        posts.push(obj.id.split('edit')[1])
-    });
-    return { "status": 200, "message": { "posts": posts, "usuario": forocochero } };
-}
-
-//If thread is invalid, pole is removed from the DB
-const hiloInfo = (id) => {
-    let usuario, usuario_id;
-    if ($('center:contains("Tema especificado inválido")')[0] != null) {
-        console.log("Tema especificado inválido");
-        return { "status": 400, "message": { "hilo_id": id } }
-    };
-    if (newDesign) {
-        try {
-            let postFound = $(".date-and-time-gray").filter(function () {
-                return this.innerText === "#2";
-            }).parent().parent().parent().parent()[0].id.split('post')[1]
-            let divFound = $(`div[id='postmenu_${postFound}'] > a`)[0];
-            usuario = divFound.innerText
-            usuario_id = divFound.href.split("php?u=")[1];
-            return { "status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id } }
-        }
-        catch (err) {
-            return { "status": 200, "message": "" }
-        }
-    }
-    else {
-        try {
-            let postFound = $('a[name="2"]')[0].href.split('#post')[1]
-            let aFound = $(`div[id=postmenu_${postFound}] > a`)[0];
-            usuario = aFound.innerText;
-            usuario_id = aFound.href.split("php?u=")[1];
-            return { "status": 200, "message": { "hilo_id": id, "usuario": usuario, "usuario_id": usuario_id } }
-        }
-        catch (err) {
-            return { "status": 200, "message": "" }
-        }
-    }
-}
-
-//Gets total number of messages and threads created by a user, and the forum DoB
-const userInfo = (id) => {
-    let usuario, mensajes, hilos, registro;
-    usuario = $(document).attr('title').replace("Forocoches - Ver Perfil: ", "");
-    try {
-        if (newDesign) {
-            mensajes = $($('span:contains("Mensajes"):not(:contains("privados"))')[0]).prev("span")[0].innerText.replace(".", "");
-            hilos = $($('span:contains("Hilos")')[2]).prev("span")[0].innerText.replace(".", "")
-            registro = $($('span:contains("Desde")')[0]).next("span")[0].innerText
-        }
-        else {
-            registro, mensajes = $('span:contains("Registro: "):contains("Mensajes")')[0].innerText.split('\n')
-            registro = registro.split("Registro: ")[1];
-            mensajes = mensajes.split("Mensajes: ")[1].replaceAll('.', '')
-        }
-        return { "status": 200, "message": { "usuario": usuario, "id": id, "mensajes": mensajes ? mensajes : 0, "hilos": hilos ? hilos : -1, "registro": registro } }
-    }
-    catch {
-        return { "status": 400 }
-    }
-}
-
-//Gets total number threads created by a user when using the search funtion
-const userInfoHilosOld = () => {
-    if ($('span:contains("Modo noche")').length == 0) {
-        let url = ($("a[href^='search.php?']:contains('Buscar')")[0]).href;
-        let matches = url.match(/(exactname=1|starteronly=1|forumchoice[[]]=0|showposts=0|replyless=0|replylimit=0|searchuser)/g).length;
-        if (matches == 7 || (matches == 6 && !url.match("forumchoice[[]]="))
-            || (!url.match("userid=0")) && !url.match("showposts=1")) {
-            hilos = $('span:contains("Mostrando resultado")')[0].innerText.split('\n')[0].split("de ")[1];
-            usuario = $('*:contains("Autores de Tema:") > a > b')[0].innerText;
-            return { "status": 200, "message": { "usuario": usuario, "hilos": hilos } };
-        }
-    }
-    return { "status": 400 }
-}
-
-//Gets total number of messages and threads created by a user, and the forum DoB, for all the users in the current thread
-const usersInfo = (id) => {
-    let usuarios = []
-    let elements = $('*[id*=postmenu_]:visible')
-    for (let element of elements) {
-        if (newDesign) {
-            let id = element.id;
-            try {
-                let usuario = $(`*[id*=${id}_menu] > div > div > h2`)[0].innerText.replaceAll('\n', '').trim();
-                let usuario_id = $(`*[id*=${id}_menu] > div > div > h2 > a`)[0].href.split('php?u=')[1].trim();
-                let registro = $(`*[id*=${id}_menu] > div > div > div > div:contains("Registro")`)[0].innerText.split('Registro: ')[1].replaceAll('\n', '').trim();
-                let mensajes = $(`*[id*=${id}_menu] > div > div > div > div:contains("Mensajes")`)[0].innerText.split('Mensajes: ')[1].replaceAll('.', '').trim();
-                usuarios.push({ "usuario": usuario, "id": usuario_id, "registro": registro, "mensajes": mensajes ? mensajes : 0 })
-            }
-            catch {
-                console.log("Usuario invitado")
-            }
-        }
-        else {
-            let id = element.id;
-            let usuario = ($(`*[id*=${id}] > a`)[0]).innerText;
-            let usuario_id = ($(`*[id*=${id}] > a`)[0]).href.split('php?u=')[1].trim();
-            let info = $($($(`*[id*=${id}]:visible`)[0]).parent()[0]).find('div:contains("Mens.")')[1].innerText;
-            let [registro, mensajes] = info.split('|')
-            registro = registro.trim()
-            mensajes = mensajes.trim().split(' ')[0].replace(".", "");
-            usuarios.push({ "usuario": usuario, "id": usuario_id, "registro": registro, "mensajes": mensajes ? mensajes : 0 })
-        }
-    }
-    return { "status": 200, "message": usuarios }
-}
-
-//Gets forocoches' total number of threads and messages
-const findEstadisticas = () => {
-    try {
-        let mensajes_totales, hilos_totales;
-        if (newDesign) {
-            mensajes_totales = $('span:contains("Mensajes totales:")')[0].innerText.split('Mensajes totales: ')[1].replaceAll('.', '');
-            hilos_totales = $('span:contains("Temas:")')[0].innerText.split('Temas: ')[1].replaceAll('.', '');
-        }
-        else {
-            let info = $('#collapseobj_forumhome_stats div')[0].innerText.split('Temas: ')[1].split(',');
-            mensajes_totales = info[1].split("Mensajes: ")[1].replaceAll(".", "");
-            hilos_totales = info[0].replaceAll(".", "");
-        }
-        return { "status": 200, "message": { "mensajes_totales": mensajes_totales, "hilos_totales": hilos_totales } }
-    }
-    catch {
-        return { "status": 400 }
-    }
-}
-
 //Gets a shade higher or lower from given colour
 const shadeColor = (color, percent) => {
     let R = parseInt(color.substring(1, 3), 16);
@@ -842,67 +641,35 @@ const openInNewTab = (url) => {
 }
 
 //Listens for messages from other scripts
-chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
+browserInUser.runtime.onMessage.addListener((obj, sender, sendResponse) => {
     console.log("Listening")
     printRoto2();
     const { type, value } = obj;
-    if (type === "usuario_info") {
-        sendResponse(userInfo(value));
-        return;
-    }
-    if (type === "usuario_info_old_hilos") {
-        sendResponse(userInfoHilosOld());
-        return;
-    }
-    if (type === "hilo_mensaje_likes") {
-        sendResponse(getAllPostsId());
-        return;
-    }
-    if (type === "estadisticas") {
-        sendResponse(findEstadisticas());
-        return;
-    }
     if (type === "DOM loaded") {
         sendResponse({ "status": 200, "message": "OK" });
         afterDOMLoaded(value);
     }
-    if (!$("a[href*=searchthreadid]")[0]) {
-        sendResponse({ "status": 400, "message": "Hilo inválido" });
-        return;
-    }
-    const id = $("a[href*=searchthreadid]")[0].href.split('=')[1].split('&')[0];
-    if (type === "hilo_info") {
-        sendResponse(hiloInfo(id));
-        return;
-    }
-    if (type === "hilo_usuarios_info") {
-        sendResponse(usersInfo(id));
-        return;
-    }
-    if (type === "likes_info") {
-        updateAllLikes(value);
-        return;
-    }
 });
 
-function compareVersions() {
-    const manifestData = chrome.runtime.getManifest();
+async function compareVersions() {
+    const manifestData = browserInUser.runtime.getManifest();
     //Checks current version matches the one stored
-    chrome.storage.sync.get(function (items) {
-        const manifestData = chrome.runtime.getManifest();
-        if (Object.keys(items).length > 0 && items.version) {
-            if (items.version.slice('.', items.version.lastIndexOf('.')) !== manifestData.version.slice('.', items.version.lastIndexOf('.'))) {
+    await browserInUser.storage.sync.get()
+        .then((items) => {
+            const manifestData = browserInUser.runtime.getManifest();
+            if (Object.keys(items).length > 0 && items.version) {
+                if (items.version.slice('.', items.version.lastIndexOf('.')) !== manifestData.version.slice('.', items.version.lastIndexOf('.'))) {
+                    items.version = manifestData.version;
+                    openInNewTab(`https://www.forocochero.com/version?version=${manifestData.version.replaceAll('.', '')}`)
+                };
+            }
+            //If local browser storage is empty, initialize version to current version
+            else {
                 items.version = manifestData.version;
-                openInNewTab(`https://www.forocochero.com/version?version=${manifestData.version.replaceAll('.', '')}`)
-            };
-        }
-        //If local Chrome storage is empty, initialize version to current version
-        else {
-            items.version = manifestData.version;
-            //TODO create new section in the popup.html to display new changes
-        }
-        chrome.storage.sync.set(items);
-    });
+                //TODO create new section in the popup.html to display new changes
+            }
+            browserInUser.storage.sync.set(items);
+        });
 };
 
 function printRoto2() {

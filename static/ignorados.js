@@ -1,3 +1,13 @@
+function getBrowser() {
+  if (typeof browser !== "undefined") {
+      return browser;
+  } else {
+      return chrome;
+  }
+}
+
+const browserInUser = getBrowser();
+
 let usuarios_ignorados;
 let temas_ignorados;
 
@@ -5,8 +15,8 @@ let temas_ignorados;
 function submitTemasIgnorados(thread) {
   if (thread != "") {
     createIgnorado(thread, "tema");
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "tema", message: thread, action: "add" } });
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
+    browserInUser.runtime.sendMessage({ sender: "ignorados", type: "browserInUser-storage", content: { loc: "tema", message: thread, action: "add" } });
+    browserInUser.runtime.sendMessage({ sender: "ignorados", type: "reload" });
     $("#temas-ignorados-input").val('');
   }
 }
@@ -15,8 +25,8 @@ function submitTemasIgnorados(thread) {
 function submitUsariosIgnorados(user) {
   if (user != "") {
     createIgnorado(user, "usuario");
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "usuario", message: user, action: "add" } });
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
+    browserInUser.runtime.sendMessage({ sender: "ignorados", type: "browserInUser-storage", content: { loc: "usuario", message: user, action: "add" } });
+    browserInUser.runtime.sendMessage({ sender: "ignorados", type: "reload" });
     $("#usuarios-ignorados-input").val('');
   }
 }
@@ -60,18 +70,21 @@ function createIgnorado(id, loc) {
   $(divEliminar).click(async function (e) {
     e.preventDefault();
     $(this).parent().remove();
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: loc, message: id, action: "remove" } });
-    chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
+    browserInUser.runtime.sendMessage({ sender: "ignorados", type: "browserInUser-storage", content: { loc: loc, message: id, action: "remove" } });
+    browserInUser.runtime.sendMessage({ sender: "ignorados", type: "reload" });
   });
   divWrapper.append(divUsuario, divEliminar);
   $(`.list-wrapper.${loc}s-ignorados`).append(divWrapper);
 }
 
-//Loads ignored list from chrome local storage
+//Get storage from browserInUser
+function storageLocalGet(keys) {
+  return browserInUser.storage.sync.get(keys);
+}
+
+//Loads ignored list from browserInUser local storage
 async function loadIgnoradosLists(createUsuarios, createTemas) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(resolve);
-  })
+  return await storageLocalGet()
     .then(result => {
       if (Object.keys(result).length > 0 && result.temas_ignorados) {
         temas_ignorados = result.temas_ignorados;
@@ -107,7 +120,7 @@ const createTemasIgnorados = () => {
 };
 
 //Listens for changes on the extension related to ignored users. This happens when user clicks on the skull emoji close to the username
-chrome.runtime.onMessage.addListener((obj) => {
+browserInUser.runtime.onMessage.addListener((obj) => {
   if (obj.sender == "contentScript" && obj.type == "ignore_usuario") {
     submitUsariosIgnorados(obj.content);
   }
@@ -147,14 +160,14 @@ async function openIgnoradosList(type) {
       if (type == "usuarios_ignorados") {
         usuarios_ignorados = fileText.split(',');
         createUsuariosIgnorados();
-        chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "usuarios", message: usuarios_ignorados, action: "add" } });
-        chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
+        browserInUser.runtime.sendMessage({ sender: "ignorados", type: "browserInUser-storage", content: { loc: "usuarios", message: usuarios_ignorados, action: "add" } });
+        browserInUser.runtime.sendMessage({ sender: "ignorados", type: "reload" });
       }
       else {
         temas_ignorados = fileText.split(',');
         createTemasIgnorados();
-        chrome.runtime.sendMessage({ sender: "ignorados", type: "chrome-storage", content: { loc: "temas", message: temas_ignorados, action: "add" } });
-        chrome.runtime.sendMessage({ sender: "ignorados", type: "reload" });
+        browserInUser.runtime.sendMessage({ sender: "ignorados", type: "browserInUser-storage", content: { loc: "temas", message: temas_ignorados, action: "add" } });
+        browserInUser.runtime.sendMessage({ sender: "ignorados", type: "reload" });
       }
       return;
     }
@@ -169,38 +182,38 @@ async function openIgnoradosList(type) {
 
 async function saveIgnoradosList(type) {
   await loadIgnoradosLists(false, false)
-  .then(async () => {
-    try {
-      if (window.showSaveFilePicker) {
-        const handle = await showSaveFilePicker({
-          multiple: false,
-          types: [{
-            description: 'Text Files',
-            accept: {
-              'text/plain': ['.txt'],
-            },
-          }],
-        });
-        const writable = await handle.createWritable();
-        let listIgnorados;
-        if (type == "usuarios_ignorados") {
-          listIgnorados = usuarios_ignorados.toString();
+    .then(async () => {
+      try {
+        if (window.showSaveFilePicker) {
+          const handle = await showSaveFilePicker({
+            multiple: false,
+            types: [{
+              description: 'Text Files',
+              accept: {
+                'text/plain': ['.txt'],
+              },
+            }],
+          });
+          const writable = await handle.createWritable();
+          let listIgnorados;
+          if (type == "usuarios_ignorados") {
+            listIgnorados = usuarios_ignorados.toString();
+          }
+          if (type == "temas_ignorados") {
+            listIgnorados = temas_ignorados.toString();
+          }
+          await writable.write(listIgnorados);
+          writable.close();
+          return;
         }
-        if (type == "temas_ignorados") {
-          listIgnorados = temas_ignorados.toString();
+      }
+      catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error(err.name, err.message);
+          return;
         }
-        await writable.write(listIgnorados);
-        writable.close();
-        return;
       }
-    }
-    catch (err) {
-      if (err.name !== 'AbortError') {
-        console.error(err.name, err.message);
-        return;
-      }
-    }
-  })
+    })
 }
 
 //Loads list of ignored users and threads

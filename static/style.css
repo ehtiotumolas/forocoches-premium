@@ -110,6 +110,7 @@ body {
 body {
   text-rendering: optimizeSpeed;
   line-height: 1.5;
+  height: 35rem;
 }
 
 /* A elements that don't have a class get default styles */
@@ -349,11 +350,11 @@ svg {
 }
 
 *::-webkit-scrollbar-track {
-    background: var(--clr-primary-300);
+    background: var(--clr-primary-400);
 }
 
 *::-webkit-scrollbar-thumb {
   background-color: var(--clr-primary-300);
   border-radius: 20px;
-  border: 3px solid var(--clr-primary-400);
+  border: 3px solid var(--clr-primary-300);
 }
