@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400;500;700&display=swap"
         rel="stylesheet">
-    <script src="../static/thirdParty/jquery-3.6.3.min.js" defer></script>
-    <script type="module" src="../static/popup.js" defer></script>
+    <script type="text/javascript" src="../static/thirdParty/jquery-3.6.3.min.js" defer></script>
+    <script type="text/javascript" src="../static/thirdParty/jquery.minicolors.js" defer></script>
+    <script type="module" src="../static/popup.js"></script>
     <script type="module" src="../static/users.js" defer></script>
     <script type="module" src="../static/table.js" defer></script>
     <script type="module" src="../static/opciones.js" defer></script>
@@ -17,6 +18,7 @@
     <link rel=stylesheet type="text/css" href="../static/table.css">
     <link rel=stylesheet type="text/css" href="../static/style.css">
     <link rel=stylesheet type="text/css" href="../static/nav.css">
+    <link rel=stylesheet type="text/css" href="../static/thirdParty/jquery.minicolors.css">
     <title>Document</title>
 </head>
 
@@ -34,14 +36,6 @@
             <div class="container-nav">
                 <nav class="primary-nav" id="primary-nav">
                     <div class="nav-wrapper noselect">
-                        <div class="nav-element-container" id="ranking">
-                            <div>🏅</div>
-                            <div class="nav-element">Ranking</div>
-                        </div>
-                        <div class="nav-element-container" id="poles">
-                            <div>🥇</div>
-                            <div class="nav-element"> Poles</div>
-                        </div>
                         <div class="nav-element-container" id="ignorados">
                             <div>🚫</div>
                             <div class="nav-element">Ignorados</div>
@@ -62,26 +56,12 @@
             <div class="container-default main-content">
                 <div class="container-default-title">Bienvenido a Forocoches Premium</div>
                 <div class="topDiv">❓ ¿De qué trata esta extensión?</div>
-                <div class="botDiv">Forocoches Premium es una extensión para Chrome creada con la intención de añadir
+                <div class="botDiv">Forocoches Premium es una extensión para Chrome, Firefox, Edge, Opera, y Vivaldi
+                    creada con la intención de añadir
                     interesantes e interesantes funcionalidades a forocoches.
                     En 2010 me convertí en forocochero, y desde entonces he encontrado muchas cosas en forocoches que se
                     podrían mejorar. Gracias a esta extensión, muchas de
                     esas mejoras han sido añadidas al foro.
-                </div>
-                <hr>
-                <div class="topDiv">🏅 Ranking</div>
-                <div class="botDiv">Cada vez que entras en un hilo o un perfíl de usuario, información sobre los
-                    mensajes e hilos creados por los usuarios es usada para
-                    crear un ranking forocochero donde los hilos y mensajes de cada usuarios son usados para ganar
-                    puntos.
-                </div>
-                <hr>
-                <div class="topDiv">🥇 Poles</div>
-                <div class="botDiv">Usando la extensión forocoches premium, cada vez que entres en un hilo la pole será
-                    automaticamente guardada. El ranking de poles
-                    muestra los top 20 foreros con más poles. Cuando entras en un tema inválido, la pole para ese hilo
-                    se borarrá. Todas las hilos de los usuarios en el ranking
-                    donde las poles han sido hechas se pueden visitar desde el ranking.
                 </div>
                 <hr>
                 <div class="topDiv">🚫 Ignorados </div>
@@ -130,39 +110,10 @@
                 </div>
                 <hr>
             </div>
-            <div class="container-ranking main-content visually-hidden dashed">
-                <div class="grupo-input">
-                    <input type="input" placeholder=" " class="input-box" id="user-buscar">
-                    <span class="bar"></span>
-                    <label class="input-label">Nombre de Usuario</label>
-                    <button class="button input-button" id="submit-buscar">Buscar</button>
-                </div>
-                <div class="message-wrapper">
-                    <label class="input-message" id="add-user-message"></label>
-                    <label class="input-info"></label>
-                </div>
-                <div class="container-table-ranking ">
-                    <div class="content-table-ranking table" id="content-table-ranking">
-                    </div>
-                    <div class="container-pagina">
-                        <div class="arrow-pagina page-visually-hidden" id="pagina-first">🡨🡨 primera</div>
-                        <div class="arrow-pagina page-visually-hidden" id="pagina-left">🡨 anterior</div>
-                        <div class="arrow-pagina" id="pagina-right">siguiente 🡪</div>
-                        <div class="arrow-pagina" id="pagina-last">última 🡪🡪</div>
-                    </div>
-                </div>
-            </div>
-            <div class="container-poles main-content visually-hidden dashed">
-                <div class="poles-title">Top 20 poleadores</div>
-                <div class="container-table-poles table">
-                    <div class="content-table-poles" id="content-table-poles">
-                    </div>
-                </div>
-            </div>
             <div class="container-ignorados main-content visually-hidden">
                 <div class="content-ignorados">
                     <div class="container-usuarios-ignorados dashed">
-                        <div class="poles-title usuarios-ignorados">Usuarios Ignorados</div>
+                        <div class="ignorado-title usuarios-ignorados">Usuarios Ignorados</div>
                         <div class="load-unload-ignored-list">
                             <button class="button input-button button-small"
                                 title="Los usuarios ignorados deben de estar separados por comma ( , )"
@@ -180,7 +131,7 @@
                         </div>
                     </div>
                     <div class="container-temas-ignorados dashed">
-                        <div class="poles-title temas-ignorados">Temas Ignorados</div>
+                        <div class="ignorado-title temas-ignorados">Temas Ignorados</div>
                         <div class="load-unload-ignored-list">
                             <button class="button input-button button-small"
                                 title="Los temas ignorados deben de estar separados por comma ( , )"
@@ -217,28 +168,23 @@
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-op-color" /> Color los mensajes del creador del hilo
                             </label>
-                            <input type="color" class="color-selector" id="op-color" value="#898AA6">
+                            <input type="minicolors" class="color-selector" id="op-color" value="#898AA6">
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-usuario-color" /> Colorear tus mensajes en los hilos
                             </label>
-                            <input type="color" class="color-selector" id="usuario-color" value="#5EAAA8">
+                            <input type="minicolors" class="color-selector" id="usuario-color" value="#5EAAA8">
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-hilos-color" /> Colorear hilos sin mensajes
                             </label>
-                            <input type="color" class="color-selector" id="hilos-color" value="#DF9191">
+                            <input type="minicolors" class="color-selector" id="hilos-color" value="#DF9191">
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-notas-usuario" /> Activar notas
-                            </label>
-                        </div>
-                        <div class="checkbox-wrapper">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="checkbox-likes" /> Activar likes
                             </label>
                         </div>
                         <div class="checkbox-wrapper">
@@ -331,6 +277,10 @@
                             Chrome Web Store:&emsp;&emsp;<a target="_blank" href="https://chrome.google.com/webstore/detail/forocoches-premium/hdiegimcikljdcgohlcnilgephloaiaa
                             "><br>https://chrome.google.com/webstore/detail/forocoches-premium/</a>
                         </li>
+                        <li class="li-links">
+                            Firefox Addons Store:&emsp;&emsp;<a target="_blank" href="https://addons.mozilla.org/es/firefox/addon/forocoches-premium/
+                            "><br>https://addons.mozilla.org/es/firefox/addon/forocoches-premium/</a>
+                        </li>
                     </ul>
                     <br><br>
                     ¿Has tenido una idea y quieres compartirla? ¿Tienes alguna sugerencia? ¿Has encotrado un bug o algo
@@ -349,10 +299,6 @@
                         </li>
                     </ul>
                 </div>
-            </div>
-            <div class="container-error main-content visually-hidden">
-                <h1 class="error-message">Algo pasa con el servidor. Contacta <a
-                        href="mailto:ehtiotumolas@gmail.com">ehtiotumolas@gmail.com</a></h1>
             </div>
         </div>
         <div class="section-footer text-primary-400">
