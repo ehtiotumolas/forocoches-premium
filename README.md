@@ -283,3 +283,5 @@ Activar ignorados mejorados para usuarios e hilos.
 - [x] Añadir sección con links a github discussions y issues, para que los usuarios puedan dejar sus comentarios ahí
 - [x] Importar usuarios y temas ignorados desde documento de texto
 - [x] Exportar usuarios y temas ignorados a documento de texto
+- [ ] Exportar todas las opciones (incluidos ignorados y notas)
+- [ ] Combinar las versiones de Firefox y Chrome en una sola
