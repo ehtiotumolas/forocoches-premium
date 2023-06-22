@@ -259,4 +259,4 @@ Esta sección contiene múltiple links donde poder aportar ideas, reportar bugs,
 - [ ] Exportar notas a documento de texto
 - [ ] Importar opciones desde documento de texto
 - [ ] Exportar opciones a documento de texto
-- [ ] Combinar las versiones de Firefox y Chrome en una sola
+- [x] Combinar las versiones de Firefox y Chrome en una sola
