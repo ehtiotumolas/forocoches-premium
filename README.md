@@ -131,6 +131,22 @@ Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "
 <table>
   <tr>
     <td rowspan="2">
+      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-color.png" width="50"/>
+    </td>
+    <td>
+      <b>Identifica los propios en los hilos</b>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Personaliza el color de tus mensajes para poder encontrarlos fácilmente en los hilos.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td rowspan="2">
       <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-thread-no-message.png" width="50"/>
     </td>
     <td>
