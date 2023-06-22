@@ -139,7 +139,7 @@ Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "
   </tr>
   <tr>
     <td>
-      Personaliza el color de tus mensajes para poder encontrarlos fácilmente en los hilos.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;
+      Personaliza el color de tus mensajes para poder encontrarlos fácilmente en los hilos.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;
     </td>
   </tr>
 </table>
@@ -171,7 +171,7 @@ Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "
   </tr>
   <tr>
     <td>
-      Activa y desactiva las diferentes opciones a tu antojo para personalizar el foro a tu manera. &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      Activa y desactiva las diferentes opciones a tu antojo para personalizar el foro a tu manera. &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;
     </td>
   </tr>
 </table>
@@ -201,6 +201,13 @@ Esta sección contiene múltiple links donde poder aportar ideas, reportar bugs,
 <br>
 
 ### Registro de cambios
+
+#### Versión 2.0.0
+* Quitados los rankings de usuarios y poles.
+* Quitado los likes.
+* Arreglado bug que hacía que el link para votar en Firefox redireccionara a la página en la Chrome Web Store.
+* Arreglado bug que hacía que los colores en las opciones no se mostraran correctamente.
+* Añadida compatibilidad con Pagetual y Autopagerize (gracias **Ven0mFC**!). Ahora todas las funciones funcionan correctamente.
 
 #### Versión 1.8.0
 * Añadida la opción de añadir imágenes en las respuesta simplemente arrastrando la imagen (o imágenes). Automáticamente se subirán a imgur y se añadirá el link (o links) en el texto de la respuesta.
