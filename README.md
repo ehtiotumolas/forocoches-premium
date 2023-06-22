@@ -66,22 +66,6 @@ Para instalar la extensión, simplemente entra en la Chrome Web Store y buscar "
 <table>
   <tr>
     <td rowspan="2">
-      <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-likes.png" width="50"/>
-    </td>
-    <td>
-      <b>Sistema "me gusta" para mensajes</b>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      ¿Mensaje interesante? Dale a "me gusta"! También podrás ver los "me gusta" de otros usuarios.&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;
-    </td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td rowspan="2">
       <img src="https://github.com/ehtiotumolas/forocoches-premium/blob/main/static/images/features/feature-ignore-user.png" width="50"/>
     </td>
     <td>
