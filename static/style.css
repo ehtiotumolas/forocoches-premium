@@ -108,9 +108,12 @@ body {
 
 /* Set core body defaults */
 body {
+  display: flex;
+  flex-direction: column;
   text-rendering: optimizeSpeed;
   line-height: 1.5;
-  height: 35rem;
+  /* height: 35rem; */
+  height: 100%;
 }
 
 /* A elements that don't have a class get default styles */

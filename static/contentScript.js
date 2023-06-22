@@ -173,6 +173,11 @@ function checkElement(n) {
                 papa.remove();
             }
         }
+        if (n.tagName == 'FORM') {
+            if (n.id == 'ignorelist_change_form') {
+                var papa = $(n).parent();
+            }
+        }
     }
     //Adds funcionality to write notes for each user
     if (toListen.has("notas-usuario")) {

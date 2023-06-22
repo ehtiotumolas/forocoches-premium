@@ -47,11 +47,6 @@ const sendReload = () => {
   browserInUser.runtime.sendMessage({ sender: "opciones", type: "reload" });
 }
 
-//Sets value of the checkbox and sets the current value (colour) in the local browserInUser storage
-const setValueAndCheck = (id) => {
-  browserInUser.runtime.sendMessage({ from: "opciones", type: "browserInUser-storage", content: { loc: "opciones", message: { "id": id, "value": $(`#${id}`)[0].value, "checked": $(`#checkbox-${id}`)[0].checked } } });
-}
-
 //Sets the current value (colour) in the local browser storage
 export const setValueNoCheck = (id) => {
   browserInUser.runtime.sendMessage({ from: "opciones", type: "browserInUser-storage", content: { loc: "opciones", message: { "id": id, "value": $(`#${id}`)[0].value, "checked": $(`#checkbox-${id}`)[0].checked } } });
@@ -109,6 +104,7 @@ async function loadOptions() {
           $(`#checkbox-${item}`)[0].checked = items.opciones[item].checked;
           if (item === "op-color" || item === "hilos-color" || item === "usuario-color") {
             $(`#${item}`)[0].value = items.opciones[item].value;
+            $($($(`#${item}`)[0]).next('span').find('.minicolors-swatch-color')[0]).css('background-color', items.opciones[item].value);
           }
         };
         if (!$("#checkbox-usuarios-ignorados")[0].checked) {

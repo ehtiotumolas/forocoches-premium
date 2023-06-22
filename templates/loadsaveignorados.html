@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" style="width: 100% !important; height: 100%;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400;500;700&display=swap"
+        rel="stylesheet">
+    <script type="text/javascript" src="../static/thirdParty/jquery-3.6.3.min.js" defer></script>
+    <script type="module" src="../static/loadsaveignorados.js" defer></script>
+    <link rel=stylesheet type="text/css" href="../static/popup.css">
+    <link rel=stylesheet type="text/css" href="../static/style.css">
+    <link rel=stylesheet type="text/css" href="../static/nav.css">
+    <title>Forocoches Premium - Ignorados</title>
+</head>
+
+<body style="display: flex; flex-direction: column;width: 100% !important; height: 100%;">
+    <div class="body-wrapper">
+        <div class="section-header bg-neutral-100">
+            <div class="container-header">
+                <a href="#"><img src="../static/images/icon128.png" alt="forocoches-premium-logo"
+                        class="header-img"></a>
+                <div class="fs-primary-heading text-primary-400 fw-semi-bold">Forocoches Premium - Ignorados</div>
+                <div class="version-num"></div>
+            </div>
+        </div>
+        <div class="container-ignorados main-content"
+            style="width: auto; align-content: center; margin: auto; padding-top: 5rem;">
+            <h1 style="width: auto; justify-content: center; margin: auto; display:flex; font-size:medium; padding-bottom: 3rem;">Aquí puedes guardar tus listas de ignorados en un documento de texto para hacer una copia de seguridad. <br>De la
+                misma forma, los ignorados pueden ser guardados en un documento de texto.</h2>
+
+            <input class="visually-hidden file_usuarios file" type="file"/>
+            <input class="visually-hidden file_temas file" type="file"/>
+            <div class="content-ignorados" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                <div class="container-usuarios-ignorados">
+                    <div class="ignorado-title usuarios-ignorados">Usuarios Ignorados</div>
+                    <div class="load-unload-ignored-list" style="gap: 1rem;">
+                        <button class="button input-button button-small"
+                            title="Los usuarios ignorados deben de estar separados por comma ( , )"
+                            id="usuarios-ignorados-load">Cargar 📁</button>
+                        <button class="button input-button button-small" id="usuarios-ignorados-save">Guardar
+                            💾</button>
+                    </div>
+                </div>
+                <div class="container-temas-ignorados">
+                    <div class="ignorado-title temas-ignorados">Temas Ignorados</div>
+                    <div class="load-unload-ignored-list" style="gap: 1rem;">
+                        <button class="button input-button button-small"
+                            title="Los temas ignorados deben de estar separados por comma ( , )"
+                            id="temas-ignorados-load">Cargar 📁</button>
+                        <button class="button input-button button-small" title="" id="temas-ignorados-save">Guardar
+                            💾</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section-footer text-primary-400">
+        <div class="container-footer clr-neutral-100 bg-neutral-100">
+            <div class="footer-item" id="footer-donate">
+                <div class="nav-img" id="footer-donate-img"></div>
+                <p>Donar</p>
+            </div>
+            <div class="footer-item" id="footer-rate">
+                <div class="nav-img" id="footer-rate-img"></div>
+                <p>Valorar</p>
+            </div>
+            <div class="footer-item" id="footer-github">
+                <div class="nav-img" id="footer-github-img"></div>
+                <p>GitHub</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

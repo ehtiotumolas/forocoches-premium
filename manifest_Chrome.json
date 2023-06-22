@@ -1,6 +1,6 @@
 {
   "name": "Forocoches premium",
-  "version": "1.8.5",
+  "version": "2.0.0",
   "description": "Forocoches en esteroides",
   "permissions": ["storage"],
   "host_permissions": [
@@ -19,9 +19,12 @@
     "service_worker": "static/background.js"
   },
   "commands": {
-    "Ctrl+Z": {
-      "suggested_key": "Alt+Shift+Z",
-      "description": "Alt+Shift+Z"
+    "Alt+Shift+X": {
+        "suggested_key": {
+            "default": "Alt+Shift+X",
+            "mac": "Command+M"
+        },
+        "description": "Alt+Shift+X."
     }
   },
   "action": {

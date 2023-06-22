@@ -10,12 +10,9 @@
     <script type="text/javascript" src="../static/thirdParty/jquery-3.6.3.min.js" defer></script>
     <script type="text/javascript" src="../static/thirdParty/jquery.minicolors.js" defer></script>
     <script type="module" src="../static/popup.js"></script>
-    <script type="module" src="../static/users.js" defer></script>
-    <script type="module" src="../static/table.js" defer></script>
     <script type="module" src="../static/opciones.js" defer></script>
     <script type="module" src="../static/ignorados.js" defer></script>
     <link rel=stylesheet type="text/css" href="../static/popup.css">
-    <link rel=stylesheet type="text/css" href="../static/table.css">
     <link rel=stylesheet type="text/css" href="../static/style.css">
     <link rel=stylesheet type="text/css" href="../static/nav.css">
     <link rel=stylesheet type="text/css" href="../static/thirdParty/jquery.minicolors.css">
@@ -115,11 +112,8 @@
                     <div class="container-usuarios-ignorados dashed">
                         <div class="ignorado-title usuarios-ignorados">Usuarios Ignorados</div>
                         <div class="load-unload-ignored-list">
-                            <button class="button input-button button-small"
-                                title="Los usuarios ignorados deben de estar separados por comma ( , )"
-                                id="usuarios-ignorados-load">Cargar 📁</button>
-                            <button class="button input-button button-small" id="usuarios-ignorados-save">Guardar
-                                💾</button>
+                            <button class="button input-button button-small load-save-ignorados"
+                                title="Los usuarios ignorados deben de estar separados por comma ( , )">Cargar/Guardar usuarios ignorados 📁</button>
                         </div>
                         <div class="grupo-input usuarios-ignorados">
                             <input type="input" placeholder=" " class="input-box" id="usuarios-ignorados-input">
@@ -133,11 +127,8 @@
                     <div class="container-temas-ignorados dashed">
                         <div class="ignorado-title temas-ignorados">Temas Ignorados</div>
                         <div class="load-unload-ignored-list">
-                            <button class="button input-button button-small"
-                                title="Los temas ignorados deben de estar separados por comma ( , )"
-                                id="temas-ignorados-load">Cargar 📁</button>
-                            <button class="button input-button button-small" title="" id="temas-ignorados-save">Guardar
-                                💾</button>
+                            <button class="button input-button button-small load-save-ignorados"
+                                title="Los usuarios ignorados deben de estar separados por comma ( , )">Cargar/Guardar <br> temas ignorados 📁</button>
                         </div>
                         <div class="grupo-input temas-ignorados">
                             <input type="input" placeholder=" " class="input-box" id="temas-ignorados-input">
@@ -168,19 +159,19 @@
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-op-color" /> Color los mensajes del creador del hilo
                             </label>
-                            <input type="minicolors" class="color-selector" id="op-color" value="#898AA6">
+                            <input type="minicolors" class="color-selector" id="op-color">
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-usuario-color" /> Colorear tus mensajes en los hilos
                             </label>
-                            <input type="minicolors" class="color-selector" id="usuario-color" value="#5EAAA8">
+                            <input type="minicolors" class="color-selector" id="usuario-color">
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="checkbox-hilos-color" /> Colorear hilos sin mensajes
                             </label>
-                            <input type="minicolors" class="color-selector" id="hilos-color" value="#DF9191">
+                            <input type="minicolors" class="color-selector" id="hilos-color">
                         </div>
                         <div class="checkbox-wrapper">
                             <label class="checkbox-label">

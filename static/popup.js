@@ -37,11 +37,10 @@ function checkIfPermissions() {
     if (typeof browser !== "undefined") {
         getCurrentTab()
             .then(function (result) {
-                if (result[0].url.includes("forocoches.com")) {
+                if (result[0].url != undefined && result[0].url.includes("forocoches.com")) {
                     getPermissions()
                         .then(function (result) {
                             if (!result.origins.includes("*://forocoches.com/*")) {
-
                                 let firefoxContainer = $("<div/>")
                                     .attr('id', 'firefox-container')
                                     .attr('class', 'dashed')
@@ -88,6 +87,7 @@ async function start() {
             opacity: false,
             control: 'hue',
             textfield: false,
+            defaultValue: '',
             change: function () {
                 setValueNoCheck(this.id)
             }
@@ -97,8 +97,6 @@ async function start() {
         console.error(error);
     }
 }
-
-//Searchs user on the Ranking Forocochero
 
 //Hides and shows the different menus on the popup screen
 $(".nav-element-container").click(function (e) {
@@ -116,7 +114,6 @@ $(".nav-element-container").click(function (e) {
     }
 });
 
-
 //Hiddes/shows the text from each of the sections on the main page on the popup
 $(".topDiv").each(function () {
     $(this).on("click", function (e) {
@@ -129,6 +126,11 @@ $(".topDiv").each(function () {
     });
 });
 
+$('.load-save-ignorados').click(function (e) { 
+    e.preventDefault();
+    openInNewTab("loadsaveignorados.html");   
+});
+
 //Adds link to paypal
 document.getElementById("footer-donate")
     .addEventListener("click", function () {
@@ -136,7 +138,7 @@ document.getElementById("footer-donate")
     });
 
 function setVoteLink() {
-    if (browserInUser === chrome) {
+    if (typeof browser == "undefined") {
         //Adds link to the chrome store reviews
         document.getElementById("footer-rate")
             .addEventListener("click", function () {

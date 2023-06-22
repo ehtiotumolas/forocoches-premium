@@ -1,6 +1,3 @@
-//APIs server
-const server = "https://www.forocochero.com"
-
 function getBrowser() {
     if (typeof browser !== "undefined") {
         return browser;
@@ -13,12 +10,28 @@ const browserInUser = getBrowser();
 
 //Reloads the extensions and tab
 browserInUser.commands.onCommand.addListener((shortcut) => {
-    console.log('reload bitch');
-    if (shortcut.includes("+Z")) {
+    console.log('lets reload');
+    console.log(shortcut);
+    if(shortcut.includes("X")) {
         browserInUser.runtime.reload();
         browserInUser.tabs.reload();
     }
 })
+
+//Listens to chrome tabs on forocoches.com
+//Depending on the content of the URL, different actions are performed
+chrome.tabs.onUpdated.addListener(function async(tabId, info, tab) {
+    if (info.status === 'complete') {
+        if (tab.url && tab.url.includes("forocoches.com/foro")) {
+            chrome.tabs.sendMessage(tabId, {
+                type: "DOM loaded",
+                value: tab.url
+            }, async (response) => {
+                console.log("DOM loaded: ", await response.status);
+            });
+        }
+    }
+});
 
 //Listen to messages from other scripts
 browserInUser.runtime.onMessage.addListener((obj, sendResponse) => {
@@ -87,6 +100,8 @@ const addToBrowserStorage = (loc, message, action) => {
         }
         if (loc.includes("opciones")) {
             if (message.value) {
+                console.log(message.value)
+
                 items.opciones[message.id].value = message.value;
             }
             items.opciones[message.id].checked = message.checked;

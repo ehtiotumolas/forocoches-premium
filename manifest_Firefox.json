@@ -1,6 +1,6 @@
 {
   "name": "Forocoches premium",
-  "version": "1.8.5",
+  "version": "2.0.0",
   "description": "Forocoches en esteroides",
   "permissions": ["storage"],
   "host_permissions": [
@@ -17,7 +17,7 @@
       "matches": ["https://*.forocoches.com/*"],
       "run_at": "document_start",
       "all_frames": false,
-      "js": ["/static/thirdParty/jquery-3.6.3.min.js","/static/thirdParty/jquery.minicolors.js","/static/contentScript.js"
+      "js": ["/static/thirdParty/jquery-3.6.3.min.js","/static/thirdParty/jquery.minicolors.js","/static/contentScript.js","/static/loadsaveignorados.js"
       ]
     }
   ],

@@ -43,8 +43,11 @@ body {
 
 /* FOOTER */
 .section-footer {
+  position: sticky;
   margin-top: auto;
-  width: 100%;
+  bottom: 0;
+  /* margin-bottom: 0; */
+  /* width: 100%; */
   align-items: center;
   border-top: 1px solid var(--clr-neutral-900);
   font-size: var(--fs-300);
@@ -55,6 +58,8 @@ body {
   display: flex;
   margin-left: 0;
   margin-right: 0;
+  /* margin-bottom: 0; */
+  /* bottom: 0; */
   vertical-align: middle;
   align-items: center;
   justify-content: center;
@@ -229,8 +234,8 @@ button:disabled {
 
 .button-small {
   font-size: var(--fs-300);
-  height: 1.5rem;
-  width: 5rem;
+  height: 3rem;
+  width: 10rem;
 }
 
 .bar {
@@ -273,6 +278,7 @@ button:disabled {
 
 /* IGNORADOS */
 .container-ignorados {
+  position: unset;
   height: 100%;
   padding: .6rem;
 }
@@ -512,4 +518,11 @@ dt {
 .checkbox-wrapper {
   padding-left: .6rem;
   padding-bottom: .4rem;
+}
+
+
+/* INPUTS */
+#inputCargarUsuario {
+  position: absolute;
+  left: -100rem;
 }
