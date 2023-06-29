@@ -202,7 +202,7 @@ Esta sección contiene múltiple links donde poder aportar ideas, reportar bugs,
 
 ### Registro de cambios
 
-#### Versión 2.0.0
+#### Versión 2.1.0
 * Quitados los rankings de usuarios y poles.
 * Quitado los likes.
 * Arreglado bug que hacía que el link para votar en Firefox redireccionara a la página en la Chrome Web Store.
