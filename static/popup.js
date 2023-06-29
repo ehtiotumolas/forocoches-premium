@@ -9,7 +9,7 @@ function getBrowser() {
     }
 }
 
-export const browserInUser = getBrowser();
+const browserInUser = getBrowser();
 
 //Reloads the extensions and tab
 browserInUser.commands.onCommand.addListener((shortcut) => {

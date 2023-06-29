@@ -59,6 +59,136 @@ function onMutation(mutations) {
     }
 }
 
+//NEW
+function addSkullButton(n, when) {
+    let postId = "postmenu_" + n.id.split('edit')[1];
+    let postDiv = $(`div[id=${postId}]`)[0];
+    let calaveraBtn = $("<a/>")
+        .attr('id', 'ignorar-usuario-div')
+        .css({
+            position: "absolute",
+            textDecoration: "none",
+            marginTop: "-22px",
+            cursor: "pointer",
+        })
+        .text("💀")
+        .click(function (e) {
+            e.preventDefault();
+            let usuario = postDiv.children[0].innerText;
+            if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
+                browserInUser.runtime.sendMessage({ sender: "contentScript", type: "browserInUser-storage", content: { loc: "usuario", message: usuario, action: "add" } });
+                browserInUser.runtime.sendMessage({ sender: "contentScript", type: "reload" });
+                browserInUser.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
+            };
+        });
+    if (newDesign) {
+        if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
+            $("<div/>").attr('id', 'container-opciones').css({ paddingLeft: "5px" }).insertAfter($(postDiv).parent().parent().children()[0]);;
+        }
+        calaveraBtn.appendTo($(postDiv).parent().parent().children("#container-opciones"));
+    }
+    else {
+        if (when == "appendTo") {
+            calaveraBtn.css({ marginLeft: "0px", position: "relative" }).height("auto").appendTo($(postDiv).parent());
+        }
+        else {
+            calaveraBtn.css({ marginLeft: "0px", position: "relative" }).height("auto").insertAfter($(postDiv));
+        }
+    }
+}
+//NEW
+function checkIfIgnoredUser(n) {
+    //It ignores FC user's profile URL
+    if (location.href.includes('profile.php')) {
+        return;
+    }
+    
+    if (n.href.includes('profile.php?userlist=ignore&do=removelist')) {
+        papa = $(n).parent().parent().parent().parent().closest('div')[0];
+        papa.remove();
+    }
+    // if (n.parentElement.tagName != 'LI' && usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(substring.toLowerCase()))) {
+    if (usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(substring.toLowerCase()))) {
+        let papa;
+        if (n.href.includes('member.php?u=')) {
+            if (!newDesign) {
+                papa = $(n).closest('.page');
+            }
+            else {
+                papa = "#edit" + $(n).parent()[0].id.split("_")[1];
+            }
+        }
+        $(papa).remove();
+    }
+}
+//NEW
+function checkIfIgnoredQuotes(n, when) {
+    if (toListen.has("ocultar-usuarios-ignorados")) {
+        let papa;
+        if (when == 'before') { papa = $(n).parent().parent().parent(); }
+        else { papa = $(n).find('b').closest('div').parent().parent().parent(); }
+
+        if (newDesign) {
+            papa.remove();
+        }
+        else {
+            papa.parent().parent().remove();
+        }
+    }
+    else {
+        let usuario;
+        if (when == 'before') { usuario = $(n); }
+        else { usuario = $(n).find('b').parent('div'); }
+        $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
+        if ((newDesign)) usuario = $(usuario).parent('div')[0];
+        $(usuario).next('div')[0].innerText = "(Texto ignorado)";
+    }
+}
+//NEW
+function checkIfIgnoredUserThread(n) {
+    if (newDesign && usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(`@${substring.toLowerCase()}`))) {
+        let papa = $(n).parent().parent().parent().parent().parent();
+        papa.next("separator").remove();
+        papa.remove();
+    }
+    if (usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(`${substring.toLowerCase()}`)) && $(n).parent().hasClass("smallfont")) {
+        let papa = $(n).parent().parent().parent();
+        papa.next("separator").remove();
+        papa.remove();
+    }
+}
+//NEW
+function colorUserPost(n) {
+    let papa = $(n);
+    //Removes border
+    $(papa).closest('.tborder-user').removeClass();
+    $(papa).children().css('border', 'none');
+    //Changes background color
+    $(papa).css('background-color', opciones["usuario-color"].value);
+    $(papa).prev().css('background-color', shadeColor(opciones["usuario-color"].value, -5));
+}
+//NEW
+function colorOPPost(n) {
+    let papa = $(n).closest(".tborder-author");
+    //Removes border
+    $(papa).removeClass();
+    $(papa).children().css('border', 'none');
+    //Changes background color
+    $(papa).find('.alt1-author').css('background-color', opciones["op-color"].value);
+    $(papa).find('.alt2:not(:contains("Cita de"))').css('background-color', shadeColor(opciones["op-color"].value, -5));
+    //Leave citas normal background
+}
+//NEW
+function checkIfIgnoredThread(n) {
+    if (temas_ignorados.some(substring => normalizeText(n.innerText).includes(normalizeText(substring)))) {
+        let papa = $(n).parent().parent().parent();
+        if ((newDesign)) papa = $(papa).parent();
+        $(papa).next("separator").remove();
+        $(papa).remove();
+    }
+}
+
+
 function checkElement(n) {
     //Finds if the user is using the old design or new design of the forum
     if (newDesign == undefined && ((n.tagName == 'MAIN') || (n.tagName == 'A' && n.id == 'poststop'))) {
@@ -81,304 +211,300 @@ function checkElement(n) {
             }
         }
     }
+    /* Autopagerize compatibility added by Ven0mFC */
     //Removes ignored threads from the forum
-    if (toListen.has("temas-ignorados")) {
-        if (n.tagName == 'A' && n.id.includes('thread_title_') && temas_ignorados && temas_ignorados.some(substring => normalizeText(n.innerText).includes(normalizeText(substring)))) {
-            let papa = $(n).parent().parent().parent();
-            if ((newDesign)) papa = $(papa).parent();
-            $(papa).next("separator").remove();
-            $(papa).remove();
+    if (toListen.has("temas-ignorados") && temas_ignorados) {
+        //Loaded single targeted A element
+        if (n.tagName == 'A' && n.id.includes('thread_title_')) {
+            checkIfIgnoredThread(n);
+            //Loaded element containing several targeted A elements
+        } else if ($(n).find('a[id^="thread_title_"]').length) {
+            $(n).find('a[id^="thread_title_"]').each(function () {
+                checkIfIgnoredThread(this);
+            });
         }
     }
-    //Removes messages from ignored users, but also threads created by ignored users 
+    /* Autopagerize compatibility added by Ven0mFC */
+    //Removes messages from ignored users, but also threads created by ignored users
     //Also adds skull besides the username in order to allow the user to ignore users
     if (toListen.has("usuarios-ignorados")) {
+        //Places skull ignore button
+        if (n.tagName == 'DIV' && n.id.includes('edit') && $(n).find('a#ignorar-usuario-div').length == 0) {
+            addSkullButton(n, "appendTo")
+        }
+        
+        //Hides ignored users' quotes
         if (n.tagName == 'DIV') {
-            if (n.id.includes('edit')) {
-                let postId = "postmenu_" + n.id.split('edit')[1];
-                let postDiv = $(`div[id=${postId}]`)[0];
-                let calaveraBtn = $("<a/>")
-                    .attr('id', 'ignorar-usuario-div')
-                    .css({
-                        position: "absolute",
-                        textDecoration: "none",
-                        marginTop: "-22px",
-                        cursor: "pointer",
-                    })
-                    .text("💀")
-                    .click(function (e) {
-                        e.preventDefault();
-                        let usuario = postDiv.children[0].innerText;
-                        if (confirm(`Seguro que quieres ignorar a ${usuario}?`)) {
-                            browserInUser.runtime.sendMessage({ sender: "contentScript", type: "browserInUser-storage", content: { loc: "usuario", message: usuario, action: "add" } });
-                            browserInUser.runtime.sendMessage({ sender: "contentScript", type: "reload" });
-                            browserInUser.runtime.sendMessage({ sender: "contentScript", type: "ignore_usuario", content: usuario });
-                        };
-                    });
-                if (newDesign) {
-                    if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
-                        $("<div/>").attr('id', 'container-opciones').css({ paddingLeft: "5px" }).insertAfter($(postDiv).parent().parent().children()[0]);;
-                    }
-                    calaveraBtn.appendTo($(postDiv).parent().parent().children("#container-opciones"));
-                }
-                else {
-                    calaveraBtn.css({ marginLeft: "0px", position: "relative" }).height("auto").appendTo($(postDiv).parent());
-                }
-            }
             if ($(n).children('b').length > 0 && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(`cita de ${substring.toLowerCase()}`))) {
-                if (toListen.has("ocultar-usuarios-ignorados")) {
-                    let papa = $(n).parent().parent().parent();
-                    if (newDesign) {
-                        papa.remove();
-                    }
-                    else {
-                        papa.parent().parent().remove();
-                    }
-                }
-                else {
-                    let usuario = $(n);
-                    $(usuario).children('b')[0].innerText = "(Usuario Ignorado)";
-                    if ((newDesign)) usuario = $(usuario).parent('div')[0];
-                    $(usuario).next('div')[0].innerText = "(Texto ignorado)";
-                }
+                checkIfIgnoredQuotes(n, "before");
             }
         }
+        //Hides ignored users' posts
         if (n.tagName == 'A' && usuarios_ignorados) {
-            if (n.href.includes('profile.php?userlist=ignore&do=removelist')) {
-                papa = $(n).parent().parent().parent().parent().closest('div')[0];
-                papa.remove();
-            }
-            if (usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(substring.toLowerCase()))) {
-                let papa;
-                if (n.href.includes('member.php?u=')) {
-                    if (!newDesign) {
-                        papa = $(n).closest('.page');
-                    }
-                    else {
-                        papa = "#edit" + $(n).parent()[0].id.split("_")[1];
+            checkIfIgnoredUser(n);
+        }
+        
+        //Autopagerize/Pagetual compatibility for extra pages
+        if ($(n).find('div[id^="edit"]').length) {
+            //Places skull ignore button
+            $(n).find('div[id*="edit"]').each(function () {
+                if ($(this).find('a#ignorar-usuario-div').length == 0) {
+                    addSkullButton(this, "insertAfter")
+                }
+                //Hides ignored users' quotes
+                if ($(this).find('b').length && usuarios_ignorados) {
+                    if ($(this).find('b').parent('div').length > 0) {
+                        if (usuarios_ignorados.some(substring => $(this).find('b').parent('div')[0].innerText.toLowerCase().includes(`cita de ${substring.toLowerCase()}`))) {
+                            checkIfIgnoredQuotes(this, "after");
+                        }
                     }
                 }
-                $(papa).remove();
-            }
+                //Hides ignored users' posts
+                if (usuarios_ignorados && $(this).find('a').length) {
+                    $(this).find('a').each(function () {
+                        checkElement(this);
+                    });
+                }
+            });
         }
-        if (n.tagName == 'SPAN') {
-            if (newDesign && usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(`@${substring.toLowerCase()}`))) {
-                let papa = $(n).parent().parent().parent().parent().parent();
-                papa.next("separator").remove();
-                papa.remove();
-            }
-            if (usuarios_ignorados && usuarios_ignorados.some(substring => n.innerText.toLowerCase().includes(`${substring.toLowerCase()}`)) && $(n).parent().hasClass("smallfont")) {
-                let papa = $(n).parent().parent().parent();
-                papa.next("separator").remove();
-                papa.remove();
-            }
-        }
-        if (n.tagName == 'FORM') {
-            if (n.id == 'ignorelist_change_form') {
-                var papa = $(n).parent();
-            }
+        //Hide ignored users' threads (Autopagerize compatibility)
+        //This was duplicated (original one removed). This will load several times, but works with autopagerize
+        if (toListen.has("ocultar-usuarios-ignorados") && usuarios_ignorados && $(n).find('span').length) {
+            $(n).find('span').each(function () {
+                checkIfIgnoredUserThread(this);
+            });
         }
     }
+    /* Autopagerize compatibility added by Ven0mFC */
     //Adds funcionality to write notes for each user
     if (toListen.has("notas-usuario")) {
-        if (n.tagName == 'DIV') {
-            if (n.id.includes('postmenu_') && !n.id.includes('_menu')) {
-                let postDiv = $(n)[0];
-                let usuario = "";
-                if (newDesign) {
-                    usuario = $(postDiv)[0].innerText;
-                }
-                else {
-                    try {
+        if ($(n).find('div[id*="postmenu_"]').length) {
+            $(n).find('div[id*="postmenu_"]').each(function () {
+                if (!this.id.includes('_menu') &&
+                    (!newDesign && $(this).closest('td').find('#notas-usuarios-div').length == 0 ||
+                        newDesign && $(this).closest('section').find('#notas-usuarios-div').length == 0)) {
+
+                    let postDiv = this;
+                    let usuario = "";
+                    if (newDesign) {
                         usuario = $(postDiv)[0].innerText;
                     }
-                    catch (err) {
-                        console.log(err)
-                    }
-                }
-                let notasBtn = $("<a/>")
-                    .attr('id', 'notas-usuarios-div')
-                    .css({
-                        position: "absolute",
-                        textDecoration: "none",
-                        cursor: "pointer"
-                    })
-                    .text("✏️")
-                    .click(function (e) {
-                        e.preventDefault();
-                        $("#notas-popup-div").remove();
-                        if ($(this).children("#notas-popup-div").length == 0) {
-                            let notas = $("<div/>")
-                                .attr('id', 'notas-popup-div')
-                                .css({
-                                    position: "absolute",
-                                    zIndex: 1,
-                                    textDecoration: "none",
-                                    height: "300px",
-                                    width: "300px",
-                                    backgroundColor: "rgba(0, 0, 0, 0.9)",
-                                    border: "1px",
-                                    borderRadius: "1.5rem",
-                                    filter: "drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2))",
-                                })
-                            if (newDesign) {
-                                $(notas).css({ marginLeft: "-20px", marginTop: "0px" })
-                            }
-                            else {
-                                $(notas).css({ marginTop: "-20px" })
-                            }
-                            $("<div/>")
-                                .attr('id', 'notas-popup-title')
-                                .css({
-                                    position: "absolute",
-                                    color: "white",
-                                    zIndex: 1,
-                                    textDecoration: "none",
-                                    height: "20px",
-                                    width: "fit-content",
-                                    backgroundColor: "transparent",
-                                    left: 0,
-                                    right: 0,
-                                    margin: "auto",
-                                    padding: "10px",
-                                    backgroundColor: "rgba(0, 0, 0, 1)",
-                                })
-                                .text(`NOTAS de ${usuario}`)
-                                .appendTo(notas);
-
-                            let textContainer = $("<div/>")
-                                .attr('id', 'notas-popup-text-container')
-                                .css({
-                                    height: "220px",
-                                    width: "280px",
-                                    backgroundColor: "white",
-                                    backgroundColor: "rgba(255,255,255, 0.2)",
-                                    color: "white",
-                                    margin: "auto",
-                                    marginTop: "40px",
-                                    textDecoration: "none",
-                                    border: "1px",
-                                    borderRadius: "1rem",
-                                    overflow: "auto",
-                                    outline: "0px solid transparent"
-                                }).appendTo(notas);
-
-                            let textEditable = $("<p/>")
-                                .attr('id', 'notas-popup-text-editable')
-                                .attr('contenteditable', true)
-                                .css({
-                                    height: "170px",
-                                    width: "250px",
-                                    border: "1px",
-                                    marginTop: 10,
-                                    marginLeft: 10,
-                                    marginBottom: 10,
-                                    borderRadius: "1rem",
-                                    outline: "0px solid transparent"
-                                })
-                                .appendTo(textContainer);
-                            $("<button/>")
-                                .attr('id', 'notas-popup-button')
-                                .css({
-                                    position: "absolute",
-                                    height: "22px",
-                                    width: "80px",
-                                    margin: "auto",
-                                    left: 0,
-                                    right: 0,
-                                    cursor: "pointer",
-                                    marginTop: "10px"
-                                })
-                                .text("Guardar")
-                                .click(function (e) {
-                                    e.preventDefault();
-                                    let textToSave = `${$("#notas-popup-text-editable")[0].innerText}`;
-                                    if (savedNotas == undefined) savedNotas = {}
-                                    savedNotas[usuario] = { "text": textToSave };
-                                    if (textToSave == "") {
-                                        notasBtn.css({ border: 0, borderRadius: "6px" });
-                                    }
-                                    else {
-                                        notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
-                                    }
-                                    browserInUser.runtime.sendMessage({ sender: "contentScript", type: "browserInUser-storage", content: { loc: "notas", message: { "usuario": usuario, "text": textToSave }, action: "add" } });
-                                    browserInUser.runtime.sendMessage({ sender: "contentScript", type: "reload" });
-                                })
-                                .appendTo(notas);
-
-                            notas.insertAfter($(this).parent().children("#notas-usuarios-div"));
-                            if (savedNotas != undefined && savedNotas.hasOwnProperty(usuario)) {
-                                $('#notas-popup-text-editable')[0].innerText = savedNotas[usuario].text;
-                            }
+                    else {
+                        try {
+                            usuario = $(postDiv)[0].innerText;
                         }
-                    });
-                if (savedNotas != undefined && savedNotas.hasOwnProperty(usuario)) {
-                    notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
-                }
-
-                if (newDesign) {
-                    if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
-                        $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
+                        catch (err) {
+                            console.log(err)
+                        }
                     }
-                    notasBtn.appendTo($(postDiv).parent().parent().children("#container-opciones"));
+                    let notasBtn = $("<a/>")
+                        .attr('id', 'notas-usuarios-div')
+                        .css({
+                            position: "absolute",
+                            textDecoration: "none",
+                            cursor: "pointer"
+                        })
+                        .text("✏️")
+                        .click(function (e) {
+                            e.preventDefault();
+                            $("#notas-popup-div").remove();
+                            if ($(this).children("#notas-popup-div").length == 0) {
+                                let notas = $("<div/>")
+                                    .attr('id', 'notas-popup-div')
+                                    .css({
+                                        position: "absolute",
+                                        zIndex: 1,
+                                        textDecoration: "none",
+                                        height: "300px",
+                                        width: "300px",
+                                        backgroundColor: "rgba(0, 0, 0, 0.9)",
+                                        border: "1px",
+                                        borderRadius: "1.5rem",
+                                        filter: "drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2))",
+                                    })
+                                if (newDesign) {
+                                    $(notas).css({ marginLeft: "-20px", marginTop: "0px" })
+                                }
+                                else {
+                                    $(notas).css({ marginTop: "-20px" })
+                                }
+                                $("<div/>")
+                                    .attr('id', 'notas-popup-title')
+                                    .css({
+                                        position: "absolute",
+                                        color: "white",
+                                        zIndex: 1,
+                                        textDecoration: "none",
+                                        height: "20px",
+                                        width: "fit-content",
+                                        backgroundColor: "transparent",
+                                        left: 0,
+                                        right: 0,
+                                        margin: "auto",
+                                        padding: "10px",
+                                        backgroundColor: "rgba(0, 0, 0, 1)",
+                                    })
+                                    .text(`NOTAS de ${usuario}`)
+                                    .appendTo(notas);
+
+                                let textContainer = $("<div/>")
+                                    .attr('id', 'notas-popup-text-container')
+                                    .css({
+                                        height: "220px",
+                                        width: "280px",
+                                        backgroundColor: "white",
+                                        backgroundColor: "rgba(255,255,255, 0.2)",
+                                        color: "white",
+                                        margin: "auto",
+                                        marginTop: "40px",
+                                        textDecoration: "none",
+                                        border: "1px",
+                                        borderRadius: "1rem",
+                                        overflow: "auto",
+                                        outline: "0px solid transparent"
+                                    }).appendTo(notas);
+
+                                textEditable = $("<p/>")
+                                    .attr('id', 'notas-popup-text-editable')
+                                    .attr('contenteditable', true)
+                                    .css({
+                                        color: "white",
+                                        height: "170px",
+                                        width: "250px",
+                                        border: "1px",
+                                        marginTop: 10,
+                                        marginLeft: 10,
+                                        marginBottom: 10,
+                                        borderRadius: "1rem",
+                                        outline: "0px solid transparent"
+                                    })
+                                    .appendTo(textContainer);
+                                $("<button/>")
+                                    .attr('id', 'notas-popup-button')
+                                    .css({
+                                        position: "absolute",
+                                        height: "22px",
+                                        width: "80px",
+                                        margin: "auto",
+                                        left: 0,
+                                        right: 0,
+                                        cursor: "pointer",
+                                        marginTop: "10px"
+                                    })
+                                    .text("Guardar")
+                                    .click(function (e) {
+                                        e.preventDefault();
+                                        let textToSave = `${$("#notas-popup-text-editable")[0].innerText}`;
+                                        if (savedNotas == undefined) savedNotas = {}
+                                        savedNotas[usuario] = { "text": textToSave };
+                                        if (textToSave == "") {
+                                            notasBtn.css({ border: 0, borderRadius: "6px" });
+                                        }
+                                        else {
+                                            notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
+                                        }
+                                        browserInUser.runtime.sendMessage({ sender: "contentScript", type: "browserInUser-storage", content: { loc: "notas", message: { "usuario": usuario, "text": textToSave }, action: "add" } });
+                                        /* Avoid refreshing page, instead close the popup
+                                          (modified by Ven0mFC) */
+                                        // browserInUser.runtime.sendMessage({ sender: "contentScript", type: "reload" });
+                                        $("#notas-popup-div").remove();
+                                    })
+                                    .appendTo(notas);
+
+                                notas.insertAfter($(this).parent().children("#notas-usuarios-div"));
+                                if (savedNotas != undefined && savedNotas.hasOwnProperty(usuario)) {
+                                    $('#notas-popup-text-editable')[0].innerText = savedNotas[usuario].text;
+                                }
+                            }
+                        });
+                    if (savedNotas != undefined && savedNotas.hasOwnProperty(usuario)) {
+                        notasBtn.css({ border: "solid 2px Red", borderRadius: "6px" });
+                    }
+
+                    if (newDesign) {
+                        if ($(postDiv).parent().parent().children("#container-opciones").length == 0) {
+                            $("<div/>").attr('id', 'container-opciones').insertAfter($(postDiv).parent().parent().children()[0]);;
+                        }
+                        notasBtn.appendTo($(postDiv).parent().parent().children("#container-opciones"));
+                    }
+                    else {
+                        notasBtn.css({ marginLeft: "5px", position: "relative" }).height("auto").insertAfter($(postDiv));
+                    }
                 }
-                else {
-                    notasBtn.css({ marginLeft: "5px", position: "relative" }).height("auto").appendTo($(postDiv).parent());
-                }
+            });
+        }
+    }
+    /* Autopagerize compatibility added by Ven0mFC */
+    //Changes user messages background colour
+    if (toListen.has("usuario-color")) {
+        if (newDesign) {
+            if ($(n).find('section').find('a:contains("' + forocochero + '")').length) {
+                $(n).find('section').find('a:contains("' + forocochero + '")').each(function () {
+                    let papa = $(this).closest('section');
+                    $(papa)[0].style.border = 0;
+                    $(papa)[0].style.backgroundColor = opciones["usuario-color"].value;
+                });
+            }
+        } else {
+            //Loaded single targeted TD element
+            if (n.tagName == 'TD' && $(n).hasClass("alt1-user")) {
+                colorUserPost(n)
+
+                //Loaded element containing several targeted TD elements
+            } else if ($(n).find('td.alt1-user').length) {
+                $(n).find('td.alt1-user').each(function () {
+                    colorUserPost(this)
+                });
             }
         }
     }
-    //Changes user messages background colour
-    if (toListen.has("usuario-color")) {
-        if (newDesign && n.tagName == 'SECTION' && $(n).find(`a:contains(${forocochero})`)[0]) {
-            n.style.border = 0;
-            n.style.backgroundColor = opciones["usuario-color"].value;
-        }
-        if (!newDesign && n.tagName == 'TD' && $(n).hasClass("alt1-user")) {
-            let papa = $(n);
-            //Removes border
-            $(papa).closest('.tborder-user').removeClass();
-            $(papa).children().css('border', 'none');
-            //Changes background color
-            $(papa).css('background-color', opciones["usuario-color"].value);
-            $(papa).prev().css('background-color', shadeColor(opciones["usuario-color"].value, -5));
-        }
-    }
+    /* Autopagerize compatibility added by Ven0mFC */
     //Changes OP messages background colour
     if (toListen.has("op-color")) {
         if (newDesign) {
+            //Loaded single targeted SECTION element
             if (n.tagName == 'SECTION' && n.style.borderLeft == 'solid 4px var(--coral)') {
                 n.style.border = 0;
                 n.style.backgroundColor = opciones["op-color"].value;
+
+                //Loaded element containing several targeted SECTION elements
+            } else if ($(n).find('section[style*="border-left: solid 4px var(--coral)"]').length) {
+                $(n).find('section[style*="border-left: solid 4px var(--coral)"]').each(function () {
+                    this.style.border = 0;
+                    this.style.backgroundColor = opciones["op-color"].value;
+                });
             }
         }
         else {
+            //Loaded single targeted TD element
             if (n.tagName == 'TD' && $(n).hasClass("alt1-author") && n.id.includes("td_post_")) {
-                let papa = $(n).closest(".tborder-author");
-                //Removes border
-                $(papa).removeClass();
-                $(papa).children().css('border', 'none');
-                //Changes background color
-                $(papa).find('.alt1-author').css('background-color', opciones["op-color"].value);
-                $(papa).find('.alt2').css('background-color', shadeColor(opciones["op-color"].value, -5));
-                //Leave citas normal background
-                $($(papa).find('.alt2:contains("Cita de")')[0]).css('background-color', '');
+                colorOPPost(n);
+
+                //Loaded element containing several targeted TD elements
+            } else if ($(n).find('.alt1-author[id*="td_post_"]').length) {
+                $(n).find('.alt1-author[id*="td_post_"]').each(function () {
+                    colorOPPost(this);
+                });
             }
         }
     }
+    /* Autopagerize compatibility added by Ven0mFC */
     //Changes threads with 0 messages background colour
     if (toListen.has("hilos-color")) {
-        if (n.tagName == 'A' && n.href.includes("misc.php?do=whoposted")) {
-            if (n.innerText == "0") {
-                let papa = $(n).parent().parent().parent();
-                if (newDesign) {
-                    $(papa).css("background-color", opciones["hilos-color"].value);
+        if ($(n).find('a[href*="misc.php?do=whoposted"]').length) {
+            $(n).find('a[href*="misc.php?do=whoposted"]').each(function () {
+                let whoposted = this;
+                if (whoposted.innerText == "0") {
+                    let papa = $(whoposted).parent().parent().parent();
+                    if (newDesign) {
+                        $(papa).css("background-color", opciones["hilos-color"].value);
+                    }
+                    else {
+                        $(papa).find('.alt1').css('background-color', opciones["hilos-color"].value)
+                        $(papa).find('.alt2').css('background-color', shadeColor(opciones["hilos-color"].value, -10));
+                    }
                 }
-                else {
-                    $(papa).find('.alt1').css('background-color', opciones["hilos-color"].value)
-                    $(papa).find('.alt2').css('background-color', shadeColor(opciones["hilos-color"].value, -10));
-                }
-            }
+            });
         }
     }
     //Hides ads
@@ -524,24 +650,97 @@ function checkElement(n) {
             }
         }
     }
+    /* Autopagerize compatibility added by Ven0mFC */
     //Makes avatars squared
     if (toListen.has("avatar-cuadrado")) {
-        if (newDesign && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
-            $(n).css({
-                borderRadius: "0"
+        if (newDesign && $(n).find('img[class="thread-profile-image"]').length) {
+            $(n).find('img[class*="thread-profile-image"]').each(function () {
+                $(this).css({
+                    borderRadius: "0"
+                });
             });
         }
     }
+    /* Autopagerize compatibility added by Ven0mFC */
     //Makes avatars bigger
     if (toListen.has("avatar-grande")) {
-        if (newDesign && n.tagName === 'IMG' && $(n).hasClass("thread-profile-image")) {
-            $(n).css({
-                width: "70px",
-                height: "70px"
+        if (newDesign && $(n).find('img[class*="thread-profile-image"]').length) {
+            $(n).find('img[class*="thread-profile-image"]').each(function () {
+                $(this).css({
+                    width: "70px",
+                    height: "70px"
+                });
+                $(this).parent().css({
+                    height: "70px"
+                });
             });
-            $(n).parent().css({
-                height: "70px"
-            });
+        }
+    }
+    //Adds likes funcionality to the forum
+    if (toListen.has("likes")) {
+        if (n.tagName === 'A' && n.href.indexOf("report.php?p=") != -1) {
+            let likeBtn = $("<a/>")
+                .css({
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: "700",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    color: darkMode ? "rgb(243, 234, 234)" : "#43445c",
+                    textDecoration: "none",
+                    position: "relative"
+                })
+            if (!newDesign) {
+                likeBtn.css({ justifyContent: "right" })
+            }
+            $("<span/>")
+                .attr('id', 'like-text')
+                .css({
+                    fontSize: "1.5rem",
+                    height: "26px",
+                    textDecoration: "none",
+                    pointerEvents: "none"
+                })
+                .text(0)
+                .appendTo(likeBtn);
+            $("<span/>")
+                .attr('id', 'like-button')
+                .css({
+                    textDecoration: "none",
+                    cursor: "pointer",
+                    marginLeft: "6px",
+                    marginRight: "6px",
+                    fontSize: "1.625rem",
+                    display: "flex",
+                })
+                .text("❤")
+                .click(function (e) {
+                    var postId, likes
+                    if (newDesign) {
+                        postId = $($($(this)).parent()[0].closest('section')).parent()[0].id.split('edit')[1];
+                    }
+                    else {
+                        postId = $($(this)).parent()[0].closest('div').id.split('edit')[1];
+                    }
+                    likes = $(this).prev('span')[0];
+
+                    if (!$(this).hasClass("liked")) {
+                        $(this)
+                            .css({ color: "red" })
+                            .toggleClass("liked");
+                        likes.innerText = Number(likes.innerText) + 1
+                        updateLikes(postId, forocochero, "add")
+                    }
+                    else {
+                        $(this)
+                            .css({ color: darkMode ? "rgb(243, 234, 234)" : "#43445c" })
+                            .toggleClass("liked");
+                        likes.innerText = Number(likes.innerText) - 1
+                        updateLikes(postId, forocochero, "remove")
+                    }
+                })
+                .appendTo(likeBtn);
+            likeBtn.appendTo($(n).parent());
         }
     }
     //Adds drag and drop image feature
@@ -585,6 +784,7 @@ function checkElement(n) {
         }
     }
 }
+
 //Starts observing the thread being loaded
 function observe() {
     mo.observe(document, {
